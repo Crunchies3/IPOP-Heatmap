@@ -131,27 +131,27 @@
         let cableData;
         let notifiedCoordinates;
 
-        function changeColor(data, coordinates) {
+        function getColor(data, coordinates) {
             console.log(data);
             console.log("====================================");
             console.log(coordinates);
 
             data.forEach(cable => {
-                let changeColor = 'green';
+                let color = 'green';
 
-                console.log("nigana bako una?" + changeColor);
+                console.log("nigana bako una?" + color);
 
 
                 // Compare dates to determine color
                 if (parseDate(stringDate) >= parseDate(cable.startDate) && parseDate(stringDate) <= parseDate(cable.endDate)) {
-                    changeColor = 'red';
+                    color = 'red';
                 } else if (parseDate(stringDate) < parseDate(cable.startDate)) {
-                    changeColor = 'yellow';
+                    color = 'yellow';
                 } else if (parseDate(stringDate) > parseDate(cable.endDate)) {
-                    changeColor = 'green';
+                    color = 'green';
                 }
 
-                console.log("nabago ba ang color?" + changeColor);
+                console.log("nabago ba ang color?" + color);
 
                 let tempName = "SEAUS " + cable.segment1; // Use segment1 instead of cableName
 
@@ -165,7 +165,7 @@
 
 
 
-                    updatePolylineColor(tempName, changeColor);
+                    updatePolylineColor(tempName, color);
                 }
 
 
@@ -248,7 +248,7 @@
             console.log("===============000000000000===================");
             console.log(notifiedCoordinates);
 
-            changeColor(cableData, notifiedCoordinates);
+            getColor(cableData, notifiedCoordinates);
         }
 
         // Start the process by getting cable data

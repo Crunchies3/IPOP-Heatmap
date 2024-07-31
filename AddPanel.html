@@ -3,15 +3,14 @@
 </div>
 
 <span class="close-btn" onclick="closeAddPanel()"><i class="fa fa-times" aria-hidden="true"></i></span>
-
 <form>
   <div class="row">
     <div class="form-group col-md-6">
-      <label for="inputTroubleTicket">Trouble Ticket <span class="importantField">*</span></label>
+      <label for="inputTroubleTicket">Trouble Ticket:</label>
       <input type="text" class="form-control" id="inputTroubleTicket">
     </div>
     <div class="form-group col-md-6">
-      <label for="cableSystemSelect">Cable System <span class="importantField">*</span></label>
+      <label for="cableSystemSelect">Cable System:</label>
       <select class=" form-select" aria-label="Default select example" style="margin-bottom:10px;"
         id="cableSystemSelect">
         <option value="C2C">C2C</option>
@@ -25,31 +24,30 @@
 
   <div class="row">
     <div class="form-group col-md-4">
-      <label for="inputNotificationDateTime">Notification Date and Time <span class="importantField">*</span></label>
-      <input required type="datetime-local" class="form-control" id="inputNotificationDateTime"
-        style="margin-bottom: 10px;">
+      <label for="inputNotificationDateTime">Notification Date and Time:</label>
+      <input type="datetime-local" class="form-control" id="inputNotificationDateTime" style="margin-bottom: 10px;">
     </div>
-    <div class="form-group col-md-4">
-      <label for="inputStartDateTimeUTC">Start Date and Time (UTC)</label>
+    <div class="form-group col-md-4" style="display: none;">
+      <label for="inputStartDateTimeUTC">Start Date and Time (UTC):</label>
       <input type="datetime-local" class="form-control" id="inputStartDateTimeUTC" style="margin-bottom: 10px;">
     </div>
-    <div class="form-group col-md-4">
-      <label for="inputEndDateTimeUTC">End Date and Time (UTC)</label>
+    <div class="form-group col-md-4" style="display: none;">
+      <label for="inputEndDateTimeUTC">End Date and Time (UTC):</label>
       <input type="datetime-local" class="form-control" id="inputEndDateTimeUTC" style="margin-bottom: 10px;">
     </div>
   </div>
 
   <div class="row">
     <div class="form-group col-md-3" style="display: none;">
-      <label for="inputOutageDuration">Outage Duration</label>
+      <label for="inputOutageDuration">Outage Duration:</label>
       <input type="text" class="form-control" id="inputOutageDuration" readonly>
     </div>
     <div class="form-group col-md-3" style="display: none;">
-      <label for="inputActivityImpactDuration">Activity Impact Duration</label>
+      <label for="inputActivityImpactDuration">Activity Impact Duration:</label>
       <input type="text" class="form-control" id="inputActivityImpactDuration" readonly>
     </div>
     <div class="form-group col-md-6">
-      <label for="inputImpact">Impact <span class="importantField">*</span></label>
+      <label for="inputImpact">Impact:</label>
       <select class=" form-select" aria-label="Default select example" style="margin-bottom:10px;" id="inputImpact">
         <option selected> </option>
         <option value="2-5 Bearers">2-5 Bearers</option>
@@ -59,7 +57,7 @@
       </select>
     </div>
     <div class="form-group col-md-6">
-      <label for="inputIncidentType">Incident Type <span class="importantField">*</span></label>
+      <label for="inputIncidentType">Incident Type:</label>
       <select class=" form-select" aria-label="Default select example" style="margin-bottom:10px;"
         id="inputIncidentType">
         <option selected> </option>
@@ -71,7 +69,7 @@
 
   <div class="row">
     <div class="form-group col-md-4">
-      <label for="inputAffectedSegment1">Affected Segment 1 <span class="importantField">*</span></label>
+      <label for="inputAffectedSegment1">Affected Segment 1:</label>
       <select class="form-select" aria-label="Default select example" style="margin-bottom: 10px;"
         id="inputAffectedSegment1">
         <option value="">Select Name</option>
@@ -80,7 +78,7 @@
     </div>
     <!-- Name Dropdown 2 -->
     <div class="form-group col-md-4">
-      <label for="inputAffectedSegment2">Affected Segment 2</label>
+      <label for="inputAffectedSegment2">Affected Segment 2:</label>
       <select class="form-select" aria-label="Default select example" style="margin-bottom: 10px;"
         id="inputAffectedSegment2">
         <option value="">Select Name</option>
@@ -89,7 +87,7 @@
     </div>
     <!-- Name Dropdown 3 -->
     <div class="form-group col-md-4">
-      <label for="inputAffectedSegment3">Affected Segment 3</label>
+      <label for="inputAffectedSegment3">Affected Segment 3:</label>
       <select class="form-select" aria-label="Default select example" style="margin-bottom: 10px;"
         id="inputAffectedSegment3">
         <option value="">Select Name</option>
@@ -100,7 +98,7 @@
 
   <div class="row">
     <div class="form-group col-md-4">
-      <label for="inputLocation">Location</label>
+      <label for="inputLocation">Location:</label>
       <select class=" form-select" aria-label="Default select example" style="margin-bottom:10px;" id="inputLocation">
         <option selected> </option>
         <option value="Terrestial/Dry Segment">Terrestial/Dry Segment</option>
@@ -110,7 +108,7 @@
       </select>
     </div>
     <div class="form-group col-md-4">
-      <label for="inputRootCauseH">Root Cause (High Level)</label>
+      <label for="inputRootCauseH">Root Cause (High Level):</label>
       <select class="form-select" aria-label="Default select example" style="margin-bottom: 10px;" id="inputRootCauseH">
         <option selected></option>
         <option value="BMH Issue">BMH Issue</option>
@@ -137,11 +135,11 @@
 
   <div class="row">
     <div class="form-group col-md-6">
-      <label for="inputAdditionalRemarks">Additional Remarks (Internal)</label>
+      <label for="inputAdditionalRemarks">Additional Remarks (Internal):</label>
       <textarea class="form-control" id="inputAdditionalRemarks"></textarea>
     </div>
     <div class="form-group col-md-6">
-      <label for="inputMonthYear">Month Year</label>
+      <label for="inputMonthYear">Month Year:</label>
       <input type="month" class="form-control" id="inputMonthYear" min="2023-01" readonly>
     </div>
   </div>
@@ -201,7 +199,7 @@
     var monthYear = document.getElementById("inputMonthYear").value;
 
     // Check if required fields are empty
-    if (!troubleTicket || !cableSystem || !notificationDateTime || !impact || !incidentType || !affectedSegment1) {
+    if (!troubleTicket || !cableSystem) {
       showGoogleScriptAlert('Please fill in trouble ticket and cable system.', 'error');
       return;
     }

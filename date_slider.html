@@ -5,7 +5,7 @@
     </div>
     <div class="col-9">
         <input type="range" class="form-range w-100" min="0" max="13" step="1" id="date_range" list="tick_marks"
-            value="0" onchange="storeValue(this.value)">
+            value="0" onchange="changePolylineColor(this.value)">
         <datalist id="tick_marks">
             <option id="1" value="" label=""></option>
             <option id="2" value="" label=""></option>
@@ -94,10 +94,6 @@
         dateToSliderBar(today);
     }
 
-    function storeValue(rangeIndex) {
-        let stringDate = document.getElementById(parseInt(rangeIndex) + 1).value;
-        document.getElementById('selected_date').setAttribute('value', stringDate);
-    }
 
     function convertFullDatetoString(date) {
         let dd = String(date.getDate()).padStart(2, '0');
@@ -113,3 +109,5 @@
         return mm + '/' + dd;
     }
 </script>
+
+<?!= HtmlService.createHtmlOutputFromFile('addpolyline.html').getContent(); ?>

@@ -116,6 +116,112 @@
     }
 
 
+    // testing for SEAUS connections
+
+    function changePolylineColor(rangeIndex) {
+        let stringDate = document.getElementById(parseInt(rangeIndex) + 1).value;
+        let notifiedCableConnetions = [];
+        let cableData;
+        let notifiedCoordinates;
+
+
+        function changeColor(data, coordinates) {
+
+
+            data.forEach(cable => {
+
+                let color;
+
+                if (parseDate(stringDate) >= parseDate(cable.startDate) && parseDate(stringDate) <= parseDate(cable.endDate)) {
+                    color = 'red';
+                } else if (parseDate(stringDate) < parseDate(cable.startDate)) {
+                    color = 'yellow';
+                } else if (parseDate(stringDate) > parseDate(cable.endDate)) {
+                    color = 'green';
+                }
+
+                let tempName = "SEAUS " + cable.cableName;
+
+                let tempCoordinates = coordinates.filter(row => {
+                    row.cableName === tempName
+                })
+
+                var storeCoordinates = [
+                    [tempCoordinates.longitudeFrom, tempCoordinates.latitudeFrom],
+                    [tempCoordinates.longitudeTo, tempCoordinates.latitudeTo]
+                ];
+
+                L.polyline(storeCoordinates, { color: color, weight: 2 }).addTo(map).bindPopup(tempName);
+            })
+        }
+
+
+        function parseDate(dateStr) {
+            return new Date(dateStr);
+        }
+
+
+        // Function to process cable data and set up the notifiedCableConnetions array
+        function getCableData(data) {
+            // Populate cableData
+            cableData = data.map(([cableSystem, notifiedDate, startDate, endDate, segment1, segment2, segment3]) => ({
+                cableSystem,
+                notifiedDate,
+                startDate,
+                endDate,
+                segment1,
+                segment2,
+                segment3
+            }));
+
+            // Populate notifiedCableConnetions based on the cable data
+            notifiedCableConnetions = cableData.map(({ segment1 }) =>
+                'SEAUS ' + segment1.toUpperCase()
+            );
+
+            // After processing cable data, call the function to get coordinates
+            google.script.run.withSuccessHandler(getCoordinates).getSJCData();
+        }
+
+        // Function to process coordinates data based on notifiedCableConnetions
+        function getCoordinates(cables) {
+            // Filter cables based on SEAUS and notifiedCableConnetions
+            const filteredCableSystem = cables.filter(row =>
+                row.cableSystem === 'SEAUS' && notifiedCableConnetions.includes(row.cableName)
+            );
+
+            // Map filtered cables to get notifiedCoordinates
+            notifiedCoordinates = filteredCableSystem.map(row => ({
+                cableName: row.cableName,
+                latitudeFrom: row.latitudeFrom,
+                longitudeFrom: row.longitudeFrom,
+                latitudeTo: row.latitudeTo,
+                longitudeTo: row.longitudeTo
+            }));
+
+            changeColor(cableData, notifiedCoordinates);
+
+        }
+
+        // Start the process by getting cable data
+        google.script.run.withSuccessHandler(getCableData).extractDates();
+    }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
     function initializeMap() {
         google.script.run.withSuccessHandler(addMarkers).getSJCLocations();
         google.script.run.withSuccessHandler(addPolylines).getSJCData();

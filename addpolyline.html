@@ -124,14 +124,11 @@
         let cableData;
         let notifiedCoordinates;
 
-
         function changeColor(data, coordinates) {
-
-
             data.forEach(cable => {
-
                 let color;
 
+                // Compare dates to determine color
                 if (parseDate(stringDate) >= parseDate(cable.startDate) && parseDate(stringDate) <= parseDate(cable.endDate)) {
                     color = 'red';
                 } else if (parseDate(stringDate) < parseDate(cable.startDate)) {
@@ -140,26 +137,24 @@
                     color = 'green';
                 }
 
-                let tempName = "SEAUS " + cable.cableName;
+                let tempName = "SEAUS " + cable.segment1.toUpperCase(); // Use segment1 instead of cableName
 
-                let tempCoordinates = coordinates.filter(row => {
-                    row.cableName === tempName
-                })
+                let tempCoordinates = coordinates.find(row => row.cableName === tempName); // Use find() to get the single object
 
-                var storeCoordinates = [
-                    [tempCoordinates.longitudeFrom, tempCoordinates.latitudeFrom],
-                    [tempCoordinates.longitudeTo, tempCoordinates.latitudeTo]
-                ];
+                if (tempCoordinates) {
+                    let storeCoordinates = [
+                        [tempCoordinates.latitudeFrom, tempCoordinates.longitudeFrom],
+                        [tempCoordinates.latitudeTo, tempCoordinates.longitudeTo]
+                    ];
 
-                L.polyline(storeCoordinates, { color: color, weight: 2 }).addTo(map).bindPopup(tempName);
-            })
+                    L.polyline(storeCoordinates, { color: color, weight: 2 }).addTo(map).bindPopup(tempName);
+                }
+            });
         }
-
 
         function parseDate(dateStr) {
             return new Date(dateStr);
         }
-
 
         // Function to process cable data and set up the notifiedCableConnetions array
         function getCableData(data) {
@@ -200,13 +195,11 @@
             }));
 
             changeColor(cableData, notifiedCoordinates);
-
         }
 
         // Start the process by getting cable data
         google.script.run.withSuccessHandler(getCableData).extractDates();
     }
-
 
 
     function initializeMap() {

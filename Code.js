@@ -402,26 +402,27 @@ function checkTroubleTicketExistence(troubleTicket) {
   return ticketExists;
 }
 
+
 function extractDates(cablesystem) {
   const ss = SpreadsheetApp.openById('1vW8zgcrQC02iRLkWJSOIjfnqN5_lRNMgNjV6IBZF__c');
   var notifRows = ss.getSheetByName('Notifications').getDataRange().getValues().slice(1);
-  var startDateRows = ss.getSheetByName('Start Date').getDataRange().getValues().slice(1);
-  var endDateRows = ss.getSheetByName('End Date').getDataRange().getValues().slice(1);
 
   if (cablesystem !== 'All') {
     notifRows = filteringDates(notifRows, cablesystem);
-    startDateRows = filteringDates(startDateRows, cablesystem);
-    endDateRows = filteringDates(endDateRows, cablesystem);
   }
 
-  var dates = notifRows.map(row => ['Notif Date', row[1], row[2]])
-    .concat(startDateRows.map(row => ['Start Date', row[1], row[3]]))
-    .concat(endDateRows.map(row => ['End Date', row[1], row[4]]));
+  var dates = notifRows.map(row => [row[1], row[2], row[3], row[4], row[9], row[10], row[11]]);
 
   //formatting dates
   for (const row of dates) {
+    if (row[1]) {
+      row[1] = formatDates(row[1]);
+    }
     if (row[2]) {
       row[2] = formatDates(row[2]);
+    }
+    if (row[3]) {
+      row[3] = formatDates(row[3]);
     }
   }
   return dates;
@@ -445,4 +446,3 @@ function formatDates(dateString) {
   const formattedDate = formatter.format(originalDate);
   return formattedDate;
 }
-

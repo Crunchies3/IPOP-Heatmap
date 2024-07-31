@@ -1,172 +1,161 @@
-<!-- <div id="alertContainer" class="position-fixed bottom-0 end-0 p-3" style="z-index: 11;">
-</div> -->
-
-<style>
-  #adding_ticket label {
-    font-size: 13px;
-  }
-</style>
-
-<div class="modal fade" id="addTicketModal" data-bs-backdrop="false">
-  <div class="modal-dialog modal-xl">
-    <div class="modal-content">
-      <div class="modal-header">
-        <h5 class="modal-title">Add new ticket</h5>
-        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-      </div>
-      <div class="modal-body">
-        <form id="adding_ticket">
-          <div class="row">
-            <div class="form-group col-md-6">
-              <label for="inputTroubleTicket">Trouble Ticket <span class="importantField">*</span></label>
-              <input type="text" class="form-control" id="inputTroubleTicket">
-            </div>
-            <div class="form-group col-md-6">
-              <label for="cableSystemSelect">Cable System <span class="importantField">*</span></label>
-              <select class=" form-select" aria-label="Default select example" style="margin-bottom:10px;"
-                id="cableSystemSelect">
-                <option value="C2C">C2C</option>
-                <option value="EAC">EAC</option>
-                <option value="TGN">TGN-IA/TGN-P</option>
-                <option value="SEAUS">SEA-US</option>
-                <option value="SJC">SJC</option>
-              </select>
-            </div>
-          </div>
-          <div class="row">
-            <div class="form-group col-md-4">
-              <label for="inputNotificationDateTime">Notification Date and Time <span
-                  class="importantField">*</span></label>
-              <input required type="datetime-local" class="form-control" id="inputNotificationDateTime"
-                style="margin-bottom: 10px;">
-            </div>
-            <div class="form-group col-md-4">
-              <label for="inputStartDateTimeUTC">Start Date and Time (UTC)</label>
-              <input type="datetime-local" class="form-control" id="inputStartDateTimeUTC" style="margin-bottom: 10px;">
-            </div>
-            <div class="form-group col-md-4">
-              <label for="inputEndDateTimeUTC">End Date and Time (UTC)</label>
-              <input type="datetime-local" class="form-control" id="inputEndDateTimeUTC" style="margin-bottom: 10px;">
-            </div>
-          </div>
-          <div class="row">
-            <div class="form-group col-md-3" style="display: none;">
-              <label for="inputOutageDuration">Outage Duration</label>
-              <input type="text" class="form-control" id="inputOutageDuration" readonly>
-            </div>
-            <div class="form-group col-md-3" style="display: none;">
-              <label for="inputActivityImpactDuration">Activity Impact Duration</label>
-              <input type="text" class="form-control" id="inputActivityImpactDuration" readonly>
-            </div>
-            <div class="form-group col-md-6">
-              <label for="inputImpact">Impact <span class="importantField">*</span></label>
-              <select class=" form-select" aria-label="Default select example" style="margin-bottom:10px;"
-                id="inputImpact">
-                <option selected> </option>
-                <option value="2-5 Bearers">2-5 Bearers</option>
-                <option value="6-10 Bearers">6-10 Bearers</option>
-                <option value="11 and More">11 and More</option>
-                <option value="All Bearers">All Bearers</option>
-              </select>
-            </div>
-            <div class="form-group col-md-6">
-              <label for="inputIncidentType">Incident Type <span class="importantField">*</span></label>
-              <select class=" form-select" aria-label="Default select example" style="margin-bottom:10px;"
-                id="inputIncidentType">
-                <option selected> </option>
-                <option value="Outage">Outage</option>
-                <option value="Planned Activity">Planned Activity</option>
-              </select>
-            </div>
-          </div>
-          <div class="row">
-            <div class="form-group col-md-4">
-              <label for="inputAffectedSegment1">Affected Segment 1 <span class="importantField">*</span></label>
-              <select class="form-select" aria-label="Default select example" style="margin-bottom: 10px;"
-                id="inputAffectedSegment1">
-                <option value="">Select Name</option>
-                <!-- Options will be populated dynamically using JavaScript -->
-              </select>
-            </div>
-            <!-- Name Dropdown 2 -->
-            <div class="form-group col-md-4">
-              <label for="inputAffectedSegment2">Affected Segment 2</label>
-              <select class="form-select" aria-label="Default select example" style="margin-bottom: 10px;"
-                id="inputAffectedSegment2">
-                <option value="">Select Name</option>
-                <!-- Options will be populated dynamically using JavaScript -->
-              </select>
-            </div>
-            <!-- Name Dropdown 3 -->
-            <div class="form-group col-md-4">
-              <label for="inputAffectedSegment3">Affected Segment 3</label>
-              <select class="form-select" aria-label="Default select example" style="margin-bottom: 10px;"
-                id="inputAffectedSegment3">
-                <option value="">Select Name</option>
-                <!-- Options will be populated dynamically using JavaScript -->
-              </select>
-            </div>
-          </div>
-          <div class="row">
-            <div class="form-group col-md-4">
-              <label for="inputLocation">Location</label>
-              <select class=" form-select" aria-label="Default select example" style="margin-bottom:10px;"
-                id="inputLocation">
-                <option selected> </option>
-                <option value="Terrestial/Dry Segment">Terrestial/Dry Segment</option>
-                <option value="Wet Segment">Wet Segment</option>
-                <option value="Undetermined">Undetermined</option>
-                <option value="Backhaul">Backhaul</option>
-              </select>
-            </div>
-            <div class="form-group col-md-4">
-              <label for="inputRootCauseH">Root Cause (High Level)</label>
-              <select class="form-select" aria-label="Default select example" style="margin-bottom: 10px;"
-                id="inputRootCauseH">
-                <option selected></option>
-                <option value="BMH Issue">BMH Issue</option>
-                <option value="Cable Fault">Cable Fault</option>
-                <option value="Card Failure">Card Failure</option>
-                <option value="Configuration Issue">Configuration Issue</option>
-                <option value="Fan Issue">Fan Issue</option>
-                <option value="Force Majeure">Force Majeure</option>
-                <option value="Government/Private Project">Government/Private Project</option>
-                <option value="Human Error">Human Error</option>
-                <option value="PFE Issue">PFE Issue</option>
-                <option value="Physical Connection">Physical Connection</option>
-                <option value="Planned Maintenance">Planned Maintenance</option>
-                <option value="Shunt Fault">Shunt Fault</option>
-                <option value="Subsea Equipment Fault">Subsea Equipment Fault</option>
-                <option value="Unknown">Unknown</option>
-              </select>
-            </div>
-            <div class="form-group col-md-4">
-              <label for="inputRootCauseSpecificInternal">Root Cause (Specific-Internal):</label>
-              <textarea class="form-control" id="inputRootCauseSpecificInternal"></textarea>
-            </div>
-          </div>
-          <div class="row">
-            <div class="form-group col-md-6">
-              <label for="inputAdditionalRemarks">Additional Remarks (Internal)</label>
-              <textarea class="form-control" id="inputAdditionalRemarks"></textarea>
-            </div>
-            <div class="form-group col-md-6">
-              <label for="inputMonthYear">Month Year</label>
-              <input type="month" class="form-control" id="inputMonthYear" min="2023-01" readonly>
-            </div>
-          </div>
-        </form>
-      </div>
-      <div class="modal-footer">
-        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-        <button type="button" class="btn btn-primary" onclick="AddRow()" style="width:170px;">Add</button>
-      </div>
-    </div>
-  </div>
+<div id="alertContainer" class="position-fixed bottom-0 end-0 p-3" style="z-index: 11;">
+  <!-- Alert container goes here -->
 </div>
 
+<span class="close-btn" onclick="closeAddPanel()"><i class="fa fa-times" aria-hidden="true"></i></span>
+
+<form>
+  <div class="row">
+    <div class="form-group col-md-6">
+      <label for="inputTroubleTicket">Trouble Ticket <span class="importantField">*</span></label>
+      <input type="text" class="form-control" id="inputTroubleTicket">
+    </div>
+    <div class="form-group col-md-6">
+      <label for="cableSystemSelect">Cable System <span class="importantField">*</span></label>
+      <select class=" form-select" aria-label="Default select example" style="margin-bottom:10px;"
+        id="cableSystemSelect">
+        <option value="C2C">C2C</option>
+        <option value="EAC">EAC</option>
+        <option value="TGN">TGN-IA/TGN-P</option>
+        <option value="SEAUS">SEA-US</option>
+        <option value="SJC">SJC</option>
+      </select>
+    </div>
+  </div>
+
+  <div class="row">
+    <div class="form-group col-md-4">
+      <label for="inputNotificationDateTime">Notification Date and Time <span class="importantField">*</span></label>
+      <input required type="datetime-local" class="form-control" id="inputNotificationDateTime"
+        style="margin-bottom: 10px;">
+    </div>
+    <div class="form-group col-md-4">
+      <label for="inputStartDateTimeUTC">Start Date and Time (UTC)</label>
+      <input type="datetime-local" class="form-control" id="inputStartDateTimeUTC" style="margin-bottom: 10px;">
+    </div>
+    <div class="form-group col-md-4">
+      <label for="inputEndDateTimeUTC">End Date and Time (UTC)</label>
+      <input type="datetime-local" class="form-control" id="inputEndDateTimeUTC" style="margin-bottom: 10px;">
+    </div>
+  </div>
+
+  <div class="row">
+    <div class="form-group col-md-3" style="display: none;">
+      <label for="inputOutageDuration">Outage Duration</label>
+      <input type="text" class="form-control" id="inputOutageDuration" readonly>
+    </div>
+    <div class="form-group col-md-3" style="display: none;">
+      <label for="inputActivityImpactDuration">Activity Impact Duration</label>
+      <input type="text" class="form-control" id="inputActivityImpactDuration" readonly>
+    </div>
+    <div class="form-group col-md-6">
+      <label for="inputImpact">Impact <span class="importantField">*</span></label>
+      <select class=" form-select" aria-label="Default select example" style="margin-bottom:10px;" id="inputImpact">
+        <option selected> </option>
+        <option value="2-5 Bearers">2-5 Bearers</option>
+        <option value="6-10 Bearers">6-10 Bearers</option>
+        <option value="11 and More">11 and More</option>
+        <option value="All Bearers">All Bearers</option>
+      </select>
+    </div>
+    <div class="form-group col-md-6">
+      <label for="inputIncidentType">Incident Type <span class="importantField">*</span></label>
+      <select class=" form-select" aria-label="Default select example" style="margin-bottom:10px;"
+        id="inputIncidentType">
+        <option selected> </option>
+        <option value="Outage">Outage</option>
+        <option value="Planned Activity">Planned Activity</option>
+      </select>
+    </div>
+  </div>
+
+  <div class="row">
+    <div class="form-group col-md-4">
+      <label for="inputAffectedSegment1">Affected Segment 1 <span class="importantField">*</span></label>
+      <select class="form-select" aria-label="Default select example" style="margin-bottom: 10px;"
+        id="inputAffectedSegment1">
+        <option value="">Select Name</option>
+        <!-- Options will be populated dynamically using JavaScript -->
+      </select>
+    </div>
+    <!-- Name Dropdown 2 -->
+    <div class="form-group col-md-4">
+      <label for="inputAffectedSegment2">Affected Segment 2</label>
+      <select class="form-select" aria-label="Default select example" style="margin-bottom: 10px;"
+        id="inputAffectedSegment2">
+        <option value="">Select Name</option>
+        <!-- Options will be populated dynamically using JavaScript -->
+      </select>
+    </div>
+    <!-- Name Dropdown 3 -->
+    <div class="form-group col-md-4">
+      <label for="inputAffectedSegment3">Affected Segment 3</label>
+      <select class="form-select" aria-label="Default select example" style="margin-bottom: 10px;"
+        id="inputAffectedSegment3">
+        <option value="">Select Name</option>
+        <!-- Options will be populated dynamically using JavaScript -->
+      </select>
+    </div>
+  </div>
+
+  <div class="row">
+    <div class="form-group col-md-4">
+      <label for="inputLocation">Location</label>
+      <select class=" form-select" aria-label="Default select example" style="margin-bottom:10px;" id="inputLocation">
+        <option selected> </option>
+        <option value="Terrestial/Dry Segment">Terrestial/Dry Segment</option>
+        <option value="Wet Segment">Wet Segment</option>
+        <option value="Undetermined">Undetermined</option>
+        <option value="Backhaul">Backhaul</option>
+      </select>
+    </div>
+    <div class="form-group col-md-4">
+      <label for="inputRootCauseH">Root Cause (High Level)</label>
+      <select class="form-select" aria-label="Default select example" style="margin-bottom: 10px;" id="inputRootCauseH">
+        <option selected></option>
+        <option value="BMH Issue">BMH Issue</option>
+        <option value="Cable Fault">Cable Fault</option>
+        <option value="Card Failure">Card Failure</option>
+        <option value="Configuration Issue">Configuration Issue</option>
+        <option value="Fan Issue">Fan Issue</option>
+        <option value="Force Majeure">Force Majeure</option>
+        <option value="Government/Private Project">Government/Private Project</option>
+        <option value="Human Error">Human Error</option>
+        <option value="PFE Issue">PFE Issue</option>
+        <option value="Physical Connection">Physical Connection</option>
+        <option value="Planned Maintenance">Planned Maintenance</option>
+        <option value="Shunt Fault">Shunt Fault</option>
+        <option value="Subsea Equipment Fault">Subsea Equipment Fault</option>
+        <option value="Unknown">Unknown</option>
+      </select>
+    </div>
+    <div class="form-group col-md-4">
+      <label for="inputRootCauseSpecificInternal">Root Cause (Specific-Internal):</label>
+      <textarea class="form-control" id="inputRootCauseSpecificInternal"></textarea>
+    </div>
+  </div>
+
+  <div class="row">
+    <div class="form-group col-md-6">
+      <label for="inputAdditionalRemarks">Additional Remarks (Internal)</label>
+      <textarea class="form-control" id="inputAdditionalRemarks"></textarea>
+    </div>
+    <div class="form-group col-md-6">
+      <label for="inputMonthYear">Month Year</label>
+      <input type="month" class="form-control" id="inputMonthYear" min="2023-01" readonly>
+    </div>
+  </div>
+
+  <div class="row">
+    <div class="form-group col-md-12 text-center"> <!-- Center the content within the column -->
+      <br>
+      <button type="button" class="btn btn-primary" onclick="AddRow()" style="width:170px;">Add</button>
+    </div>
+  </div>
+</form>
 
 <script>
+
   function showGoogleScriptAlert(message, type) {
     var alertColorClass;
     switch (type) {

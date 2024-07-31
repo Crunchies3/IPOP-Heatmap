@@ -48,24 +48,35 @@
             function isMatch(cableName, combinedName) {
                 var combinedNameUpperCase = combinedName.toUpperCase();
                 var parts = combinedNameUpperCase.split(' ');
+                var cableType = parts[0];
 
-                if (parts.length === 0) return false;
+                if (parts.length === 0 || parts.length <= 1) return false;
 
-                var [firstPart, secondPart = '', thirdPart = '', fourthPart = ''] = parts;
-
-                function checkPart(part, cableNamePart) {
-                    if (part.includes('-')) {
-                        var [subPart1, subPart2] = part.split('-');
-                        return cableNamePart.includes(subPart1) || cableNamePart.includes(subPart2) ||
-                            cableNamePart.indexOf(subPart1) < cableNamePart.indexOf(subPart2);
+                //checking each parts
+                for (var i = 1; i < parts.length; i++) {
+                    var part = parts[i];
+                    var concatenate = cableType.concat(" ", part);
+                    if (cableName === concatenate) {
+                        return true;
                     }
-                    return cableNamePart.includes(part);
                 }
+                return false;
 
-                return cableName.includes(firstPart) &&
-                    checkPart(secondPart, cableName) &&
-                    checkPart(thirdPart, cableName) &&
-                    checkPart(fourthPart, cableName);
+
+                // var [firstPart, secondPart = '', thirdPart = '', fourthPart = ''] = parts;
+
+                // function checkPart(part, cableNamePart, firstPart) {
+                //   console.log("this is the part "+part)
+                //     if(isNaN(part)){
+                //       return false;
+                //     }
+                //     return cableNamePart.includes(part);
+                // }
+
+                // return cableName.includes(firstPart) &&
+                //     checkPart(secondPart, cableName, firstPart) &&
+                //     checkPart(thirdPart, cableName, firstPart) &&
+                //     checkPart(fourthPart, cableName, firstPart);
             }
 
             function determineColor(cableName) {
@@ -103,7 +114,6 @@
             });
         }).getCableNames(); // Call the getCableNames function in your Google Apps Script
     }
-
 
 
     function initializeMap() {

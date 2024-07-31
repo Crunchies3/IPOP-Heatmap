@@ -402,3 +402,47 @@ function checkTroubleTicketExistence(troubleTicket) {
   return ticketExists;
 }
 
+function extractDates(cablesystem) {
+  const ss = SpreadsheetApp.openById('1vW8zgcrQC02iRLkWJSOIjfnqN5_lRNMgNjV6IBZF__c');
+  var notifRows = ss.getSheetByName('Notifications').getDataRange().getValues().slice(1);
+  var startDateRows = ss.getSheetByName('Start Date').getDataRange().getValues().slice(1);
+  var endDateRows = ss.getSheetByName('End Date').getDataRange().getValues().slice(1);
+
+  if (cablesystem !== 'All') {
+    notifRows = filteringDates(notifRows, cablesystem);
+    startDateRows = filteringDates(startDateRows, cablesystem);
+    endDateRows = filteringDates(endDateRows, cablesystem);
+  }
+
+  var dates = notifRows.map(row => ['Notif Date', row[1], row[2]])
+    .concat(startDateRows.map(row => ['Start Date', row[1], row[3]]))
+    .concat(endDateRows.map(row => ['End Date', row[1], row[4]]));
+
+  //formatting dates
+  for (const row of dates) {
+    if (row[2]) {
+      row[2] = formatDates(row[2]);
+    }
+  }
+  return dates;
+}
+
+function filteringDates(sheetData, cablesystem) {
+  var rows = sheetData.filter(row => {
+    const cableSystem = row[1];
+    return cableSystem === cablesystem
+  });
+  return rows;
+}
+
+function formatDates(dateString) {
+  const originalDate = new Date(dateString);
+  const formatter = new Intl.DateTimeFormat('en-US', {
+    day: '2-digit',
+    month: '2-digit',
+    year: 'numeric'
+  });
+  const formattedDate = formatter.format(originalDate);
+  return formattedDate;
+}
+

@@ -1,0 +1,80 @@
+<script>
+  function showGoogleScriptAlert(message, type) {
+    var alertColorClass;
+    switch (type) {
+      case 'success':
+        alertColorClass = 'alert-success';
+        break;
+      case 'error':
+        alertColorClass = 'alert-danger';
+        break;
+      default:
+        alertColorClass = 'alert-warning';
+    }
+
+    var alertHtml = `
+          <div class="alert ${alertColorClass} alert-dismissible fade show" role="alert">
+              ${message}
+              <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+          </div>
+      `;
+
+    $('#alertContainer').prepend(alertHtml);
+  }
+
+  // Function to open side panel
+  function openSidePanel() {
+    document.getElementById("side-panel").classList.add("active");
+  }
+
+
+  function closeSidePanel() {
+    document.getElementById("side-panel").classList.remove("active");
+  }  // End side panel
+
+
+  //  Function to open bottom panel
+  function openBottomPanel() {
+    document.getElementById("bottom-panel").classList.add("active");
+  }
+
+
+  function closeBottomPanel() {
+    document.getElementById("bottom-panel").classList.remove("active");
+  }  // End bottom panel
+
+  function openAddPanel() {
+    document.getElementById("add-panel").classList.add("active");
+  }
+
+
+  function closeAddPanel() {
+    document.getElementById("add-panel").classList.remove("active");
+  }
+
+
+  function toggleRedNotificationAdd() {
+    document.getElementById("red-notif-panel").classList.add("active");
+  }
+
+  function toggleRedNotificationRemove() {
+    document.getElementById("red-notif-panel").classList.remove("active");
+  }
+
+  function toggleYellowNotificationAdd() {
+    document.getElementById("yellow-notif-panel").classList.add("active");
+  }
+
+  function toggleYellowNotificationRemove() {
+    document.getElementById("yellow-notif-panel").classList.remove("active");
+  }
+
+  function toggleGreenNotificationAdd() {
+    document.getElementById("green-notif-panel").classList.add("active");
+  }
+
+  function toggleGreenNotificationRemove() {
+    document.getElementById("green-notif-panel").classList.remove("active");
+  }
+
+</script>

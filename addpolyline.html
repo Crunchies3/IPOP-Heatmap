@@ -1,0 +1,162 @@
+<script>
+    if (!map) {
+        var bounds = L.latLngBounds([[90, -70], [-90, 310]]);
+
+        var map = L.map('map', {
+            maxZoom: 18,
+            minZoom: 3,
+            dragging: true,
+            maxBounds: bounds,
+            zoomSnap: 0.5,
+            center: [8.345422, 158.581226],
+            zoom: 3
+        });
+
+        L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+            attribution: '&copy; <a ></a> K.Y.L.C',
+            language: 'en',
+        }).addTo(map);
+    }
+
+
+    // Function to add markers to the map
+    function addMarkers(locations) {
+        locations.forEach(function (location) {
+            var pointIcon = L.divIcon({
+                className: 'point-icon', // CSS class for styling
+                html: '<div class="point-marker"></div>', // HTML for the point symbol
+                iconAnchor: [3, 3], // Center the marker at the coordinates
+
+            });
+
+            L.marker([location.longitude, location.latitude], { icon: pointIcon }).addTo(map).bindPopup(location.pointName);
+        });
+    }
+
+    // Fetch locations from Google Sheets and add markers
+    google.script.run.withSuccessHandler(addMarkers).getSJCLocations();
+
+    function addPolylines(cables) {
+        // Fetch cable names from Google Sheets using Google Apps Script
+        google.script.run.withSuccessHandler(function (data) {
+            if (!Array.isArray(data.combinedCableNamesStart) || !Array.isArray(data.combinedCableNames)) {
+                console.error('Invalid data format for combinedCableNames:', data.combinedCableNamesStart);
+                return;
+            }
+
+            // Function to determine if a cable name matches
+            function isMatch(cableName, combinedName) {
+                var combinedNameUpperCase = combinedName.toUpperCase();
+                var parts = combinedNameUpperCase.split(' ');
+
+                if (parts.length === 0) return false;
+
+                var [firstPart, secondPart = '', thirdPart = '', fourthPart = ''] = parts;
+
+                function checkPart(part, cableNamePart) {
+                    if (part.includes('-')) {
+                        var [subPart1, subPart2] = part.split('-');
+                        return cableNamePart.includes(subPart1) || cableNamePart.includes(subPart2) ||
+                            cableNamePart.indexOf(subPart1) < cableNamePart.indexOf(subPart2);
+                    }
+                    return cableNamePart.includes(part);
+                }
+
+                return cableName.includes(firstPart) &&
+                    checkPart(secondPart, cableName) &&
+                    checkPart(thirdPart, cableName) &&
+                    checkPart(fourthPart, cableName);
+            }
+
+            function determineColor(cableName) {
+                if (data.combinedCableNamesStart.some(combinedNamestart => isMatch(cableName, combinedNamestart))) {
+                    return 'red';
+                }
+                if (data.combinedCableNames.some(combinedName => isMatch(cableName, combinedName))) {
+                    return 'yellow';
+                }
+                return 'green';
+            }
+
+            cables.forEach(function (cable) {
+                var latitudeFrom = parseFloat(cable.latitudeFrom);
+                var longitudeFrom = parseFloat(cable.longitudeFrom);
+                var latitudeTo = parseFloat(cable.latitudeTo);
+                var longitudeTo = parseFloat(cable.longitudeTo);
+                var cableName = cable.cableName.toUpperCase(); // Convert cable name to uppercase for case-insensitive comparison
+
+                // Check if parsed values are valid numbers
+                if (isNaN(latitudeFrom) || isNaN(longitudeFrom) || isNaN(latitudeTo) || isNaN(longitudeTo)) {
+                    return; // Skip this cable if coordinates are invalid
+                }
+
+                var coordinates = [
+                    [longitudeFrom, latitudeFrom],
+                    [longitudeTo, latitudeTo]
+                ];
+
+                // Determine color based on matches
+                var color = determineColor(cableName);
+
+                // Add polyline to the map
+                L.polyline(coordinates, { color: color, weight: 2 }).addTo(map).bindPopup(cable.cableName);
+            });
+        }).getCableNames(); // Call the getCableNames function in your Google Apps Script
+    }
+
+
+
+    function initializeMap() {
+        google.script.run.withSuccessHandler(addMarkers).getSJCLocations();
+        google.script.run.withSuccessHandler(addPolylines).getSJCData();
+    }
+
+    // Call the initializeMap function when the page loads
+    window.onload = initializeMap;
+
+    // Function to update map data every 30 seconds
+    function updateMapData() {
+        google.script.run.withSuccessHandler(addMarkers).getSJCLocations();
+        google.script.run.withSuccessHandler(addPolylines).getSJCData();
+    }
+
+    updateMapData();
+
+    // Function to search for a cable system and filter the cables accordingly
+    function searchCableSystem() {
+        $('#spinnerModal').modal('show');
+        var searchTerm = document.getElementById("search-input").value; // Convert search term to uppercase for case-insensitive comparison
+
+        // Check if search term is not empty
+        if (searchTerm === "Show All Cable Systems") {
+
+
+            google.script.run.withSuccessHandler(addMarkers).getSJCLocations();
+            google.script.run.withSuccessHandler(addPolylines).getSJCData();
+
+            // Set the opacity of all cables to 0.2
+            setAllCablesOpacity(1);
+            $('#spinnerModal').modal('hide');
+
+        } else if (searchTerm !== "") {
+            // Update map data based on the search term
+            google.script.run.withSuccessHandler(addMarkers).getSJCLocationsByCableSystem(searchTerm);
+            google.script.run.withSuccessHandler(addPolylines).getSJCDataByCableSystem(searchTerm);
+
+            // Set the opacity of all cables to 0.2
+            setAllCablesOpacity(0.01);
+            $('#spinnerModal').modal('hide');
+        }
+    }
+
+    // Function to set the opacity of all cables on the map
+    function setAllCablesOpacity(opacity) {
+        map.eachLayer(function (layer) {
+            if (layer instanceof L.Polyline) {
+                layer.setStyle({ opacity: opacity });
+            }
+        });
+    }
+
+
+</script>

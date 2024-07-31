@@ -1,0 +1,141 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+  <base target="_top">
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+  <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" rel="stylesheet">
+
+
+
+  <link rel="stylesheet" href="https://unpkg.com/leaflet@1.6.0/dist/leaflet.css" />
+  <link rel="stylesheet" href="https://unpkg.com/leaflet-curved/src/leaflet-curved-path.css" />
+  <script src="https://unpkg.com/leaflet@1.6.0/dist/leaflet.js"></script>
+  <script src="https://unpkg.com/leaflet-curved/src/leaflet-curved-path.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
+
+
+
+  <!-- for datepicker ui -->
+  <link rel="stylesheet" href="https://code.jquery.com/ui/1.13.3/themes/base/jquery-ui.css">
+  <script src="https://code.jquery.com/ui/1.13.3/jquery-ui.js"></script>
+
+  <!-- for moment.js -->
+  <script src="https://momentjs.com/downloads/moment.js"></script>
+
+  <?!= HtmlService.createHtmlOutputFromFile('ModalStyle.html').getContent(); ?>
+  <?!= HtmlService.createHtmlOutputFromFile('Style.html').getContent(); ?>
+
+</head>
+
+<body>
+
+
+  <?!= HtmlService.createHtmlOutputFromFile('spinnerModal.html').getContent(); ?>
+  <div id="buttonsForbottom">
+    <button class="btn btn-light" onclick="openBottomPanel()" data-tooltip="View details"><i
+        class="fa fa-angle-double-up"></i></button>
+  </div>
+
+  <div id="bottom_date_picker">
+    <?!= HtmlService.createHtmlOutputFromFile('date_slider.html').getContent(); ?>
+  </div>
+
+  <div id="bottom_gradient">
+  </div>
+
+  <!--Top Left Bar-->
+  <div id="containerForButtonsTopLeft">
+    <button class="btn btn-light" onclick="redCables()" data-tooltip="Red Cables"><i class="fa fa-minus"
+        style="color: red;font-size: 30px;"></i></button>
+    <button class="btn btn-light" onclick="yellowCables()" data-tooltip="Yellow Cables"><i class="fa fa-minus"
+        style="color: yellow;font-size: 30px;"></i></button>
+    <button class="btn btn-light" onclick="greenCables()" data-tooltip="Green Cables"><i class="fa fa-minus"
+        style="color: green;font-size: 30px;"></i></button>
+  </div>
+
+  <div id="buttonsForCableEvents">
+    <button type="button" class="btn" data-tooltip="Add" data-bs-toggle="modal" data-bs-target="#addTicketModal">
+      <i class="fa fa-plus"></i>
+    </button>
+    <button class="btn btn-light" onclick="toggleYellowNotificationAdd()" data-tooltip="Notified"><i
+        class="fas fa-circle" style="color: yellow;"></i></button>
+    <button class="btn btn-light" onclick="toggleRedNotificationAdd()" data-tooltip="Started"><i class="fas fa-circle"
+        style="color: red;"></i></button>
+    <button class="btn btn-light" onclick="toggleGreenNotificationAdd()" data-tooltip="Ended"><i class="fas fa-circle"
+        style="color: green;"></i></button>
+  </div>
+
+  <div id="containerAsNavBar">
+    <div id="search-container" class="input-group">
+      <select class=" form-select" aria-label="Default select example" id="search-input">
+        <option value="Show All Cable Systems">Show All Cable Systems</option>
+        <option value="SEAUS">SEA-US</option>
+        <option value="SJC">SJC</option>
+        <option value="EAC">EAC</option>
+        <option value="C2C">C2C</option>
+        <option value="TGN">TGN-IA/TGN-P</option>
+      </select>
+
+      <div class="input-group-btn">
+        <button type="button" class="btn btn-primary" style="margin-right:15px;"
+          onclick="searchCableSystem()">Search</button>
+      </div>
+    </div>
+    <button id="MenuBtn" class="btn btn-light" onclick="openSidePanel()"><i
+        class="fas fa-bars fa-2x menu-icon"></i></button>
+  </div>
+
+  <?!= HtmlService.createHtmlOutputFromFile('AddPanel.html').getContent(); ?>
+
+
+  <div id="red-notif-panel">
+    <?!= HtmlService.createHtmlOutputFromFile('NotificationModal.html').getContent(); ?>
+  </div>
+
+  <div id="yellow-notif-panel">
+    <?!= HtmlService.createHtmlOutputFromFile('NotificationYellowModal.html').getContent(); ?>
+  </div>
+
+  <div id="green-notif-panel">
+    <?!= HtmlService.createHtmlOutputFromFile('NotificationGreenModal.html').getContent(); ?>
+  </div>
+
+
+  <?!= HtmlService.createHtmlOutputFromFile('NotificationModalRedDelete/Update.html').getContent(); ?>
+  <?!= HtmlService.createHtmlOutputFromFile('NotificationYellowModalDelete/Update.html').getContent(); ?>
+  <?!= HtmlService.createHtmlOutputFromFile('NotificationGreenDelete/Updated.html').getContent(); ?>
+  <?!= HtmlService.createHtmlOutputFromFile('UpdateModal.html').getContent(); ?>
+
+  <div id="bottom-panel">
+
+    <?!= HtmlService.createHtmlOutputFromFile('BottomPanel.html').getContent(); ?>
+
+  </div>
+
+  <!-- Side panel -->
+  <div id="side-panel">
+
+    <?!= HtmlService.createHtmlOutputFromFile('SidePanel.html').getContent(); ?>
+
+  </div>
+
+
+  <div id="map"></div>
+
+  <?!= HtmlService.createHtmlOutputFromFile('CableMapScript.html').getContent(); ?>
+  <?!= HtmlService.createHtmlOutputFromFile('addpolyline.html').getContent(); ?>
+  <?!= HtmlService.createHtmlOutputFromFile('CableFilterScript.html').getContent(); ?>
+
+
+  <!--SJC CABLE MAP-->
+
+
+
+
+
+
+
+</body>
+
+</html>

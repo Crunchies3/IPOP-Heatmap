@@ -1,0 +1,115 @@
+<div class="row">
+    <div class="col-2">
+        <input type="text" class="form-control w-100" id="calendar-input">
+        <input hidden name="selectedDate" type="text" class="form-control w-100" id="selected_date">
+    </div>
+    <div class="col-9">
+        <input type="range" class="form-range w-100" min="0" max="13" step="1" id="date_range" list="tick_marks"
+            value="0" onchange="storeValue(this.value)">
+        <datalist id="tick_marks">
+            <option id="1" value="" label=""></option>
+            <option id="2" value="" label=""></option>
+            <option id="3" value="" label=""></option>
+            <option id="4" value="" label=""></option>
+            <option id="5" value="" label=""></option>
+            <option id="6" value="" label=""></option>
+            <option id="7" value="" label=""></option>
+            <option id="8" value="" label=""></option>
+            <option id="9" value="" label=""></option>
+            <option id="10" value="" label=""></option>
+            <option id="11" value="" label=""></option>
+            <option id="12" value="" label=""></option>
+            <option id="13" value="" label=""></option>
+            <option id="14" value="" label=""></option>
+        </datalist>
+    </div>
+    <div class="col-1">
+        <div class="px-3">
+            <div class="align-items-center justify-content-center btn btn-primary w-100 " onclick="nextWeeks()">
+                <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="currentColor"
+                    class="bi bi-fast-forward-fill" viewBox="0 2 16 16">
+                    <path
+                        d="M7.596 7.304a.802.802 0 0 1 0 1.392l-6.363 3.692C.713 12.69 0 12.345 0 11.692V4.308c0-.653.713-.998 1.233-.696z" />
+                    <path
+                        d="M15.596 7.304a.802.802 0 0 1 0 1.392l-6.363 3.692C8.713 12.69 8 12.345 8 11.692V4.308c0-.653.713-.998 1.233-.696z" />
+                </svg>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+
+    $("#calendar-input").datepicker();
+
+    var today = new Date();
+    var lastDayOfSlider;
+    var newDate;
+
+    todayString = convertFullDatetoString(today);
+    setDateToSliderBar(todayString);
+
+    $("#calendar-input").change(function () {
+        document.getElementById("date_range").value = "0";
+        var currentDateOnCalendar = document.getElementById("calendar-input");
+        const dateString = currentDateOnCalendar.value;
+        const dateObject = moment(dateString, "MM/DD/YYYY").toDate();
+        dateformat = convertFullDatetoString(dateObject);
+        setDateToSliderBar(dateformat);
+        today = dateObject;
+        dateToSliderBar(today);
+    });
+
+    <!-- functions -->
+
+    function setDateToSliderBar(stringDate) {
+        var currentDate = document.getElementById('calendar-input');
+        currentDate.setAttribute('value', stringDate);
+        currentDate.value = stringDate;
+        dateToSliderBar(today);
+        document.getElementById('selected_date').setAttribute('value', stringDate);
+    }
+
+    function dateToSliderBar(date) {
+        for (let i = 1; i < 15; i++) {
+            newDate = addDays(date, i - 1);
+            document.getElementById(i).label = convertDayMonthToString(newDate);
+            document.getElementById(i).setAttribute('value', convertFullDatetoString(newDate));
+            document.getElementById(i).value = convertFullDatetoString(newDate);
+        }
+        lastDayOfSlider = newDate;
+    }
+
+    function addDays(date, days) {
+        const newDate = new Date(date);
+        newDate.setDate(date.getDate() + days);
+        return newDate;
+    }
+
+    function nextWeeks() {
+        document.getElementById("date_range").value = "0";
+        dateformat = convertFullDatetoString(lastDayOfSlider);
+        setDateToSliderBar(dateformat);
+        today = lastDayOfSlider;
+        dateToSliderBar(today);
+    }
+
+    function storeValue(rangeIndex) {
+        let stringDate = document.getElementById(parseInt(rangeIndex) + 1).value;
+        document.getElementById('selected_date').setAttribute('value', stringDate);
+    }
+
+    function convertFullDatetoString(date) {
+        let dd = String(date.getDate()).padStart(2, '0');
+        let mm = String(date.getMonth() + 1).padStart(2, '0');
+        let yyyy = date.getFullYear();
+        return mm + '/' + dd + '/' + yyyy;
+    }
+
+    function convertDayMonthToString(date) {
+        let dd = String(date.getDate()).padStart(2, '0');
+        let mm = String(date.getMonth() + 1).padStart(2, '0');
+        let yyyy = date.getFullYear();
+        return mm + '/' + dd;
+    }
+</script>

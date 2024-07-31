@@ -1,0 +1,229 @@
+<div id="alertContainer" class="position-fixed bottom-0 end-0 p-3" style="z-index: 11;">
+  <!-- Alert container goes here -->
+</div>
+
+
+<img id="imageBox" src="https://i.pinimg.com/originals/6d/9e/37/6d9e379122670f4ace48b7862d394f8f.png">
+<span class="close-btn" onclick="closeSidePanel()"><i class="fa fa-times" aria-hidden="true"></i></span>
+<h2>IPOP Heatmap_V2</h2>
+<br>
+<hr>
+<br>
+<div class="row">
+  <div class="col-md-4">
+    <label for="cableSystemName" class="col-form-label">Cable System:</label>
+  </div>
+
+  <div class="col">
+    <select id="cableSystemName" name="cableSystemName" class=" form-select" aria-label="Default select example"
+      style="margin-bottom:10px;">
+      <option selected>Select cable sys..</option>
+      <option value="SJC">SJC</option>
+      <option value="tgnia">TGNIA</option>
+      <option value="SEA-US">SEA-US</option>
+      <option value="EAC-C2C">EAC-C2C</option>
+    </select>
+  </div>
+
+
+</div>
+<div class="row">
+  <div class="col-md-4">
+    <label for="pointName" class="col-form-label">Point Name:</label>
+  </div>
+  <div class="col">
+    <input type="text" id="pointName" class="form-control" aria-describedby="pointname" style="margin-bottom:10px;">
+  </div>
+</div>
+
+<div class="row">
+  <div class="col-md-4">
+    <label for="inputLongitude" class="col-form-label">Longitude:</label>
+  </div>
+  <div class="col">
+    <input type="text" id="longitude" class="form-control" aria-describedby="longitude" style="margin-bottom:10px;">
+  </div>
+</div>
+
+<div class="row">
+  <div class="col-md-4">
+    <label for="latitude" class="col-form-label">Latitude:</label>
+  </div>
+  <div class="col">
+    <input type="text" id="latitude" class="form-control" aria-describedby="latitude" style="margin-bottom:10px;">
+  </div>
+</div>
+
+<div class="row">
+  <div class="col"></div>
+  <div class="col">
+    <button type="button" class="btn btn-primary" onclick="addData()">Add Data</button>
+  </div>
+</div>
+
+<br>
+<hr>
+
+<script>
+  function addData() {
+    var cableSystemName = document.getElementById('cableSystemName').value;
+    var pointName = document.getElementById('pointName').value;
+    var longitude = document.getElementById('longitude').value;
+    var latitude = document.getElementById('latitude').value;
+
+    if (!cableSystemName || !pointName || !longitude || !latitude) {
+      alert("Please fill in all required fields.");
+      return; // Stop further processing
+    }
+
+    $('#spinnerModal').modal('show');
+
+    // Convert longitude and latitude to numbers for calculations
+    longitude = parseFloat(longitude);
+    latitude = parseFloat(latitude);
+
+    // Check if longitude is negative and adjust by adding 360
+    if (longitude < 0) {
+      longitude += 360;
+    }
+
+    // Check if latitude is negative and adjust by adding 360
+    if (latitude < 0) {
+      latitude += 360;
+    }
+
+    // Save adjusted longitude and latitude to the sheet
+    google.script.run.withSuccessHandler(function () {
+      // Update dropdown options after adding data
+      updateDropdownOptions();
+      $('#spinnerModal').modal('hide');
+      showGoogleScriptAlert(pointName + ' added successfully. Refresh the page.', 'success');
+      // Optionally, clear the form fields after adding data
+      document.getElementById('cableSystemName').value = '';
+      document.getElementById('pointName').value = '';
+      document.getElementById('latitude').value = '';
+      document.getElementById('longitude').value = '';
+    }).addDataToSheet(cableSystemName, pointName, latitude, longitude);
+  }
+
+
+</script>
+
+
+<!-- next group -->
+<div class="row">
+  <div class="col-md-4">
+    <label for="cableSystem" class="col-form-label">Cable System:</label>
+  </div>
+
+  <div class="col">
+    <select id="cableSystem" name="cableSystem" class=" form-select" aria-label="Default select example"
+      style="margin-bottom:10px;">
+      <option selected>Select cable sys..</option>
+      <option value="SJC">SJC</option>
+      <option value="TGNIA">TGNIA</option>
+      <option value="SEA-US">SEA-US</option>
+      <option value="EAC-C2C">EAC-C2C</option>
+    </select>
+  </div>
+
+
+</div>
+<div class="row">
+  <div class="col-md-4">
+    <label for="cableName" class="col-form-label">Cable Name:</label>
+  </div>
+  <div class="col">
+    <input type="text" id="cableName" name="cableName" class="form-control" aria-describedby="cableName"
+      style="margin-bottom:10px;">
+  </div>
+</div>
+
+<div class="row">
+  <div class="col-md-4">
+    <label for="pointFrom" class="col-form-label">Point from:</label>
+  </div>
+  <div class="col">
+    <select id="pointFrom" name="pointFrom" class=" form-select" aria-label="Default select example"
+      style="margin-bottom:10px;">
+    </select>
+  </div>
+</div>
+
+<div class="row">
+  <div class="col-md-4">
+    <label for="pointTo" class="col-form-label">Point to:</label>
+  </div>
+  <div class="col">
+    <select id="pointTo" name="pointTo" class=" form-select" aria-label="Default select example"
+      style="margin-bottom:10px;">
+    </select>
+  </div>
+</div>
+
+<div class="row">
+  <div class="col"></div>
+  <div class="col">
+    <button type="button" class="btn btn-primary" onclick="addCableConnection()">Connect cables</button>
+  </div>
+</div>
+
+<br>
+<hr>
+
+<script>
+  // Fetch and populate dropdown options initially
+  updateDropdownOptions();
+
+  function updateDropdownOptions() {
+    var selectedCableSystem = document.getElementById('cableSystem').value;
+
+    google.script.run.withSuccessHandler(function (locations) {
+      var pointFromDropdown = document.getElementById('pointFrom');
+      var pointToDropdown = document.getElementById('pointTo');
+
+      // Clear existing options
+      pointFromDropdown.innerHTML = '';
+      pointToDropdown.innerHTML = '';
+
+      locations.forEach(function (location) {
+        if (location.cableSystem === selectedCableSystem) {
+          var option = new Option(location.pointName, location.pointName);
+          pointFromDropdown.add(option);
+          pointToDropdown.add(option.cloneNode(true));
+        }
+      });
+    }).getSJCLocations();
+  }
+  document.getElementById('cableSystem').addEventListener('change', function () {
+    updateDropdownOptions();
+  });
+
+
+  function addCableConnection() {
+
+    var pointFrom = document.getElementById('pointFrom').value;
+    var pointTo = document.getElementById('pointTo').value;
+    var cableName = document.getElementById('cableName').value;
+    var cableSystem = document.getElementById('cableSystem').value;
+
+    if (!pointFrom || !pointTo || !cableName || !cableSystem) {
+      alert("Please fill in all required fields.");
+      return; // Stop further processing
+    }
+
+    $('#spinnerModal').modal('show')
+
+    google.script.run.withSuccessHandler(function () {
+      // Update dropdown options after adding cable connection
+      updateDropdownOptions();
+
+      $('#spinnerModal').modal('hide');
+      showGoogleScriptAlert(cableName + ' added successfully. Refresh the page.', 'success');
+      // Optionally, reset the form after adding data
+      document.getElementById('pointFrom').value = '';
+      document.getElementById('pointTo').value = '';
+      document.getElementById('cableName').value = '';
+    }).addCableConnectionToSheet(pointFrom, pointTo, cableName, cableSystem);
+  }
+</script>

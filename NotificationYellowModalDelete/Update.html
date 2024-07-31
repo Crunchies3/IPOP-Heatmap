@@ -1,0 +1,248 @@
+<div id="alertContainer" class="position-fixed bottom-0 end-0 p-3" style="z-index: 11;">
+  <!-- Alert container goes here -->
+</div>
+
+<div id="selectedRowContainerYellow" class="modal fade" tabindex="-1" role="dialog">
+  <div class="modal-dialog custom-modal-width p-t-100" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title">Update Record | Notification</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <div class="modal-body">
+        <form id="yeditForm">
+          <!-- Input fields for each column -->
+          <div class="row">
+            <div class="col-md-6">
+              <label for="yedittroubleticket" class="form-label">Trouble Ticket</label>
+              <input type="text" class="form-control" id="yedittroubleticket" name="yedittroubleticket"
+                placeholder="Add Category" readonly>
+            </div>
+            <div class="col-md-6">
+              <label for="yeditcablesystem" class="form-label">Cable System</label>
+              <input type="text" class="form-control" id="yeditcablesystem" name="yeditcablesystem"
+                placeholder="Enter Cable System" readonly>
+            </div>
+          </div>
+          <br>
+          <div class="row">
+            <hr>
+            <div class="col-md-4">
+              <input type="checkbox" id="ymyCheckbox1" name="ymyCheckbox1" value="checked">
+              <label for="yeditndt" class="form-label">Notification Date and Time</label>
+              <input type="datetime-local" class="form-control" id="yeditndt" name="yeditndt"
+                placeholder="Enter Notification Date and Time">
+            </div>
+            <div class="col-md-4">
+              <input type="checkbox" id="ymyCheckbox2" name="ymyCheckbox2" value="checked" style="display: none;">
+              <label for="yeditsdt" class="form-label">Start Date and Time (UTC)</label>
+              <input type="datetime-local" class="form-control" id="yeditsdt" name="yeditsdt"
+                placeholder="Enter Start Date and Time">
+            </div>
+            <div class="col-md-4">
+              <input type="checkbox" id="ymyCheckbox3" name="ymyCheckbox3" value="checked" style="display: none;">
+              <label for="yeditedt" class="form-label">End Date and Time (UTC)</label>
+              <input type="datetime-local" class="form-control" id="yeditedt" name="yeditedt"
+                placeholder="Enter End Date and Time">
+            </div>
+          </div>
+          <br>
+          <div class="row">
+            <hr>
+            <div class="col-md-2">
+              <label for="yeditoutagedur" class="form-label">Outage Duration</label>
+              <input type="text" class="form-control" id="yeditoutagedur" name="yeditoutagedur"
+                placeholder="Enter Outage Duration" readonly>
+            </div>
+            <div class="col-md-2">
+              <label for="yeditaid" class="form-label">Activity Impact Duration</label>
+              <input type="text" class="form-control" id="yeditaid" name="yeditaid"
+                placeholder="Enter Activity Impact Duration" readonly>
+            </div>
+            <div class="col-md-2">
+              <label for="yeditimpact">Impact:</label>
+              <select class=" form-select" aria-label="Default select example" style="margin-bottom:10px;"
+                id="yeditimpact">
+                <option selected> </option>
+                <option value="2-5 Bearers">2-5 Bearers</option>
+                <option value="6-10 Bearers">6-10 Bearers</option>
+                <option value="11 and More">11 and More</option>
+                <option value="All Bearers">All Bearers</option>
+              </select>
+            </div>
+            <div class="col-md-2">
+              <label for="yeditlocation">Location:</label>
+              <select class=" form-select" aria-label="Default select example" style="margin-bottom:10px;"
+                id="yeditlocation">
+                <option selected> </option>
+                <option value="Terrestial/Dry Segment">Terrestial/Dry Segment</option>
+                <option value="Wet Segment">Wet Segment</option>
+                <option value="Undetermined">Undetermined</option>
+                <option value="Backhaul">Backhaul</option>
+              </select>
+            </div>
+            <br>
+            <div class="col-md-2">
+              <label for="yeditinctype">Incident Type:</label>
+              <select class=" form-select" aria-label="Default select example" style="margin-bottom:10px;"
+                id="yeditinctype">
+                <option selected> </option>
+                <option value="Outage">Outage</option>
+                <option value="Planned Activity">Planned Activity</option>
+              </select>
+            </div>
+          </div>
+          <br>
+          <div class="row">
+            <hr>
+            <div class="col-md-4">
+              <label for="yeditas1" class="form-label">Affected Segment 1</label>
+              <select class="form-select" id="yeditas1" name="yeditas1">
+                <option value="Japan">All Japan Traffic</option>
+                <option value="Philippines">All Philippine Traffic</option>
+                <option value="Singapore">All Singapore Traffic</option>
+                <option value="USA">All USA Traffic</option>
+                <option value="Guam-USA">Guam - USA</option>
+                <option value="Hongkong-Japan">Hong Kong - Japan</option>
+                <option value="Hongkong-Singapore">Hong Kong - Singapore</option>
+                <option value="Japan-USA">Japan - USA</option>
+                <option value="Philippines-Guam">Philippine - Guam</option>
+                <option value="Philippines-Hong Kong">Philippine - Hong Kong</option>
+                <option value="Philippines-Indonesia">Philippine - Indonesia</option>
+                <option value="Philippines-Japan">Philippine - Japan</option>
+                <option value="Philippines-Singapore">Philippine - Singapore</option>
+                <option value="Philippines-Taipei">Philippine - Taipei</option>
+                <option value="Philippines-USA">Philippine - USA</option>
+                <option value="Singapore-apan">Singapore - Japan</option>
+              </select>
+            </div>
+            <div class="col-md-4">
+              <label for="yeditas2" class="form-label">Affected Segment 2</label>
+              <select class="form-select" id="yeditas2" name="yeditas2">
+                <option value="Japan">All Japan Traffic</option>
+                <option value="Philippines">All Philippine Traffic</option>
+                <option value="Singapore">All Singapore Traffic</option>
+                <option value="USA">All USA Traffic</option>
+                <option value="Guam-USA">Guam - USA</option>
+                <option value="Hongkong-Japan">Hong Kong - Japan</option>
+                <option value="Hongkong-Singapore">Hong Kong - Singapore</option>
+                <option value="Japan-USA">Japan - USA</option>
+                <option value="Philippines-Guam">Philippine - Guam</option>
+                <option value="Philippines-Hong Kong">Philippine - Hong Kong</option>
+                <option value="Philippines-Indonesia">Philippine - Indonesia</option>
+                <option value="Philippines-Japan">Philippine - Japan</option>
+                <option value="Philippines-Singapore">Philippine - Singapore</option>
+                <option value="Philippines-Taipei">Philippine - Taipei</option>
+                <option value="Philippines-USA">Philippine - USA</option>
+                <option value="Singapore-apan">Singapore - Japan</option>
+              </select>
+            </div>
+            <div class="col-md-4">
+              <label for="yeditas3" class="form-label">Affected Segment 3</label>
+              <select class="form-select" id="yeditas3" name="yeditas3">
+                <option value="Japan">All Japan Traffic</option>
+                <option value="Philippines">All Philippine Traffic</option>
+                <option value="Singapore">All Singapore Traffic</option>
+                <option value="USA">All USA Traffic</option>
+                <option value="Guam-USA">Guam - USA</option>
+                <option value="Hongkong-Japan">Hong Kong - Japan</option>
+                <option value="Hongkong-Singapore">Hong Kong - Singapore</option>
+                <option value="Japan-USA">Japan - USA</option>
+                <option value="Philippines-Guam">Philippine - Guam</option>
+                <option value="Philippines-Hong Kong">Philippine - Hong Kong</option>
+                <option value="Philippines-Indonesia">Philippine - Indonesia</option>
+                <option value="Philippines-Japan">Philippine - Japan</option>
+                <option value="Philippines-Singapore">Philippine - Singapore</option>
+                <option value="Philippines-Taipei">Philippine - Taipei</option>
+                <option value="Philippines-USA">Philippine - USA</option>
+                <option value="Singapore-apan">Singapore - Japan</option>
+              </select>
+            </div>
+          </div>
+          <br>
+          <div class="row">
+            <hr>
+            <div class="col-md-3">
+              <label for="yeditrootchl">Root Cause (High Level):</label>
+              <select class="form-select" aria-label="Default select example" style="margin-bottom: 10px;"
+                id="yeditrootchl">
+                <option selected></option>
+                <option value="BMH Issue">BMH Issue</option>
+                <option value="Cable Fault">Cable Fault</option>
+                <option value="Card Failure">Card Failure</option>
+                <option value="Configuration Issue">Configuration Issue</option>
+                <option value="Fan Issue">Fan Issue</option>
+                <option value="Force Majeure">Force Majeure</option>
+                <option value="Government/Private Project">Government/Private Project</option>
+                <option value="Human Error">Human Error</option>
+                <option value="PFE Issue">PFE Issue</option>
+                <option value="Physical Connection">Physical Connection</option>
+                <option value="Planned Maintenance">Planned Maintenance</option>
+                <option value="Shunt Fault">Shunt Fault</option>
+                <option value="Subsea Equipment Fault">Subsea Equipment Fault</option>
+                <option value="Unknown">Unknown</option>
+              </select>
+            </div>
+            <div class="col-md-3">
+              <label for="yeditrootcsi" class="form-label">Root Cause (Specific - Internal)</label>
+              <textarea type="text" class="form-control" id="yeditrootcsi" name="yeditrootcsi"
+                placeholder="Enter Root Cause (Specific - Internal)"></textarea>
+            </div>
+            <div class="col-md-3">
+              <label for="yeditaddrem" class="form-label">Additional Remarks (Internal)</label>
+              <textarea type="text" class="form-control" id="yeditaddrem" name="yeditaddrem"
+                placeholder="Enter Additional Remarks (Internal)"></textarea>
+            </div>
+            <div class="col-md-3">
+              <label for="yeditmoyr" class="form-label">Month Year</label>
+              <input type="text" class="form-control" id="yeditmoyr" name="yeditmoyr" placeholder="Enter Month Year"
+                readonly>
+            </div>
+          </div>
+        </form>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-outline-danger" id="ydeleteRowBtn">Delete</button>
+        <button type="button" class="btn btn-primary" id="ysaveChangesBtn">Save Changes</button>
+        <button type="button" class="btn btn-primary" id="ysendtoStartDateBtn">Send to Start Date</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+  //Checkbox
+  document.addEventListener('DOMContentLoaded', function () {
+    var checkbox1 = document.getElementById('ymyCheckbox1');
+    var checkbox2 = document.getElementById('ymyCheckbox2');
+    var checkbox3 = document.getElementById('ymyCheckbox3');
+
+    var dateTimeInput1 = document.getElementById('yeditndt');
+    var dateTimeInput2 = document.getElementById('yeditsdt');
+    var dateTimeInput3 = document.getElementById('yeditedt');
+
+    // Function to enable or disable datetime inputs based on checkbox state
+    function toggleDateTimeInput(checkbox, dateTimeInput) {
+      if (checkbox.checked) {
+        dateTimeInput.disabled = false; // Enable datetime input
+      } else {
+        dateTimeInput.disabled = true; // Disable datetime input
+      }
+    }
+
+    // Add event listeners to checkboxes
+    checkbox1.addEventListener('change', function () {
+      toggleDateTimeInput(checkbox1, dateTimeInput1);
+    });
+
+
+
+    checkbox3.addEventListener('change', function () {
+      toggleDateTimeInput(checkbox3, dateTimeInput3);
+    });
+
+    // Initial setup based on checkbox state
+    toggleDateTimeInput(checkbox1, dateTimeInput1);
+    toggleDateTimeInput(checkbox3, dateTimeInput3);
+  });
+</script>

@@ -1,0 +1,197 @@
+<div id="selectedRowContainer" class="modal fade" tabindex="-1" role="dialog">
+  <div class="modal-dialog custom-modal-width p-t-100" role="document">
+    <div class="modal-content">
+
+      <div class="modal-header">
+        <h5 class="modal-title">Update Record | IPOP HEATMAP</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+
+      <div class="modal-body">
+        <form id="editForm">
+          <!-- Input fields for each column -->
+
+          <div class="row">
+
+            <div class="col-md-6">
+              <label for="edittroubleticket" class="form-label">Trouble Ticket</label>
+              <input type="text" class="form-control" id="edittroubleticket" name="edittroubleticket"
+                placeholder="Add Category">
+            </div>
+
+            <div class="col-md-6">
+              <label for="editcablesystem" class="form-label">Cable System</label>
+              <input type="text" class="form-control" id="editcablesystem" name="editcablesystem"
+                placeholder="Enter Cable System">
+            </div>
+
+          </div>
+
+          <br>
+
+          <div class="row">
+
+            <div class="col-md-4">
+              <input type="checkbox" id="myCheckbox1" name="myCheckbox1" value="checked">
+              <label for="editndt" class="form-label">Notification Date and Time</label>
+              <input type="datetime-local" class="form-control" id="editndt" name="editndt"
+                placeholder="Enter Notification Date and Time">
+            </div>
+
+            <div class="col-md-4">
+              <input type="checkbox" id="myCheckbox2" name="myCheckbox2" value="checked">
+              <label for="editsdt" class="form-label">Start Date and Time (UTC)</label>
+              <input type="datetime-local" class="form-control" id="editsdt" name="editsdt"
+                placeholder="Enter Start Date and Time">
+            </div>
+
+            <div class="col-md-4">
+              <input type="checkbox" id="myCheckbox3" name="myCheckbox3" value="checked">
+              <label for="editedt" class="form-label">End Date and Time (UTC)</label>
+              <input type="datetime-local" class="form-control" id="editedt" name="editedt"
+                placeholder="Enter End Date and Time">
+            </div>
+
+          </div>
+
+          <div class="row">
+
+            <div class="col-md-4">
+              <label for="editoutagedur" class="form-label">Outage Duration</label>
+              <input type="text" class="form-control" id="editoutagedur" name="editoutagedur"
+                placeholder="Enter Outage Duration" readonly>
+            </div>
+
+            <div class="col-md-4">
+              <label for="editimpact" class="form-label">Impact</label>
+              <input type="text" class="form-control" id="editimpact" name="editimpact" placeholder="Enter Impact">
+            </div>
+
+            <div class="col-md-4">
+              <label for="editlocation" class="form-label">Location</label>
+              <textarea type="text" class="form-control" id="editlocation" name="editlocation"
+                placeholder="Enter Location"></textarea>
+            </div>
+
+
+          </div>
+
+          <div class="row">
+
+            <div class="col-md-4">
+              <label for="editaid" class="form-label">Activity Impact Duration</label>
+              <input type="text" class="form-control" id="editaid" name="editaid"
+                placeholder="Enter Activity Impact Duration" readonly>
+            </div>
+
+            <div class="col-md-4">
+              <label for="editinctype" class="form-label">Incident Type</label>
+              <input type="text" class="form-control" id="editinctype" name="editinctype"
+                placeholder="Enter Incident Type">
+            </div>
+
+            <div class="col-md-4">
+              <label for="editas1" class="form-label">Affected Segment 1</label>
+              <input type="text" class="form-control" id="editas1" name="editas1"
+                placeholder="Enter Affected Segment 1"></input>
+            </div>
+
+          </div>
+
+          <br>
+
+          <div class="row">
+
+            <div class="col-md-4">
+              <label for="editas2" class="form-label">Affected Segment 2</label>
+              <input type="text" class="form-control" id="editas2" name="editas2"
+                placeholder="Enter Affected Segment 2">
+            </div>
+
+            <div class="col-md-4">
+              <label for="editas3" class="form-label">Affected Segment 3</label>
+              <input type="text" class="form-control" id="editas3" name="editas3"
+                placeholder="Enter Affected Segment 3">
+            </div>
+
+            <div class="col-md-4">
+              <label for="editrootchl" class="form-label">Root Cause (High Level)</label>
+              <textarea type="text" class="form-control" id="editrootchl" name="editrootchl"
+                placeholder="Enter Root Cause (High Level)"></textarea>
+            </div>
+
+          </div>
+
+          <div class="row">
+
+            <div class="col-md-4">
+              <label for="editrootcsi" class="form-label">Root Cause (Specific - Internal)</label>
+              <textarea type="text" class="form-control" id="editrootcsi" name="editrootcsi"
+                placeholder="Enter Root Cause (Specific - Internal)"></textarea>
+            </div>
+
+            <div class="col-md-4">
+              <label for="editaddrem" class="form-label">Additional Remarks (Internal)</label>
+              <textarea type="text" class="form-control" id="editaddrem" name="editaddrem"
+                placeholder="Enter Additional Remarks (Internal)"></textarea>
+            </div>
+
+            <div class="col-md-4">
+              <label for="editmoyr" class="form-label">Month Year</label>
+              <input type="text" class="form-control" id="editmoyr" name="editmoyr" placeholder="Enter Month Year"
+                readonly>
+            </div>
+
+          </div>
+
+
+        </form>
+      </div>
+
+      <div class="modal-footer">
+        <button type="button" class="btn btn-outline-danger" id="deleteRowBtn">Delete</button>
+        <button type="button" class="btn btn-primary" id="saveChangesBtn">Save Changes</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+  //Checkbox
+  document.addEventListener('DOMContentLoaded', function () {
+    var checkbox1 = document.getElementById('myCheckbox1');
+    var checkbox2 = document.getElementById('myCheckbox2');
+    var checkbox3 = document.getElementById('myCheckbox3');
+
+    var dateTimeInput1 = document.getElementById('editndt');
+    var dateTimeInput2 = document.getElementById('editsdt');
+    var dateTimeInput3 = document.getElementById('editedt');
+
+    // Function to enable or disable datetime inputs based on checkbox state
+    function toggleDateTimeInput(checkbox, dateTimeInput) {
+      if (checkbox.checked) {
+        dateTimeInput.disabled = false; // Enable datetime input
+      } else {
+        dateTimeInput.disabled = true; // Disable datetime input
+      }
+    }
+
+    // Add event listeners to checkboxes
+    checkbox1.addEventListener('change', function () {
+      toggleDateTimeInput(checkbox1, dateTimeInput1);
+    });
+
+    checkbox2.addEventListener('change', function () {
+      toggleDateTimeInput(checkbox2, dateTimeInput2);
+    });
+
+    checkbox3.addEventListener('change', function () {
+      toggleDateTimeInput(checkbox3, dateTimeInput3);
+    });
+
+    // Initial setup based on checkbox state
+    toggleDateTimeInput(checkbox1, dateTimeInput1);
+    toggleDateTimeInput(checkbox2, dateTimeInput2);
+    toggleDateTimeInput(checkbox3, dateTimeInput3);
+  });
+</script>

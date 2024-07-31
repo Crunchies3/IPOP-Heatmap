@@ -1,0 +1,157 @@
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<script src="https://cdn.datatables.net/1.11.5/js/jquery.dataTables.js"></script>
+<script src="https://cdn.datatables.net/1.11.5/js/dataTables.bootstrap5.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0-beta2/dist/js/bootstrap.bundle.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.29.1/moment.min.js"></script>
+
+
+<script>
+
+
+  // Function to show the selected row data in a modal
+  function showSelectedRowData(rowData, rowIndex) {
+    // Set the values of input boxes based on the selected row data
+    $('#edittroubleticket').val(rowData[0]);
+    $('#editcablesystem').val(rowData[1]);
+    $('#editndt').val(rowData[2]);
+    $('#editsdt').val(rowData[3]);
+    $('#editedt').val(rowData[4]);
+    $('#editoutagedur').val(rowData[5]);
+    $('#editaid').val(rowData[6]);
+    $('#editimpact').val(rowData[7]);
+    $('#editinctype').val(rowData[8]);
+    $('#editas1').val(rowData[9]);
+    $('#editas2').val(rowData[10]);
+    $('#editas3').val(rowData[11]);
+    $('#editlocation').val(rowData[12]);
+    $('#editrootchl').val(rowData[13]);
+    $('#editrootcsi').val(rowData[14]);
+    $('#editaddrem').val(rowData[15]);
+    $('#editmoyr').val(rowData[16]);
+
+    // Add click event to "Save Changes" button
+    $('#saveChangesBtn').off().on('click', function () {
+      // Get updated values from input boxes
+
+      var updatedData = [
+        $('#edittroubleticket').val(),
+        $('#editcablesystem').val(),
+        $('#editndt').val(),
+        $('#editsdt').val(),
+        $('#editedt').val(),
+        $('#editoutagedur').val(),
+        $('#editaid').val(),
+        $('#editimpact').val(),
+        $('#editinctype').val(),
+        $('#editas1').val(),
+        $('#editas2').val(),
+        $('#editas3').val(),
+        $('#editlocation').val(),
+        $('#editrootchl').val(),
+        $('#editrootcsi').val(),
+        $('#editaddrem').val(),
+        $('#editmoyr').val()
+      ];
+
+      // Call the server-side function to update data in the sheet
+      google.script.run.withSuccessHandler(function (result) {
+        if (result === 'success') {
+          // Data updated successfully    
+          console.log('Data updated in the sheet:', result);
+
+          $('#selectedRowContainer').modal('hide');
+
+          // Update the DataTable with the edited data
+          var table = $('#dtBasicExample').DataTable();
+          var rowNode = table.row(rowIndex).node();
+          for (var k = 0; k < updatedData.length; k++) {
+            table.cell(rowNode, k).data(updatedData[k]);
+          }
+
+          // Show success alert
+          showGoogleScriptAlert('Record updated successfully. Refresh the page.', 'success');
+        } else {
+          // Data update failed
+          console.error('Error updating data:', result);
+          $('#spinnerModal').modal('hide');
+          showGoogleScriptAlert('Failed to update record. Please try again.', 'error');
+        }
+      }).updateRowMI('MAJOR INCIDENTS', rowData[0], updatedData);
+    });
+
+    // Add click event to "Delete" button
+    $('#deleteRowBtn').off().on('click', function () {
+      // Call the server-side function to delete data from the sheet
+      google.script.run.withSuccessHandler(function (result) {
+        if (result === 'success') {
+          // Data deleted successfully
+          // Show success alert
+          showGoogleScriptAlert('Record deleted successfully. Refresh the page.', 'success');
+          console.log('Data deleted from the sheet:', result);
+
+          // Remove the DataTable row for the deleted data
+          table.row(rowIndex).remove().draw();
+
+          // Close the modal
+          $('#selectedRowContainer').modal('hide');
+
+        } else {
+          // Data deletion failed
+          console.error('Error deleting data:', result);
+
+          // Show error alert
+          showGoogleScriptAlert('Failed to delete record. Please try again.', 'error');
+        }
+      }).deleteRowMI('MAJOR INCIDENTS', rowData[0]);
+    });
+
+    $('#selectedRowContainer').modal('show');
+  }
+
+  // Execute the Google Script function to load DataTables after the page has fully loaded
+  google.script.run.withSuccessHandler(function (data) {
+    console.log('Data received:', data); // Log the data to the console for debugging
+
+    // Destroy existing DataTable instance if it exists
+    if ($.fn.DataTable.isDataTable('#dtBasicExample')) {
+      $('#dtBasicExample').DataTable().destroy();
+    }
+
+    if (data && data.length > 0) {
+      table = $('#dtBasicExample').DataTable({
+        data: data,
+        columns: [
+          { title: "Trouble Ticket" },
+          { title: "Cable System" },
+          { title: "Notification Date and Time" },
+          { title: "Start Date and Time (UTC)" },
+          { title: "End Date and Time (UTC)" },
+          { title: "Outage Duration" },
+          { title: "Activity Impact Duration" },
+          { title: "Impact" },
+          { title: "Incident Type" },
+          { title: "Affected Segment 1" },
+          { title: "Affected Segment 2" },
+          { title: "Affected Segment 3" },
+          { title: "Location" },
+          { title: "Root Cause (High Level)" },
+          { title: "Root Cause (Specific - Internal)" },
+          { title: "Additional Remarks (Internal)" },
+          { title: "Month Year" }
+        ],
+        scrollY: 600,
+        scrollX: true,
+        fixedColumns: {
+          leftColumns: 2
+        },
+        rowCallback: function (row, data, index) {
+          // Add click event to each row
+          $(row).on('click', function () {
+            showSelectedRowData(data, index);
+          });
+        }
+      });
+    }
+  }).getMIForDataTable('MAJOR INCIDENTS');
+
+</script>

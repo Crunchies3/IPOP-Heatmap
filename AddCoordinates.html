@@ -1,0 +1,139 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <base target="_top">
+</head>
+
+<body>
+    <form id="addForm">
+        <label for="cableSystemName">Cable System Name:</label>
+        <select id="cableSystemName" name="cableSystemName">
+            <option value="SJC">SJC</option>
+            <option value="TGNIA">TGNIA</option>
+            <!-- Add more options as needed -->
+        </select>
+        <br><br>
+        <label for="pointName">Point Name:</label>
+        <input type="text" id="pointName" name="pointName"><br><br>
+
+        <label for="longitude">Longitude:</label>
+        <input type="text" id="longitude" name="longitude"><br><br>
+
+        <label for="latitude">Latitude:</label>
+        <input type="text" id="latitude" name="latitude"><br><br>
+
+        <input type="button" value="Add Data" onclick="addData()">
+    </form>
+
+    <script>
+        function addData() {
+            var cableSystemName = document.getElementById('cableSystemName').value;
+            var pointName = document.getElementById('pointName').value;
+            var longitude = document.getElementById('longitude').value;
+            var latitude = document.getElementById('latitude').value;
+
+            // Convert longitude and latitude to numbers for calculations
+            longitude = parseFloat(longitude);
+            latitude = parseFloat(latitude);
+
+            // Check if longitude is negative and adjust by adding 360
+            if (longitude < 0) {
+                longitude += 360;
+            }
+
+            // Check if latitude is negative and adjust by adding 360
+            if (latitude < 0) {
+                latitude += 360;
+            }
+
+            // Save adjusted longitude and latitude to the sheet
+            google.script.run.withSuccessHandler(function () {
+                // Update dropdown options after adding data
+                updateDropdownOptions();
+
+                // Optionally, clear the form fields after adding data
+                document.getElementById('cableSystemName').value = '';
+                document.getElementById('pointName').value = '';
+                document.getElementById('latitude').value = '';
+                document.getElementById('longitude').value = '';
+            }).addDataToSheet(cableSystemName, pointName, longitude, latitude);
+        }
+
+
+    </script>
+
+
+    <form id="pointConnectionForm">
+
+        <label for="cableSystem">Cable System Name:</label>
+        <select id="cableSystem" name="cableSystem">
+            <option value="SJC">SJC</option>
+            <option value="TGNIA">TGNIA</option>
+            <!-- Add more options as needed -->
+        </select>
+        <br><br>
+        <label for="cableName">Cable Name:</label>
+        <input type="text" id="cableName" name="cableName"><br><br>
+
+        <label for="pointFrom">Point From:</label>
+        <select id="pointFrom" name="pointFrom"></select><br><br>
+
+        <label for="pointTo">Point To:</label>
+        <select id="pointTo" name="pointTo"></select><br><br>
+
+
+
+        <input type="button" value="Add Cable Connection" onclick="addCableConnection()">
+    </form>
+
+    <script>
+        // Fetch and populate dropdown options initially
+        updateDropdownOptions();
+
+        function updateDropdownOptions() {
+            var selectedCableSystem = document.getElementById('cableSystem').value;
+
+            google.script.run.withSuccessHandler(function (locations) {
+                var pointFromDropdown = document.getElementById('pointFrom');
+                var pointToDropdown = document.getElementById('pointTo');
+
+                // Clear existing options
+                pointFromDropdown.innerHTML = '';
+                pointToDropdown.innerHTML = '';
+
+                locations.forEach(function (location) {
+                    if (location.cableSystem === selectedCableSystem) {
+                        var option = new Option(location.pointName, location.pointName);
+                        pointFromDropdown.add(option);
+                        pointToDropdown.add(option.cloneNode(true));
+                    }
+                });
+            }).getSJCLocations();
+        }
+        document.getElementById('cableSystem').addEventListener('change', function () {
+            updateDropdownOptions();
+        });
+
+
+        function addCableConnection() {
+            var pointFrom = document.getElementById('pointFrom').value;
+            var pointTo = document.getElementById('pointTo').value;
+            var cableName = document.getElementById('cableName').value;
+            var cableSystem = document.getElementById('cableSystem').value;
+
+            google.script.run.withSuccessHandler(function () {
+                // Update dropdown options after adding cable connection
+                updateDropdownOptions();
+
+                // Optionally, reset the form after adding data
+                document.getElementById('pointFrom').value = '';
+                document.getElementById('pointTo').value = '';
+                document.getElementById('cableName').value = '';
+            }).addCableConnectionToSheet(pointFrom, pointTo, cableName, cableSystem);
+        }
+    </script>
+
+</body>
+
+</html>

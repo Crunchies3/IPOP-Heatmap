@@ -1,0 +1,482 @@
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Roboto:ital,wght@0,100;0,300;0,400;0,500;0,700;0,900;1,100;1,300;1,400;1,500;1,700;1,900&display=swap');
+
+  body,
+  html {
+    height: 100%;
+    font-family: "Roboto";
+  }
+
+  .point-icon {
+    /* Define styles for the container of the point symbol */
+  }
+
+  .point-marker {
+    /* Define styles for the point symbol itself */
+    width: 7px;
+    /* Smaller size */
+    height: 7px;
+    /* Smaller size */
+    background-color: rgba(255, 255, 255, 0.2);
+    /* White inside */
+    border: 1px solid rgba(0, 0, 0, 0.2);
+    /* Black border */
+    border-radius: 80%;
+    /* Round shape */
+    position: relative;
+    /* Position relative for centering */
+    top: 0px;
+    /* Adjust position to center vertically */
+    left: 0px;
+    /* Adjust position to center horizontally */
+
+  }
+
+  #map {
+    height: 100vh;
+    width: 100%;
+    position: relative;
+    /* Set position relative for the map container */
+    z-index: 0;
+    /* Set lower z-index for the map */
+  }
+
+  #containerAsNavBar {
+    position: absolute;
+    /* Position the search container absolutely */
+    top: 25px;
+    /* Adjust top position as needed */
+    right: 30px;
+    /* Adjust right position as needed */
+    z-index: 1000;
+    /* Ensure search container is above the map */
+    width: 380px;
+    /* Set width to auto */
+    display: flex;
+    /* Use flexbox for layout */
+    align-items: center;
+    /* Center items vertically */
+  }
+
+  #search-container {
+    /* Add margin between search and menu buttons */
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+    /* Add drop shadow */
+  }
+
+  #buttonsForCableEvents {
+    position: absolute;
+    /* Position the buttons absolutely */
+    bottom: 30px;
+    /* Adjust bottom position as needed */
+    right: 30px;
+    /* Adjust right position as needed */
+    z-index: 1000;
+    /* Ensure buttons are above the map */
+
+  }
+
+  #buttonsForbottom {
+    position: absolute;
+    bottom: 100px;
+    /* Adjust bottom position as needed */
+    left: 50%;
+    /* Set left to 50% to center horizontally */
+    transform: translateX(-50%);
+    /* Translate back by half of its own width */
+    z-index: 1000;
+    /* Ensure buttons are above the map */
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+    /* Add drop shadow */
+  }
+
+  #buttonsForbottom button {
+    position: relative;
+    /* Add position relative to make it the anchor for the tooltip */
+  }
+
+  #containerForButtonsTopLeft {
+    position: absolute;
+    /* Position the container absolutely */
+    top: 10px;
+    /* Adjust top position as needed */
+    left: 50px;
+    /* Adjust left position to move it to the top left corner */
+    z-index: 1000;
+    /* Ensure container is above the map */
+    width: 380px;
+    /* Set width to auto */
+    display: flex;
+    /* Use flexbox for layout */
+    align-items: center;
+    /* Center items vertically */
+  }
+
+
+  #containerForButtonsTopLeft button {
+    margin-right: 5px;
+    /* Add some space between buttons */
+    display: block;
+    /* Make buttons display as blocks */
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+    /* Add drop shadow */
+  }
+
+
+
+
+  #buttonsForbottom button:hover::after {
+    content: attr(data-tooltip);
+    /* Set the content of the pseudo-element to the value of data-tooltip attribute */
+    position: absolute;
+    bottom: calc(100% + 5px);
+    /* Position the tooltip above the button with some space */
+    left: 50%;
+    transform: translateX(-50%);
+    /* Center the tooltip horizontally */
+    padding: 5px;
+    background-color: rgba(0, 0, 0, 0.8);
+    color: #fff;
+    border-radius: 5px;
+    font-size: 12px;
+    white-space: nowrap;
+    margin-bottom: 5px;
+    /* Add some space between the tooltip and the button */
+  }
+
+
+
+
+  #buttonsForCableEvents button {
+    margin-bottom: 5px;
+    /* Add some space between buttons */
+    display: block;
+    /* Make buttons display as blocks */
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+    /* Add drop shadow */
+  }
+
+  #buttonsForCableEvents button:nth-child(1):hover::after {
+    content: attr(data-tooltip);
+    /* Set the content of the pseudo-element to the value of data-tooltip attribute */
+    position: absolute;
+    top: 50%;
+    /* Adjust vertically */
+    right: calc(100% + 5px);
+    /* Position relative to the right side of the button with 5px space */
+    transform: translateY(-80px);
+    padding: 5px;
+    background-color: rgba(0, 0, 0, 0.8);
+    color: #fff;
+    border-radius: 5px;
+    font-size: 12px;
+    white-space: nowrap;
+  }
+
+  #buttonsForCableEvents button:nth-child(2):hover::after {
+    content: attr(data-tooltip);
+    /* Set the content of the pseudo-element to the value of data-tooltip attribute */
+    position: absolute;
+    top: 50%;
+    /* Adjust vertically */
+    right: calc(100% + 5px);
+    /* Position relative to the right side of the button with 5px space */
+    transform: translateY(-40px);
+    padding: 5px;
+    background-color: rgba(0, 0, 0, 0.8);
+    color: #fff;
+    border-radius: 5px;
+    font-size: 12px;
+    white-space: nowrap;
+  }
+
+  #buttonsForCableEvents button:nth-child(3):hover::after {
+    content: attr(data-tooltip);
+    /* Set the content of the pseudo-element to the value of data-tooltip attribute */
+    position: absolute;
+    top: 50%;
+    /* Adjust vertically */
+    right: calc(100% + 5px);
+    /* Position relative to the right side of the button with 5px space */
+    transform: translateY(5px);
+    padding: 5px;
+    background-color: rgba(0, 0, 0, 0.8);
+    color: #fff;
+    border-radius: 5px;
+    font-size: 12px;
+    white-space: nowrap;
+  }
+
+  #buttonsForCableEvents button:nth-child(4):hover::after {
+    content: attr(data-tooltip);
+    /* Set the content of the pseudo-element to the value of data-tooltip attribute */
+    position: absolute;
+    top: 50%;
+    /* Adjust vertically */
+    right: calc(100% + 5px);
+    /* Position relative to the right side of the button with 5px space */
+    transform: translateY(50px);
+    padding: 5px;
+    background-color: rgba(0, 0, 0, 0.8);
+    color: #fff;
+    border-radius: 5px;
+    font-size: 12px;
+    white-space: nowrap;
+  }
+
+
+
+  .menu-icon {
+    cursor: pointer;
+  }
+
+  /* Style for the menu icon */
+  #MenuBtn {
+    height: 40px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.2);
+    /* Add drop shadow */
+  }
+
+  /* Style for the side panel */
+  #side-panel {
+    position: fixed;
+    top: 0;
+    right: -400px;
+    /* Initially hide the panel */
+    width: 400px;
+    height: 100%;
+    background-color: #fff;
+    z-index: 1000;
+    transition: right 0.3s ease;
+    /* Add smooth transition */
+    overflow-y: auto;
+    padding: 20px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+    /* Add shadow for better visibility */
+  }
+
+  /* Show the side panel when it's active */
+  #side-panel.active {
+    right: 0;
+  }
+
+  /* Style for the close button */
+  .close-btn {
+    position: absolute;
+    top: 10px;
+    right: 20px;
+    cursor: pointer;
+  }
+
+  #imageBox {
+    width: 170px;
+    height: 90px;
+    margin-right: 5px;
+    margin-left: -15px;
+    margin-top: -20px;
+  }
+
+
+
+  #bottom-panel {
+    position: fixed;
+    left: 50%;
+    /* Position it horizontally in the middle */
+    transform: translateX(-50%);
+    /* Adjust to center horizontally */
+    bottom: -900px;
+    /* Initially hide the panel */
+    width: 75%;
+    height: 900px;
+    /* Set the height of the panel */
+    background-color: #fff;
+    z-index: 1000;
+    transition: bottom 0.3s ease;
+    /* Add smooth transition */
+    overflow-x: auto;
+    padding: 20px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+    /* Add shadow for better visibility */
+    border-radius: 10px;
+  }
+
+  /* Show the bottom panel when it's active */
+  #bottom-panel.active {
+    bottom: 0;
+  }
+
+  /* Style for the close button */
+  .close-btn {
+    position: absolute;
+    top: 10px;
+    right: 20px;
+    cursor: pointer;
+  }
+
+  select.form-select option:hover {
+    background-color: #0B10A0;
+    /* Change this to the desired color */
+    color: #fff;
+    /* Change text color for better visibility */
+  }
+
+
+  #add-panel {
+    position: fixed;
+    left: 50%;
+    /* Position it horizontally in the middle */
+    transform: translateX(-50%);
+    /* Adjust to center horizontally */
+    top: -600px;
+    /* Initially hide the panel */
+    width: 70%;
+    height: 600px;
+    /* Set the height of the panel */
+    background-color: #fff;
+    z-index: 1000;
+    transition: top 0.3s ease;
+    /* Change transition to 'top' property */
+    overflow-x: auto;
+    padding: 20px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+    /* Add shadow for better visibility */
+    border-radius: 10px;
+  }
+
+  #add-panel.active {
+    top: 50%;
+    /* Slide down to the center when active */
+    transform: translate(-50%, -50%);
+    /* Adjust to center vertically */
+  }
+
+  #red-notif-panel {
+    position: fixed;
+    left: 50%;
+    /* Position it horizontally in the middle */
+    transform: translateX(-50%);
+    /* Adjust to center horizontally */
+    top: -800px;
+    /* Initially hide the panel */
+    width: 75%;
+    height: 800px;
+    /* Set the height of the panel */
+    background-color: #fff;
+    z-index: 1000;
+    transition: top 0.3s ease;
+    /* Change transition to 'top' property */
+    overflow-x: auto;
+    padding: 20px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+    /* Add shadow for better visibility */
+    border-radius: 10px;
+  }
+
+  #red-notif-panel.active {
+    top: 50%;
+    /* Slide down to the center when active */
+    transform: translate(-50%, -50%);
+    /* Adjust to center vertically */
+  }
+
+  #yellow-notif-panel {
+    position: fixed;
+    left: 50%;
+    /* Position it horizontally in the middle */
+    transform: translateX(-50%);
+    /* Adjust to center horizontally */
+    top: -800px;
+    /* Initially hide the panel */
+    width: 75%;
+    height: 800px;
+    /* Set the height of the panel */
+    background-color: #fff;
+    z-index: 1000;
+    transition: top 0.3s ease;
+    /* Change transition to 'top' property */
+    overflow-x: auto;
+    padding: 20px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+    /* Add shadow for better visibility */
+    border-radius: 10px;
+  }
+
+  #yellow-notif-panel.active {
+    top: 50%;
+    /* Slide down to the center when active */
+    transform: translate(-50%, -50%);
+    /* Adjust to center vertically */
+  }
+
+  #green-notif-panel {
+    position: fixed;
+    left: 50%;
+    /* Position it horizontally in the middle */
+    transform: translateX(-50%);
+    /* Adjust to center horizontally */
+    top: -800px;
+    /* Initially hide the panel */
+    width: 75%;
+    height: 800px;
+    /* Set the height of the panel */
+    background-color: #fff;
+    z-index: 1000;
+    transition: top 0.3s ease;
+    /* Change transition to 'top' property */
+    overflow-x: auto;
+    padding: 20px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+    /* Add shadow for better visibility */
+    border-radius: 10px;
+  }
+
+  #green-notif-panel.active {
+    top: 50%;
+    /* Slide down to the center when active */
+    transform: translate(-50%, -50%);
+    /* Adjust to center vertically */
+  }
+
+  #bottom_date_picker {
+    position: absolute;
+    bottom: 30px;
+    /* Adjust bottom position as needed */
+    left: 50%;
+    /* Set left to 50% to center horizontally */
+    transform: translateX(-50%);
+    /* Translate back by half of its own width */
+    z-index: 1000;
+    /* Ensure buttons are above the map */
+    width: 80%;
+  }
+
+  #bottom_gradient {
+    position: absolute;
+    bottom: 0px;
+    /* Adjust bottom position as needed */
+    left: 50%;
+    /* Set left to 50% to center horizontally */
+    transform: translateX(-50%);
+    /* Translate back by half of its own width */
+    z-index: 500;
+    /* Ensure buttons are above the map */
+    width: 100%;
+    height: 100px;
+    background-image: linear-gradient(to bottom, rgba(0, 0, 0, 0) 10%, rgba(0, 0, 0, .7));
+  }
+
+  datalist {
+    display: flex;
+    justify-content: space-between;
+    color: white;
+    width: 102%;
+  }
+
+  #calendar-input {
+    width: 218px;
+  }
+
+  .importantField {
+    color: red;
+  }
+</style>

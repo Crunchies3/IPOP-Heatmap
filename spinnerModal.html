@@ -1,0 +1,37 @@
+<style>
+  #spinnerModal {
+    display: none;
+    background: rgba(0, 0, 0, 0.5);
+  }
+
+  #spinnerModal .modal-dialog {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    height: 100%;
+  }
+
+  #spinnerModal .modal-content {
+    text-align: center;
+    border: none;
+    box-shadow: none;
+    background: transparent;
+
+  }
+
+  #spinnerModal p {
+    color: white;
+  }
+</style>
+<div class="modal" id="spinnerModal" tabindex="-1" role="dialog" aria-labelledby="spinnerModalLabel" aria-hidden="true">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <div class="modal-body text-center">
+        <div class="spinner-border text-primary" role="status">
+          <span class="visually-hidden">Loading...</span>
+        </div>
+        <p class="mt-4">Loading data, please wait...</p>
+      </div>
+    </div>
+  </div>
+</div>

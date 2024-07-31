@@ -145,7 +145,7 @@
                 // Compare dates to determine color
                 if (parseDate(stringDate) >= parseDate(cable.startDate) && parseDate(stringDate) <= parseDate(cable.endDate)) {
                     color = 'red';
-                } else if (parseDate(stringDate) < parseDate(cable.startDate)) {
+                } else if (parseDate(stringDate) < parseDate(cable.startDate) && parseDate(stringDate) >= parseDate(cable.notifiedDate)) {
                     color = 'yellow';
                 } else if (parseDate(stringDate) > parseDate(cable.endDate)) {
                     color = 'green';

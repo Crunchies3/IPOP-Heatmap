@@ -410,40 +410,40 @@ function getCableNames() {
   });
 
   //processing the start date values
-  datastart.forEach(function (rowstart) {
-    const cableNameBstart = rowstart[0].trim(); //this extracts the cable System
-    const cableNameJstart = rowstart[8].trim(); //this extracts the Affected Segment1
-    const cableNameKstart = rowstart[9].trim(); //this extracts the Affected Segment2
-    const cableNameLstart = rowstart[10].trim();  //this extracts the Affected Segment3
+  // datastart.forEach(function (rowstart) {
+  //   const cableNameBstart = rowstart[0].trim(); //this extracts the cable System
+  //   const cableNameJstart = rowstart[8].trim(); //this extracts the Affected Segment1
+  //   const cableNameKstart = rowstart[9].trim(); //this extracts the Affected Segment2
+  //   const cableNameLstart = rowstart[10].trim();  //this extracts the Affected Segment3
 
 
 
-    const firstCable1 = gettingSegments(rowstart[8].trim());  //passing the Affected Segment1 to check if its a full path
-    const secondCable2 = gettingSegments(rowstart[9].trim()); //passing the Affected Segment2 to check if its a full path
-    const thirdCable3 = gettingSegments(rowstart[10].trim()); //passing the Affected Segment3 to check if its a full path
+  //   const firstCable1 = gettingSegments(rowstart[8].trim());  //passing the Affected Segment1 to check if its a full path
+  //   const secondCable2 = gettingSegments(rowstart[9].trim()); //passing the Affected Segment2 to check if its a full path
+  //   const thirdCable3 = gettingSegments(rowstart[10].trim()); //passing the Affected Segment3 to check if its a full path
 
-    function processCableSegments(cableSegments) {
-      //cableSegment is a 2d array, debug nyo nalang para makita nyo structure
-      if (cableSegments && cableSegments[0] && cableSegments[0][0]) {
-        for (let i = 0; i < cableSegments.length; i++) {
-          for (let k = 0; k < cableSegments[i].length; k++) {
-            if (cableSegments[i] === "" || cableSegments[i][k] === "") {
-              continue;
-            }
-            const part2 = cableSegments[i][k].trim();
-            combinedCableNamesStart.push(part2);
-          }
-        }
-      }
-    }
+  //   function processCableSegments(cableSegments) {
+  //     //cableSegment is a 2d array, debug nyo nalang para makita nyo structure
+  //     if (cableSegments && cableSegments[0] && cableSegments[0][0]) {
+  //       for (let i = 0; i < cableSegments.length; i++) {
+  //         for (let k = 0; k < cableSegments[i].length; k++) {
+  //           if (cableSegments[i] === "" || cableSegments[i][k] === "") {
+  //             continue;
+  //           }
+  //           const part2 = cableSegments[i][k].trim();
+  //           combinedCableNamesStart.push(part2);
+  //         }
+  //       }
+  //     }
+  //   }
 
-    processCableSegments(firstCable1);
-    processCableSegments(secondCable2);
-    processCableSegments(thirdCable3);
+  //   processCableSegments(firstCable1);
+  //   processCableSegments(secondCable2);
+  //   processCableSegments(thirdCable3);
 
-    const combinedNameStart = `${cableNameBstart} ${cableNameJstart} ${cableNameKstart}, ${cableNameLstart}`;
-    combinedCableNamesStart.push(combinedNameStart);
-  });
+  //   const combinedNameStart = `${cableNameBstart} ${cableNameJstart} ${cableNameKstart}, ${cableNameLstart}`;
+  //   combinedCableNamesStart.push(combinedNameStart);
+  // });
   // Return combined cable names to the client-side JavaScript
   return { combinedCableNames: combinedCableNames, combinedCableNamesStart: combinedCableNamesStart };
 }
@@ -465,6 +465,37 @@ function gettingSegments(name) {
 
 }
 
+function getFullPaths() {
+  const ss = SpreadsheetApp.openById('1vW8zgcrQC02iRLkWJSOIjfnqN5_lRNMgNjV6IBZF__c');
+  var segmentRows = ss.getSheetByName('Segment');
+  var lastRow = segmentRows.getLastRow();
+  var dataRange = segmentRows.getRange('C2:I' + lastRow);
+  var data = dataRange.getValues();
+  var fullPaths = [];
+
+  for (var i = 0; i < data.length; i++) {
+    for (var k = 0; k < data[i].length; k++) {
+      if (data[i][k + 1] !== "") {
+        var splitter = data[i][k + 1].split(' ');
+        var cableType = splitter[0];
+        fullPaths.push({
+          value: cableType + " " + data[i][k],
+          path1: data[i][k + 1],
+          path2: data[i][k + 2],
+          path3: data[i][k + 3],
+          path4: data[i][k + 4],
+          path5: data[i][k + 5],
+          path6: data[i][k + 6],
+        });
+        break;
+      } else {
+        break;
+      }
+    }
+  }
+
+  return fullPaths;
+}
 
 function getSampleData() {
   var ss = SpreadsheetApp.openById('1vW8zgcrQC02iRLkWJSOIjfnqN5_lRNMgNjV6IBZF__c');

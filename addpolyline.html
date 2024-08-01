@@ -2,7 +2,9 @@
     const polylinesData = {}; // will track each polyline.
 
     var notifiedCables; // will hold the data about the notified cable maintenance/etc. will be use for forecasting status of the cables.
+    var cablePaths;
     var searchTerm;
+
     if (!map) {
         var bounds = L.latLngBounds([[90, -70], [-90, 310]]);
 
@@ -91,16 +93,47 @@
     // ======================================<<START>>=================================
 
     function changePolylineColor(rangeIndex) {
+        // Get the string date from the element
         const stringDate = getDateFromElement(rangeIndex);
+
+        // Get cable data
         const cableData = getCableData(notifiedCables);
 
+        // Iterate over each cable data
         cableData.forEach(cable => {
+            // Determine the color based on the date and cable information
             const color = determineColor(stringDate, cable);
-            const polylineId = cable.cableSystem + " " + `${cable.segment1}`;
-            updatePolylineColor(polylineId, color);
 
+            // Construct the polyline ID based on cable system and segment
+            const polylineId = `${cable.cableSystem} ${cable.segment1}`;
+
+            // Find the corresponding cable path
+            const cablePath = cablePaths.find(path => path.value === polylineId);
+
+
+            // Check if cablePath is defined   
+            if (cablePath !== undefined) {
+                // Collect all non-empty paths
+                let pathsToUpdate = [];
+
+                for (let i = 1; i < 7; i++) {
+                    const pathKey = `path${i}`;
+                    if (cablePath[pathKey] && cablePath[pathKey] !== "") {
+                        pathsToUpdate.push(cablePath[pathKey]);
+                    }
+                }
+
+                // Update the color for each path
+                pathsToUpdate.forEach(path => {
+                    updatePolylineColor(path, color);
+                });
+            } else {
+                // Optionally update color for polylineId if no paths are found
+                updatePolylineColor(polylineId, color);
+            }
         });
     }
+
 
     function getDateFromElement(rangeIndex) {
         return document.getElementById(parseInt(rangeIndex) + 1).value;
@@ -148,11 +181,16 @@
         notifiedCables = data;
     }
 
+    function getAllCablePaths(paths) {
+        cablePaths = paths;
+    }
+
     function initializeMap() {
         google.script.run.withSuccessHandler(addMarkers).getSJCLocations();
         google.script.run.withSuccessHandler(addPolylines).getSJCData();
         searchCableSystem();
         google.script.run.withSuccessHandler(getNotifiedCableData).extractDates(searchTerm);
+        google.script.run.withSuccessHandler(getAllCablePaths).getFullPaths();
     }
 
     // Call the initializeMap function when the page loads

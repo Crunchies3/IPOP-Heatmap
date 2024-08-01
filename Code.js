@@ -350,7 +350,7 @@ function getCableNames() {
   var datastart = cableNamesRangestart.getValues(); //getting the start rows of affected segment
 
 
-  var combinedCableNames; //this array stores all the affected segments/cablelines on the notification sheet (yellow)
+  var combinedCableNames = []; //this array stores all the affected segments/cablelines on the notification sheet (yellow)
   var combinedCableNamesStart = []; //this array stores all the affected segments/cablelines on the Start Date sheet (red)
 
   //processing the notif values
@@ -360,26 +360,32 @@ function getCableNames() {
     const cableNameK = row[9].toUpperCase().trim(); //this extracts the Affected Segment2
     const cableNameL = row[10].toUpperCase().trim();  //this extracts the Affected Segment3
 
+    const notifiedDate = formatDates(row[1].trim());
     const startDate = formatDates(row[2].trim());
     const endDate = formatDates(row[3].trim());
+
 
 
     const firstCable = gettingSegments(row[8].trim());  //passing the Affected Segment1 to check if its a full path
     const secondCable = gettingSegments(row[9].trim()); //passing the Affected Segment2 to check if its a full path
     const thirdCable = gettingSegments(row[10].trim()); //passing the Affected Segment3 to check if its a full path
 
-    processCableSegments(firstCable, startDate, endDate);
-    processCableSegments(secondCable, startDate, endDate);
-    processCableSegments(thirdCable, startDate, endDate);
+    let bool1 = processCableSegments(firstCable, startDate, endDate, notifiedDate);
+    let bool2 = processCableSegments(secondCable, startDate, endDate, notifiedDate);
+    let bool3 = processCableSegments(thirdCable, startDate, endDate, notifiedDate);
 
-    const combinedName = `${cableNameB} ${cableNameJ} ${cableNameK} ${cableNameL}`;
-    combinedCableNames.push({
-      combinedName: combinedName,
-      startDate: startDate,
-      endDate: endDate
-    });
+    if (!(bool1 || bool2 || bool3)) {
+      const combinedName = `${cableNameB} ${cableNameJ} ${cableNameK} ${cableNameL}`;
+      combinedCableNames.push({
+        combinedName: combinedName,
+        notifiedDate: notifiedDate,
+        startDate: startDate,
+        endDate: endDate
+      });
+    }
 
-    function processCableSegments(cableSegments, startDate, endDate) {
+
+    function processCableSegments(cableSegments, startDate, endDate, notifiedDate) {
       //cableSegment is a 2d array, debug nyo nalang para makita nyo structure
       if (cableSegments && cableSegments[0] && cableSegments[0][0]) {
         for (let i = 0; i < cableSegments.length; i++) {
@@ -388,15 +394,18 @@ function getCableNames() {
             if (cableSegments[i] === "" || cableSegments[i][k] === "") {
               continue;
             }
-            const part2 = cableSegments[i][k].toUpperCase();
+            const part2 = cableSegments[i][k].trim();
             combinedCableNames.push({
               combinedName: part2,
+              notifiedDate: notifiedDate,
               startDate: startDate,
               endDate: endDate
             });
           }
         }
+        return true;
       }
+      return false;
     }
   });
 

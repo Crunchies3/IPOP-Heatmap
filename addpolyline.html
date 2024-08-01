@@ -42,40 +42,13 @@
 
     function addPolylines(cables) {
 
+        let date = new Date();
+
         // Fetch cable names from Google Sheets using Google Apps Script
         google.script.run.withSuccessHandler(function (data) {
-            if (!Array.isArray(data.combinedCableNamesStart) || !Array.isArray(data.combinedCableNames)) {
+            if (!Array.isArray(data.combinedCableNames)) {
                 console.error('Invalid data format for combinedCableNames:', data.combinedCableNamesStart);
                 return;
-            }
-
-            // Function to determine if a cable name matches
-            function isMatch(cableName, combinedName) {
-                var combinedNameUpperCase = combinedName.toUpperCase();
-                var parts = combinedNameUpperCase.split(' ');
-                var cableType = parts[0];
-
-                if (parts.length === 0 || parts.length <= 1) return false;
-
-                //checking each parts
-                for (var i = 1; i < parts.length; i++) {
-                    var part = parts[i];
-                    var concatenate = cableType.concat(" ", part);
-                    if (cableName === concatenate) {
-                        return true;
-                    }
-                }
-                return false;
-            }
-
-            function determineColor(cableName) {
-                if (data.combinedCableNamesStart.some(combinedNamestart => isMatch(cableName, combinedNamestart))) {
-                    return 'red';
-                }
-                if (data.combinedCableNames.some(combinedName => isMatch(cableName, combinedName))) {
-                    return 'yellow';
-                }
-                return 'green';
             }
 
             cables.forEach(function (cable) {
@@ -83,7 +56,7 @@
                 var longitudeFrom = parseFloat(cable.longitudeFrom);
                 var latitudeTo = parseFloat(cable.latitudeTo);
                 var longitudeTo = parseFloat(cable.longitudeTo);
-                var cableName = cable.cableName.toUpperCase(); // Convert cable name to uppercase for case-insensitive comparison
+                var cableName = cable.cableName.trim(); // Convert cable name to uppercase for case-insensitive comparison
 
                 // Check if parsed values are valid numbers
                 if (isNaN(latitudeFrom) || isNaN(longitudeFrom) || isNaN(latitudeTo) || isNaN(longitudeTo)) {
@@ -95,13 +68,52 @@
                     [longitudeTo, latitudeTo]
                 ];
 
-                // Determine color based on matches
-                var color = determineColor(cableName);
-
                 // Add polyline to the map
-                const polyline = L.polyline(coordinates, { color: color, weight: 2 }).addTo(map).bindPopup(cable.cableName);
+                const polyline = L.polyline(coordinates, { color: "green", weight: 2 }).addTo(map).bindPopup(cable.cableName);
                 polylinesData[cable.cableName] = polyline;
             });
+
+
+
+            data.combinedCableNames.forEach(cables => {
+                let color = "green";
+                let cable_name = cables.combinedName;
+                let notifiedDate = parseDate(cables.notifiedDate);
+                let startDate = parseDate(cables.startDate);
+                let endDate = parseDate(cables.endDate);
+                if (date >= startDate && date <= endDate) color = 'red';
+                if (date < startDate && date >= notifiedDate) color = 'yellow';
+                updatePolylineColor(cable_name, color);
+            });
+
+            // var color = determineColor(cableName);
+
+
+            // function determineColor(cableName) {
+            //     if (data.combinedCableNames.some(combinedName => isMatch(cableName, combinedName))) {
+            //         return 'yellow';
+            //     }
+            //     return 'green';
+            // }
+            // // Function to determine if a cable name matches
+            // function isMatch(cableName, combinedName) {
+            //     var combinedNameUpperCase = combinedName.toUpperCase();
+            //     var parts = combinedNameUpperCase.split(' ');
+            //     var cableType = parts[0];
+
+            //     if (parts.length === 0 || parts.length <= 1) return false;
+
+            //     //checking each parts
+            //     for (var i = 1; i < parts.length; i++) {
+            //         var part = parts[i];
+            //         var concatenate = cableType.concat(" ", part);
+            //         if (cableName === concatenate) {
+            //             return true;
+            //         }
+            //     }
+            //     return false;
+            // }
+
         }).getCableNames(); // Call the getCableNames function in your Google Apps Script
     }
 

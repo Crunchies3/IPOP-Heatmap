@@ -106,56 +106,60 @@
     }
 
 
-    // testing for SEAUS connections
+    // ======================================<<START>>=================================
+
     function changePolylineColor(rangeIndex) {
-        let stringDate = document.getElementById(parseInt(rangeIndex) + 1).value;
-        let notifiedCableConnetions = [];
-        let cableData;
-        let notifiedCoordinates;
+        const stringDate = getDateFromElement(rangeIndex);
+        const cableData = getCableData(notifiedCables);
 
-        getCableData(notifiedCables);
+        cableData.forEach(cable => {
+            const color = determineColor(stringDate, cable);
+            const polylineId = `SEAUS ${cable.segment1}`;
+            updatePolylineColor(polylineId, color);
+        });
+    }
 
-        function getCableData(data) {
-            cableData = data.map(([cableSystem, notifiedDate, startDate, endDate, segment1, segment2, segment3]) => ({
-                cableSystem,
-                notifiedDate,
-                startDate,
-                endDate,
-                segment1,
-                segment2,
-                segment3
-            }));
-            getColor(cableData, notifiedCoordinates);
-        }
+    function getDateFromElement(rangeIndex) {
+        return document.getElementById(parseInt(rangeIndex) + 1).value;
+    }
 
-        function getColor(data) {
-            data.forEach(cable => {
-                let color = 'green';
-                if (parseDate(stringDate) >= parseDate(cable.startDate) && parseDate(stringDate) <= parseDate(cable.endDate)) {
-                    color = 'red';
-                } else if (parseDate(stringDate) < parseDate(cable.startDate) && parseDate(stringDate) >= parseDate(cable.notifiedDate)) {
-                    color = 'yellow';
-                } else if (parseDate(stringDate) > parseDate(cable.endDate)) {
-                    color = 'green';
-                }
-                let tempName = "SEAUS " + cable.segment1;
-                updatePolylineColor(tempName, color);
-            });
-        }
+    function getCableData(data) {
+        return data.map(([cableSystem, notifiedDate, startDate, endDate, segment1, segment2, segment3]) => ({
+            cableSystem,
+            notifiedDate,
+            startDate,
+            endDate,
+            segment1,
+            segment2,
+            segment3
+        }));
+    }
 
-        function updatePolylineColor(id, color) {
-            const polyline = polylinesData[id];
-            if (polyline) {
-                polyline.setStyle({ color: color });
-            } else {
-                console.log('Polyline not found!');
-            }
-        }
+    function determineColor(stringDate, cable) {
+        const date = parseDate(stringDate);
+        const startDate = parseDate(cable.startDate);
+        const endDate = parseDate(cable.endDate);
+        const notifiedDate = parseDate(cable.notifiedDate);
 
-        function parseDate(dateStr) {
-            return new Date(dateStr);
+        if (date >= startDate && date <= endDate) return 'red';
+        if (date < startDate && date >= notifiedDate) return 'yellow';
+        return 'green';
+    }
+
+    function updatePolylineColor(id, color) {
+        const polyline = polylinesData[id];
+        if (polyline) {
+            polyline.setStyle({ color });
+        } else {
+            console.log(`Polyline with id "${id}" not found!`);
         }
     }
+
+    function parseDate(dateStr) {
+        return new Date(dateStr);
+    }
+
+    // ======================================<<END>>=================================
 
     google.script.run.withSuccessHandler(getNotifiedCableData).extractDates('SEAUS');
 

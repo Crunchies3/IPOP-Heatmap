@@ -135,17 +135,9 @@
 
         getCableData(notifiedCables);
 
-        function getColor(data, coordinates) {
-            console.log(data);
-            console.log("====================================");
-            console.log(coordinates);
-
+        function getColor(data) {
             data.forEach(cable => {
                 let color = 'green';
-
-                console.log("nigana bako una?" + color);
-
-
                 // Compare dates to determine color
                 if (parseDate(stringDate) >= parseDate(cable.startDate) && parseDate(stringDate) <= parseDate(cable.endDate)) {
                     color = 'red';
@@ -154,28 +146,9 @@
                 } else if (parseDate(stringDate) > parseDate(cable.endDate)) {
                     color = 'green';
                 }
-
-                console.log("nabago ba ang color?" + color);
-
                 let tempName = "SEAUS " + cable.segment1; // Use segment1 instead of cableName
-
-                let tempCoordinates = coordinates.find(row => row.cableName === tempName); // Use find() to get the single object
-
-                if (tempCoordinates) {
-                    let storeCoordinates = [
-                        [tempCoordinates.latitudeFrom, tempCoordinates.longitudeFrom],
-                        [tempCoordinates.latitudeTo, tempCoordinates.longitudeTo]
-                    ];
-
-
-
-                    updatePolylineColor(tempName, color);
-                }
-
-
+                updatePolylineColor(tempName, color);
             });
-            console.log("nigana bako pinaka gawas?");
-
         }
 
         function parseDate(dateStr) {
@@ -196,7 +169,6 @@
         // Function to process cable data and set up the notifiedCableConnetions array
         function getCableData(data) {
             console.log(data);
-
             // Populate cableData
             cableData = data.map(([cableSystem, notifiedDate, startDate, endDate, segment1, segment2, segment3]) => ({
                 cableSystem,
@@ -207,51 +179,6 @@
                 segment2,
                 segment3
             }));
-
-            // Populate notifiedCableConnetions based on the cable data
-            notifiedCableConnetions = cableData.map(({ segment1 }) =>
-                'SEAUS ' + segment1
-            );
-
-            console.log(notifiedCableConnetions);
-
-
-            console.log("get cable dataaaaaaaaaaaaaaaa function");
-
-            // After processing cable data, call the function to get coordinates
-            google.script.run.withSuccessHandler(getCoordinates).getSJCData();
-        }
-
-        // Function to process coordinates data based on notifiedCableConnetions
-        function getCoordinates(cables) {
-            // Filter cables based on SEAUS and notifiedCableConnetions
-            console.log(cables);
-            console.log("===============1111111111111===================");
-            console.log(notifiedCableConnetions);
-
-            const filteredCableSystem = cables.filter(row =>
-                row.cableSystem === 'SEAUS' && notifiedCableConnetions.includes(row.cableName)
-            );
-
-
-            console.log(filteredCableSystem);
-            console.log("===============222222222222222222222===================");
-
-            // Map filtered cables to get notifiedCoordinates
-            notifiedCoordinates = filteredCableSystem.map(row => ({
-                cableName: row.cableName,
-                latitudeFrom: row.latitudeFrom,
-                longitudeFrom: row.longitudeFrom,
-                latitudeTo: row.latitudeTo,
-                longitudeTo: row.longitudeTo
-            }));
-
-            console.log("nakuha nanako coord?");
-
-            console.log(cableData);
-            console.log("===============000000000000===================");
-            console.log(notifiedCoordinates);
-
             getColor(cableData, notifiedCoordinates);
         }
     }

@@ -1,7 +1,7 @@
 <script>
-    const polylinesData = {};
+    const polylinesData = {}; // will track each polyline.
 
-    var notifiedCables;
+    var notifiedCables; // will hold the data about the notified cable maintenance/etc. will be use for forecasting status of the cables.
 
     if (!map) {
         var bounds = L.latLngBounds([[90, -70], [-90, 310]]);
@@ -42,8 +42,6 @@
 
     function addPolylines(cables) {
 
-
-
         // Fetch cable names from Google Sheets using Google Apps Script
         google.script.run.withSuccessHandler(function (data) {
             if (!Array.isArray(data.combinedCableNamesStart) || !Array.isArray(data.combinedCableNames)) {
@@ -68,22 +66,6 @@
                     }
                 }
                 return false;
-
-
-                // var [firstPart, secondPart = '', thirdPart = '', fourthPart = ''] = parts;
-
-                // function checkPart(part, cableNamePart, firstPart) {
-                //   console.log("this is the part "+part)
-                //     if(isNaN(part)){
-                //       return false;
-                //     }
-                //     return cableNamePart.includes(part);
-                // }
-
-                // return cableName.includes(firstPart) &&
-                //     checkPart(secondPart, cableName, firstPart) &&
-                //     checkPart(thirdPart, cableName, firstPart) &&
-                //     checkPart(fourthPart, cableName, firstPart);
             }
 
             function determineColor(cableName) {
@@ -125,20 +107,30 @@
 
 
     // testing for SEAUS connections
-
     function changePolylineColor(rangeIndex) {
         let stringDate = document.getElementById(parseInt(rangeIndex) + 1).value;
-        console.log(stringDate + "taeeeeeeeeeeeee");
         let notifiedCableConnetions = [];
         let cableData;
         let notifiedCoordinates;
 
         getCableData(notifiedCables);
 
+        function getCableData(data) {
+            cableData = data.map(([cableSystem, notifiedDate, startDate, endDate, segment1, segment2, segment3]) => ({
+                cableSystem,
+                notifiedDate,
+                startDate,
+                endDate,
+                segment1,
+                segment2,
+                segment3
+            }));
+            getColor(cableData, notifiedCoordinates);
+        }
+
         function getColor(data) {
             data.forEach(cable => {
                 let color = 'green';
-                // Compare dates to determine color
                 if (parseDate(stringDate) >= parseDate(cable.startDate) && parseDate(stringDate) <= parseDate(cable.endDate)) {
                     color = 'red';
                 } else if (parseDate(stringDate) < parseDate(cable.startDate) && parseDate(stringDate) >= parseDate(cable.notifiedDate)) {
@@ -146,15 +138,9 @@
                 } else if (parseDate(stringDate) > parseDate(cable.endDate)) {
                     color = 'green';
                 }
-                let tempName = "SEAUS " + cable.segment1; // Use segment1 instead of cableName
+                let tempName = "SEAUS " + cable.segment1;
                 updatePolylineColor(tempName, color);
             });
-        }
-
-        function parseDate(dateStr) {
-            return new Date(dateStr);
-            console.log("nag parse bako?");
-
         }
 
         function updatePolylineColor(id, color) {
@@ -166,20 +152,8 @@
             }
         }
 
-        // Function to process cable data and set up the notifiedCableConnetions array
-        function getCableData(data) {
-            console.log(data);
-            // Populate cableData
-            cableData = data.map(([cableSystem, notifiedDate, startDate, endDate, segment1, segment2, segment3]) => ({
-                cableSystem,
-                notifiedDate,
-                startDate,
-                endDate,
-                segment1,
-                segment2,
-                segment3
-            }));
-            getColor(cableData, notifiedCoordinates);
+        function parseDate(dateStr) {
+            return new Date(dateStr);
         }
     }
 

@@ -355,10 +355,10 @@ function getCableNames() {
 
   //processing the notif values
   data.forEach(function (row) {
-    const cableNameB = row[0].toUpperCase().trim(); //this extracts the cable System
-    const cableNameJ = row[8].toUpperCase().trim(); //this extracts the Affected Segment1
-    const cableNameK = row[9].toUpperCase().trim(); //this extracts the Affected Segment2
-    const cableNameL = row[10].toUpperCase().trim();  //this extracts the Affected Segment3
+    const cableNameB = row[0].trim(); //this extracts the cable System
+    const cableNameJ = row[8].trim(); //this extracts the Affected Segment1
+    const cableNameK = row[9].trim(); //this extracts the Affected Segment2
+    const cableNameL = row[10].trim();  //this extracts the Affected Segment3
 
     const notifiedDate = formatDates(row[1].trim());
     const startDate = formatDates(row[2].trim());
@@ -411,10 +411,10 @@ function getCableNames() {
 
   //processing the start date values
   datastart.forEach(function (rowstart) {
-    const cableNameBstart = rowstart[0].toUpperCase().trim(); //this extracts the cable System
-    const cableNameJstart = rowstart[8].toUpperCase().trim(); //this extracts the Affected Segment1
-    const cableNameKstart = rowstart[9].toUpperCase().trim(); //this extracts the Affected Segment2
-    const cableNameLstart = rowstart[10].toUpperCase().trim();  //this extracts the Affected Segment3
+    const cableNameBstart = rowstart[0].trim(); //this extracts the cable System
+    const cableNameJstart = rowstart[8].trim(); //this extracts the Affected Segment1
+    const cableNameKstart = rowstart[9].trim(); //this extracts the Affected Segment2
+    const cableNameLstart = rowstart[10].trim();  //this extracts the Affected Segment3
 
 
 
@@ -430,7 +430,7 @@ function getCableNames() {
             if (cableSegments[i] === "" || cableSegments[i][k] === "") {
               continue;
             }
-            const part2 = cableSegments[i][k].toUpperCase();
+            const part2 = cableSegments[i][k].trim();
             combinedCableNamesStart.push(part2);
           }
         }

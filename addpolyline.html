@@ -158,10 +158,11 @@
     function parseDate(dateStr) {
         return new Date(dateStr);
     }
+    console.log("=====================" + searchTerm);
+    google.script.run.withSuccessHandler(getNotifiedCableData).extractDates(searchTerm);
 
     // ======================================<<END>>=================================
 
-    google.script.run.withSuccessHandler(getNotifiedCableData).extractDates('SEAUS');
 
     function getNotifiedCableData(data) {
         notifiedCables = data;
@@ -208,6 +209,18 @@
             setAllCablesOpacity(0.01);
             $('#spinnerModal').modal('hide');
         }
+
+
+
+        // added new functionality for cable status forecasting
+
+        if (searchTerm === "Show All Cable Systems") searchTerm = "All";
+        else if (searchTerm === "SEA-US") searchTerm = "SEAUS";
+        else if (searchTerm === "SJC") searchTerm = "SJC";
+        else if (searchTerm === "EAC") searchTerm = "EAC";
+        else if (searchTerm === "C2C") searchTerm = "C2C";
+        else if (searchTerm === "TGN-IA/TGN-P") searchTerm = "TGN-IA/TGN-P";
+
     }
 
     // Function to set the opacity of all cables on the map

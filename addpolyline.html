@@ -2,7 +2,7 @@
     const polylinesData = {}; // will track each polyline.
 
     var notifiedCables; // will hold the data about the notified cable maintenance/etc. will be use for forecasting status of the cables.
-
+    var searchTerm;
     if (!map) {
         var bounds = L.latLngBounds([[90, -70], [-90, 310]]);
 
@@ -114,8 +114,9 @@
 
         cableData.forEach(cable => {
             const color = determineColor(stringDate, cable);
-            const polylineId = `SEAUS ${cable.segment1}`;
+            const polylineId = cable.cableSystem + " " + `${cable.segment1}`;
             updatePolylineColor(polylineId, color);
+
         });
     }
 
@@ -158,19 +159,21 @@
     function parseDate(dateStr) {
         return new Date(dateStr);
     }
-    console.log("=====================" + searchTerm);
-    google.script.run.withSuccessHandler(getNotifiedCableData).extractDates(searchTerm);
-
     // ======================================<<END>>=================================
 
 
     function getNotifiedCableData(data) {
         notifiedCables = data;
+        console.log("=============================");
+        console.log(notifiedCables);
     }
 
     function initializeMap() {
         google.script.run.withSuccessHandler(addMarkers).getSJCLocations();
         google.script.run.withSuccessHandler(addPolylines).getSJCData();
+        searchCableSystem();
+        console.log("naka search naba ko?" + searchTerm);
+        google.script.run.withSuccessHandler(getNotifiedCableData).extractDates(searchTerm);
     }
 
     // Call the initializeMap function when the page loads
@@ -187,7 +190,7 @@
     // Function to search for a cable system and filter the cables accordingly
     function searchCableSystem() {
         $('#spinnerModal').modal('show');
-        var searchTerm = document.getElementById("search-input").value; // Convert search term to uppercase for case-insensitive comparison
+        searchTerm = document.getElementById("search-input").value; // Convert search term to uppercase for case-insensitive comparison
 
         // Check if search term is not empty
         if (searchTerm === "Show All Cable Systems") {

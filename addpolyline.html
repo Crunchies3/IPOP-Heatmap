@@ -1,6 +1,8 @@
 <script>
     const polylinesData = {};
 
+    var notifiedCables;
+
     if (!map) {
         var bounds = L.latLngBounds([[90, -70], [-90, 310]]);
 
@@ -131,6 +133,8 @@
         let cableData;
         let notifiedCoordinates;
 
+        getCableData(notifiedCables);
+
         function getColor(data, coordinates) {
             console.log(data);
             console.log("====================================");
@@ -250,11 +254,13 @@
 
             getColor(cableData, notifiedCoordinates);
         }
-
-        // Start the process by getting cable data
-        google.script.run.withSuccessHandler(getCableData).extractDates('SEAUS');
     }
 
+    google.script.run.withSuccessHandler(getNotifiedCableData).extractDates('SEAUS');
+
+    function getNotifiedCableData(data) {
+        notifiedCables = data;
+    }
 
     function initializeMap() {
         google.script.run.withSuccessHandler(addMarkers).getSJCLocations();

@@ -331,46 +331,116 @@ function addDataToSheetNotif(sheetName, majorIncidents) {
   return 'success';
 }
 
+//the purpose of this function is to extract the cable names from the affectedSegment 1,2,3
+//this function also serves as the one who gets the full path of the affectedSegment thru gettingSegments(name) function
+//the basis when a cable name is a full path is if the affectedSegment doesnt match on any cablename in the spreadsheet of Project 3 located in cables sheet.
+//when a affected segment is detected as a full path, it will extract the corresponding cablename paths on the ipop heatmap spreadsheet located in the Segment sheet
+//refactor nyo nalang 
 function getCableNames() {
-  var ss = SpreadsheetApp.openById('1vW8zgcrQC02iRLkWJSOIjfnqN5_lRNMgNjV6IBZF__c'); // Use openById to open the spreadsheet
-  var sheet = ss.getSheetByName('Notifications'); // Assuming your sheet name is "Notification"
+  var ss = SpreadsheetApp.openById('1vW8zgcrQC02iRLkWJSOIjfnqN5_lRNMgNjV6IBZF__c');
+  var sheet = ss.getSheetByName('Notifications');
   var lastRow = sheet.getLastRow();
-  var cableNamesRange = sheet.getRange('B2:L' + lastRow); // Assuming cable names are in columns B and J starting from row 2
-  var data = cableNamesRange.getValues(); // Fetch cable names data by row
+  var cableNamesRange = sheet.getRange('B2:L' + lastRow);
+  var data = cableNamesRange.getValues(); //getting the notif rows of affected segment
 
-  var sheetstart = ss.getSheetByName('Start Date'); // Assuming your sheet name is "Notification"
+
+  var sheetstart = ss.getSheetByName('Start Date');
   var lastRowstart = sheetstart.getLastRow();
-  var cableNamesRangestart = sheetstart.getRange('B2:L' + lastRowstart); // Assuming cable names are in columns B and J starting from row 2
-  var datastart = cableNamesRangestart.getValues(); // Fetch cable names data by row
+  var cableNamesRangestart = sheetstart.getRange('B2:L' + lastRowstart);
+  var datastart = cableNamesRangestart.getValues(); //getting the start rows of affected segment
 
 
+  var combinedCableNames = []; //this array stores all the affected segments/cablelines on the notification sheet (yellow)
+  var combinedCableNamesStart = []; //this array stores all the affected segments/cablelines on the Start Date sheet (red)
 
-  var combinedCableNames = [];
-  var combinedCableNamesStart = [];
-
-  // Process each row separately
+  //processing the notif values
   data.forEach(function (row) {
-    var cableNameB = row[0].toUpperCase().trim(); // Convert cable name from column B to uppercase and trim whitespace
-    var cableNameJ = row[8].toUpperCase().trim(); // Convert cable name from column J to uppercase and trim whitespace
-    var cableNameK = row[9].toUpperCase().trim(); // Convert cable name from column J to uppercase and trim whitespace
-    var cableNameL = row[10].toUpperCase().trim(); // Convert cable name from column J to uppercase and trim whitespace
-    // Combine cable names from columns B and J into one array element
-    var combinedName = cableNameB + ' ' + cableNameJ + ' ' + cableNameK + ' ' + cableNameL;
-    combinedCableNames.push(combinedName); // Add combined name to the array
+    const cableNameB = row[0].toUpperCase().trim(); //this extracts the cable System
+    const cableNameJ = row[8].toUpperCase().trim(); //this extracts the Affected Segment1
+    const cableNameK = row[9].toUpperCase().trim(); //this extracts the Affected Segment2
+    const cableNameL = row[10].toUpperCase().trim();  //this extracts the Affected Segment3
+
+    const firstCable = gettingSegments(row[8].trim());  //passing the Affected Segment1 to check if its a full path
+    const secondCable = gettingSegments(row[9].trim()); //passing the Affected Segment2 to check if its a full path
+    const thirdCable = gettingSegments(row[10].trim()); //passing the Affected Segment3 to check if its a full path
+
+    function processCableSegments(cableSegments) {
+      //cableSegment is a 2d array, debug nyo nalang para makita nyo structure
+      if (cableSegments && cableSegments[0] && cableSegments[0][0]) {
+        for (let i = 0; i < cableSegments.length; i++) {
+          for (let k = 0; k < cableSegments[i].length; k++) {
+            //skipping values that are null
+            if (cableSegments[i] === "" || cableSegments[i][k] === "") {
+              continue;
+            }
+            const part2 = cableSegments[i][k].toUpperCase();
+            combinedCableNames.push(part2);
+          }
+        }
+      }
+    }
+
+    processCableSegments(firstCable);
+    processCableSegments(secondCable);
+    processCableSegments(thirdCable);
+
+    const combinedName = `${cableNameB} ${cableNameJ} ${cableNameK} ${cableNameL}`;
+    combinedCableNames.push(combinedName);
   });
 
+  //processing the start date values
   datastart.forEach(function (rowstart) {
-    var cableNameBstart = rowstart[0].toUpperCase().trim(); // Convert cable name from column B to uppercase and trim whitespace
-    var cableNameJstart = rowstart[8].toUpperCase().trim(); // Convert cable name from column J to uppercase and trim whitespace
-    var cableNameKstart = rowstart[9].toUpperCase().trim(); // Convert cable name from column J to uppercase and trim whitespace
-    var cableNameLstart = rowstart[10].toUpperCase().trim(); // Convert cable name from column J to uppercase and trim whitespace
-    // Combine cable names from columns B and J into one array element
-    var combinedNamestart = cableNameBstart + ' ' + cableNameJstart + ' ' + cableNameKstart + ' ' + cableNameLstart;
-    combinedCableNamesStart.push(combinedNamestart); // Add combined name to the array
-  });
+    const cableNameBstart = rowstart[0].toUpperCase().trim(); //this extracts the cable System
+    const cableNameJstart = rowstart[8].toUpperCase().trim(); //this extracts the Affected Segment1
+    const cableNameKstart = rowstart[9].toUpperCase().trim(); //this extracts the Affected Segment2
+    const cableNameLstart = rowstart[10].toUpperCase().trim();  //this extracts the Affected Segment3
 
+
+    const firstCable1 = gettingSegments(rowstart[8].trim());  //passing the Affected Segment1 to check if its a full path
+    const secondCable2 = gettingSegments(rowstart[9].trim()); //passing the Affected Segment2 to check if its a full path
+    const thirdCable3 = gettingSegments(rowstart[10].trim()); //passing the Affected Segment3 to check if its a full path
+
+    function processCableSegments(cableSegments) {
+      //cableSegment is a 2d array, debug nyo nalang para makita nyo structure
+      if (cableSegments && cableSegments[0] && cableSegments[0][0]) {
+        for (let i = 0; i < cableSegments.length; i++) {
+          for (let k = 0; k < cableSegments[i].length; k++) {
+            if (cableSegments[i] === "" || cableSegments[i][k] === "") {
+              continue;
+            }
+            const part2 = cableSegments[i][k].toUpperCase();
+            combinedCableNamesStart.push(part2);
+          }
+        }
+      }
+    }
+
+    processCableSegments(firstCable1);
+    processCableSegments(secondCable2);
+    processCableSegments(thirdCable3);
+
+    const combinedNameStart = `${cableNameBstart} ${cableNameJstart} ${cableNameKstart}, ${cableNameLstart}`;
+    combinedCableNamesStart.push(combinedNameStart);
+  });
   // Return combined cable names to the client-side JavaScript
   return { combinedCableNames: combinedCableNames, combinedCableNamesStart: combinedCableNamesStart };
+}
+
+//this function gets the name as parameter and checks if the name matches on the segment sheet
+//if the name matches, it will return the full path on its side on an array format.
+function gettingSegments(name) {
+  const ss = SpreadsheetApp.openById('1vW8zgcrQC02iRLkWJSOIjfnqN5_lRNMgNjV6IBZF__c');
+  var segmentRows = ss.getSheetByName('Segment').getDataRange().getValues();
+  const nameColumn = 2;
+  const targetRow = segmentRows.findIndex(row => row[nameColumn] === name);
+  if (targetRow !== -1) {
+    const results = [segmentRows[targetRow].slice(3)];
+    return results;
+  } else {
+    // Handle case where no match is found 
+    return []; // or throw an error, or return an empty array
+  }
+
 }
 
 

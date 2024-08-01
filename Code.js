@@ -350,7 +350,7 @@ function getCableNames() {
   var datastart = cableNamesRangestart.getValues(); //getting the start rows of affected segment
 
 
-  var combinedCableNames = []; //this array stores all the affected segments/cablelines on the notification sheet (yellow)
+  var combinedCableNames; //this array stores all the affected segments/cablelines on the notification sheet (yellow)
   var combinedCableNamesStart = []; //this array stores all the affected segments/cablelines on the Start Date sheet (red)
 
   //processing the notif values
@@ -360,11 +360,26 @@ function getCableNames() {
     const cableNameK = row[9].toUpperCase().trim(); //this extracts the Affected Segment2
     const cableNameL = row[10].toUpperCase().trim();  //this extracts the Affected Segment3
 
+    const startDate = formatDates(row[2].trim());
+    const endDate = formatDates(row[3].trim());
+
+
     const firstCable = gettingSegments(row[8].trim());  //passing the Affected Segment1 to check if its a full path
     const secondCable = gettingSegments(row[9].trim()); //passing the Affected Segment2 to check if its a full path
     const thirdCable = gettingSegments(row[10].trim()); //passing the Affected Segment3 to check if its a full path
 
-    function processCableSegments(cableSegments) {
+    processCableSegments(firstCable, startDate, endDate);
+    processCableSegments(secondCable, startDate, endDate);
+    processCableSegments(thirdCable, startDate, endDate);
+
+    const combinedName = `${cableNameB} ${cableNameJ} ${cableNameK} ${cableNameL}`;
+    combinedCableNames.push({
+      combinedName: combinedName,
+      startDate: startDate,
+      endDate: endDate
+    });
+
+    function processCableSegments(cableSegments, startDate, endDate) {
       //cableSegment is a 2d array, debug nyo nalang para makita nyo structure
       if (cableSegments && cableSegments[0] && cableSegments[0][0]) {
         for (let i = 0; i < cableSegments.length; i++) {
@@ -374,18 +389,15 @@ function getCableNames() {
               continue;
             }
             const part2 = cableSegments[i][k].toUpperCase();
-            combinedCableNames.push(part2);
+            combinedCableNames.push({
+              combinedName: part2,
+              startDate: startDate,
+              endDate: endDate
+            });
           }
         }
       }
     }
-
-    processCableSegments(firstCable);
-    processCableSegments(secondCable);
-    processCableSegments(thirdCable);
-
-    const combinedName = `${cableNameB} ${cableNameJ} ${cableNameK} ${cableNameL}`;
-    combinedCableNames.push(combinedName);
   });
 
   //processing the start date values
@@ -394,6 +406,7 @@ function getCableNames() {
     const cableNameJstart = rowstart[8].toUpperCase().trim(); //this extracts the Affected Segment1
     const cableNameKstart = rowstart[9].toUpperCase().trim(); //this extracts the Affected Segment2
     const cableNameLstart = rowstart[10].toUpperCase().trim();  //this extracts the Affected Segment3
+
 
 
     const firstCable1 = gettingSegments(rowstart[8].trim());  //passing the Affected Segment1 to check if its a full path

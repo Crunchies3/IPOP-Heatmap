@@ -71,8 +71,6 @@
                 polylinesData[cable.cableName] = polyline;
             });
 
-            console.log("================================")
-            console.log(data.combinedCableNames);
 
             data.combinedCableNames.forEach(cables => {
                 let color = "green";
@@ -98,8 +96,6 @@
 
         // Get cable data
         const cableData = getCableData(notifiedCables);
-        console.log("=============================");
-        console.log(notifiedCables);
 
         cableData.forEach(cable => {
             // Determine the color based on the date and cable information
@@ -141,8 +137,6 @@
             });
         } else {
             // Optionally handle the case where no paths are found
-            console.log("///////////////////////////////////");
-            console.log(polylineId);
             updatePolylineColor(polylineId, color);
         }
     }

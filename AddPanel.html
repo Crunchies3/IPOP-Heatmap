@@ -2,17 +2,21 @@
   <!-- Alert container goes here -->
 </div>
 
-<span class="close-btn" onclick="closeAddPanel()"><i class="fa fa-times" aria-hidden="true"></i></span>
-<form>
+<div>
+   <h1>Add New Ticket</h1>
+</div>
+<span class="close-btn" onclick="openAddPanel()"><i class="fa fa-times" aria-hidden="true"></i></span>
+<form class="custom-modal-width">
   <div class="row">
+    <hr>
     <div class="form-group col-md-6">
-      <label for="inputTroubleTicket">Trouble Ticket:</label>
+      <label for="inputTroubleTicket" class="form-label">Trouble Ticket:</label>
       <input type="text" class="form-control" id="inputTroubleTicket">
     </div>
+
     <div class="form-group col-md-6">
-      <label for="cableSystemSelect">Cable System:</label>
-      <select class=" form-select" aria-label="Default select example" style="margin-bottom:10px;"
-        id="cableSystemSelect">
+      <label for="cableSystemSelect" class="form-label">Cable System:</label>
+      <select class="form-select form-control" aria-label="Default select example" id="cableSystemSelect" style="margin-bottom:10px;">
         <option value="C2C">C2C</option>
         <option value="EAC">EAC</option>
         <option value="TGN">TGN-IA/TGN-P</option>
@@ -21,75 +25,78 @@
       </select>
     </div>
   </div>
-
+  <br>
   <div class="row">
+    <hr>
     <div class="form-group col-md-4">
-      <label for="inputNotificationDateTime">Notification Date and Time:</label>
+      <label for="inputNotificationDateTime" class="form-label">Notification Date and Time:</label>
       <input type="datetime-local" class="form-control" id="inputNotificationDateTime" style="margin-bottom: 10px;">
     </div>
+
     <div class="form-group col-md-4" style="display: none;">
-      <label for="inputStartDateTimeUTC">Start Date and Time (UTC):</label>
+      <label for="inputStartDateTimeUTC" class="form-label">Start Date and Time (UTC):</label>
       <input type="datetime-local" class="form-control" id="inputStartDateTimeUTC" style="margin-bottom: 10px;">
     </div>
+
     <div class="form-group col-md-4" style="display: none;">
-      <label for="inputEndDateTimeUTC">End Date and Time (UTC):</label>
+      <label for="inputEndDateTimeUTC" class="form-label">End Date and Time (UTC):</label>
       <input type="datetime-local" class="form-control" id="inputEndDateTimeUTC" style="margin-bottom: 10px;">
     </div>
   </div>
 
   <div class="row">
     <div class="form-group col-md-3" style="display: none;">
-      <label for="inputOutageDuration">Outage Duration:</label>
+      <label for="inputOutageDuration" class="form-label">Outage Duration:</label>
       <input type="text" class="form-control" id="inputOutageDuration" readonly>
     </div>
+
     <div class="form-group col-md-3" style="display: none;">
-      <label for="inputActivityImpactDuration">Activity Impact Duration:</label>
+      <label for="inputActivityImpactDuration" class="form-label">Activity Impact Duration:</label>
       <input type="text" class="form-control" id="inputActivityImpactDuration" readonly>
     </div>
+
     <div class="form-group col-md-6">
-      <label for="inputImpact">Impact:</label>
-      <select class=" form-select" aria-label="Default select example" style="margin-bottom:10px;" id="inputImpact">
-        <option selected> </option>
+      <label for="inputImpact" class="form-label">Impact:</label>
+      <select class="form-select form-control" aria-label="Default select example" id="inputImpact" style="margin-bottom:10px;">
+        <option selected></option>
         <option value="2-5 Bearers">2-5 Bearers</option>
         <option value="6-10 Bearers">6-10 Bearers</option>
         <option value="11 and More">11 and More</option>
         <option value="All Bearers">All Bearers</option>
       </select>
     </div>
+
     <div class="form-group col-md-6">
-      <label for="inputIncidentType">Incident Type:</label>
-      <select class=" form-select" aria-label="Default select example" style="margin-bottom:10px;"
-        id="inputIncidentType">
-        <option selected> </option>
+      <label for="inputIncidentType" class="form-label">Incident Type:</label>
+      <select class="form-select form-control" aria-label="Default select example" id="inputIncidentType" style="margin-bottom:10px;">
+        <option selected></option>
         <option value="Outage">Outage</option>
         <option value="Planned Activity">Planned Activity</option>
       </select>
     </div>
   </div>
-
+  <br>
   <div class="row">
+    <hr>
     <div class="form-group col-md-4">
-      <label for="inputAffectedSegment1">Affected Segment 1:</label>
-      <select class="form-select" aria-label="Default select example" style="margin-bottom: 10px;"
-        id="inputAffectedSegment1">
+      <label for="inputAffectedSegment1" class="form-label">Affected Segment 1:</label>
+      <select class="form-select form-control" aria-label="Default select example" id="inputAffectedSegment1" style="margin-bottom: 10px;">
         <option value="">Select Name</option>
         <!-- Options will be populated dynamically using JavaScript -->
       </select>
     </div>
-    <!-- Name Dropdown 2 -->
+
     <div class="form-group col-md-4">
-      <label for="inputAffectedSegment2">Affected Segment 2:</label>
-      <select class="form-select" aria-label="Default select example" style="margin-bottom: 10px;"
-        id="inputAffectedSegment2">
+      <label for="inputAffectedSegment2" class="form-label">Affected Segment 2:</label>
+      <select class="form-select form-control" aria-label="Default select example" id="inputAffectedSegment2" style="margin-bottom: 10px;">
         <option value="">Select Name</option>
         <!-- Options will be populated dynamically using JavaScript -->
       </select>
     </div>
-    <!-- Name Dropdown 3 -->
+
     <div class="form-group col-md-4">
-      <label for="inputAffectedSegment3">Affected Segment 3:</label>
-      <select class="form-select" aria-label="Default select example" style="margin-bottom: 10px;"
-        id="inputAffectedSegment3">
+      <label for="inputAffectedSegment3" class="form-label">Affected Segment 3:</label>
+      <select class="form-select form-control" aria-label="Default select example" id="inputAffectedSegment3" style="margin-bottom: 10px;">
         <option value="">Select Name</option>
         <!-- Options will be populated dynamically using JavaScript -->
       </select>
@@ -98,18 +105,19 @@
 
   <div class="row">
     <div class="form-group col-md-4">
-      <label for="inputLocation">Location:</label>
-      <select class=" form-select" aria-label="Default select example" style="margin-bottom:10px;" id="inputLocation">
-        <option selected> </option>
+      <label for="inputLocation" class="form-label">Location:</label>
+      <select class="form-select form-control" aria-label="Default select example" id="inputLocation" style="margin-bottom:10px;">
+        <option selected></option>
         <option value="Terrestial/Dry Segment">Terrestial/Dry Segment</option>
         <option value="Wet Segment">Wet Segment</option>
         <option value="Undetermined">Undetermined</option>
         <option value="Backhaul">Backhaul</option>
       </select>
     </div>
+
     <div class="form-group col-md-4">
-      <label for="inputRootCauseH">Root Cause (High Level):</label>
-      <select class="form-select" aria-label="Default select example" style="margin-bottom: 10px;" id="inputRootCauseH">
+      <label for="inputRootCauseH" class="form-label">Root Cause (High Level):</label>
+      <select class="form-select form-control" aria-label="Default select example" id="inputRootCauseH" style="margin-bottom: 10px;">
         <option selected></option>
         <option value="BMH Issue">BMH Issue</option>
         <option value="Cable Fault">Cable Fault</option>
@@ -127,25 +135,27 @@
         <option value="Unknown">Unknown</option>
       </select>
     </div>
+
     <div class="form-group col-md-4">
-      <label for="inputRootCauseSpecificInternal">Root Cause (Specific-Internal):</label>
+      <label for="inputRootCauseSpecificInternal" class="form-label">Root Cause (Specific-Internal):</label>
       <textarea class="form-control" id="inputRootCauseSpecificInternal"></textarea>
     </div>
   </div>
 
   <div class="row">
     <div class="form-group col-md-6">
-      <label for="inputAdditionalRemarks">Additional Remarks (Internal):</label>
+      <label for="inputAdditionalRemarks" class="form-label">Additional Remarks (Internal):</label>
       <textarea class="form-control" id="inputAdditionalRemarks"></textarea>
     </div>
+
     <div class="form-group col-md-6">
-      <label for="inputMonthYear">Month Year:</label>
+      <label for="inputMonthYear" class="form-label">Month Year:</label>
       <input type="month" class="form-control" id="inputMonthYear" min="2023-01" readonly>
     </div>
   </div>
 
   <div class="row">
-    <div class="form-group col-md-12 text-center"> <!-- Center the content within the column -->
+    <div class="form-group col-md-12 text-end">
       <br>
       <button type="button" class="btn btn-primary" onclick="AddRow()" style="width:170px;">Add</button>
     </div>
@@ -154,15 +164,15 @@
 
 <script>
 
-  function showGoogleScriptAlert(message, type) {
-    var alertColorClass;
+function showGoogleScriptAlert(message, type) {
+  var alertColorClass;
     switch (type) {
       case 'success':
         alertColorClass = 'alert-success';
         break;
       case 'error':
         alertColorClass = 'alert-danger';
-        break;
+          break;
       default:
         alertColorClass = 'alert-warning';
     }
@@ -175,75 +185,75 @@
     `;
 
     $('#alertContainer').prepend(alertHtml);
+}
+
+//Add To Sheets
+function AddRow() {
+  // Get values from input fields
+  var troubleTicket = document.getElementById("inputTroubleTicket").value;
+  var cableSystem = document.getElementById("cableSystemSelect").value;
+  var notificationDateTime = document.getElementById("inputNotificationDateTime").value;
+  var startDateTimeUTC = document.getElementById("inputStartDateTimeUTC").value;
+  var endDateTimeUTC = document.getElementById("inputEndDateTimeUTC").value;
+  var outageDuration = document.getElementById("inputOutageDuration").value;
+  var affectedSegment1 = document.getElementById("inputAffectedSegment1").value;
+  var location = document.getElementById("inputLocation").value;
+  var activityImpactDuration = document.getElementById("inputActivityImpactDuration").value;
+  var affectedSegment2 = document.getElementById("inputAffectedSegment2").value;
+  var rootCauseH = document.getElementById("inputRootCauseH").value;
+  var impact = document.getElementById("inputImpact").value;
+  var affectedSegment3 = document.getElementById("inputAffectedSegment3").value;
+  var incidentType = document.getElementById("inputIncidentType").value;
+  var rootCauseSpecificInternal = document.getElementById("inputRootCauseSpecificInternal").value;
+  var additionalRemarks = document.getElementById("inputAdditionalRemarks").value;
+  var monthYear = document.getElementById("inputMonthYear").value;
+
+  // Check if required fields are empty
+  if (!troubleTicket || !cableSystem) {
+    showGoogleScriptAlert('Please fill in trouble ticket and cable system.', 'error');
+    return;
   }
 
-  //Add To Sheets
-  function AddRow() {
-    // Get values from input fields
-    var troubleTicket = document.getElementById("inputTroubleTicket").value;
-    var cableSystem = document.getElementById("cableSystemSelect").value;
-    var notificationDateTime = document.getElementById("inputNotificationDateTime").value;
-    var startDateTimeUTC = document.getElementById("inputStartDateTimeUTC").value;
-    var endDateTimeUTC = document.getElementById("inputEndDateTimeUTC").value;
-    var outageDuration = document.getElementById("inputOutageDuration").value;
-    var affectedSegment1 = document.getElementById("inputAffectedSegment1").value;
-    var location = document.getElementById("inputLocation").value;
-    var activityImpactDuration = document.getElementById("inputActivityImpactDuration").value;
-    var affectedSegment2 = document.getElementById("inputAffectedSegment2").value;
-    var rootCauseH = document.getElementById("inputRootCauseH").value;
-    var impact = document.getElementById("inputImpact").value;
-    var affectedSegment3 = document.getElementById("inputAffectedSegment3").value;
-    var incidentType = document.getElementById("inputIncidentType").value;
-    var rootCauseSpecificInternal = document.getElementById("inputRootCauseSpecificInternal").value;
-    var additionalRemarks = document.getElementById("inputAdditionalRemarks").value;
-    var monthYear = document.getElementById("inputMonthYear").value;
+  // Check if trouble ticket already exists in the sheet
+  google.script.run.withSuccessHandler(function (ticketExists) {
+    if (ticketExists) {
+      showGoogleScriptAlert('Trouble ticket already exists.', 'warning');
+    } else {
+      $('#spinnerModal').modal('show');
 
-    // Check if required fields are empty
-    if (!troubleTicket || !cableSystem) {
-      showGoogleScriptAlert('Please fill in trouble ticket and cable system.', 'error');
-      return;
+      // Create an array with the collected data
+      var majorIncidents  = [
+        troubleTicket, cableSystem, notificationDateTime, startDateTimeUTC, endDateTimeUTC, outageDuration, activityImpactDuration, impact, incidentType, affectedSegment1, affectedSegment2, affectedSegment3, location, rootCauseH, rootCauseSpecificInternal, additionalRemarks, monthYear
+      ];
+
+      // Call the server-side function to add data to the sheet
+      google.script.run.withSuccessHandler(function (response) {
+        // Optionally, you can handle the response or perform additional actions
+        console.log('Data added to the sheet');
+        
+        // Clear input fields
+        Clear();
+
+        // Show success alert
+        $('#spinnerModal').modal('hide');
+        showGoogleScriptAlert(troubleTicket + ' added successfully. Refresh the page.', 'success');
+      }).addDataToSheetMI('MAJOR INCIDENTS', majorIncidents);
+
+      google.script.run.withSuccessHandler(function (response) {
+        // Optionally, you can handle the response or perform additional actions
+        console.log('Data added to the sheet');
+        
+        // Clear input fields
+        Clear();
+      }).addDataToSheetNotif('Notifications', majorIncidents);
     }
-
-    // Check if trouble ticket already exists in the sheet
-    google.script.run.withSuccessHandler(function (ticketExists) {
-      if (ticketExists) {
-        showGoogleScriptAlert('Trouble ticket already exists.', 'warning');
-      } else {
-        $('#spinnerModal').modal('show');
-
-        // Create an array with the collected data
-        var majorIncidents = [
-          troubleTicket, cableSystem, notificationDateTime, startDateTimeUTC, endDateTimeUTC, outageDuration, activityImpactDuration, impact, incidentType, affectedSegment1, affectedSegment2, affectedSegment3, location, rootCauseH, rootCauseSpecificInternal, additionalRemarks, monthYear
-        ];
-
-        // Call the server-side function to add data to the sheet
-        google.script.run.withSuccessHandler(function (response) {
-          // Optionally, you can handle the response or perform additional actions
-          console.log('Data added to the sheet');
-
-          // Clear input fields
-          Clear();
-
-          // Show success alert
-          $('#spinnerModal').modal('hide');
-          showGoogleScriptAlert(troubleTicket + ' added successfully. Refresh the page.', 'success');
-        }).addDataToSheetMI('MAJOR INCIDENTS', majorIncidents);
-
-        google.script.run.withSuccessHandler(function (response) {
-          // Optionally, you can handle the response or perform additional actions
-          console.log('Data added to the sheet');
-
-          // Clear input fields
-          Clear();
-        }).addDataToSheetNotif('Notifications', majorIncidents);
-      }
-    }).checkTroubleTicketExistence(troubleTicket);
-  }
+  }).checkTroubleTicketExistence(troubleTicket);
+}
 
 
-  function Clear() {
-    $('input[type="text"]').val('');
-  }
+function Clear(){
+   $('input[type="text"]').val('');
+}
 
 </script>
 
@@ -254,7 +264,7 @@
     var nameSelect = document.getElementById(nameSelectId);
     nameSelect.innerHTML = '<option value="">Select Name</option>'; // Clear previous options
     if (window.sampleData) {
-      window.sampleData.forEach(function (item) {
+      window.sampleData.forEach(function(item) {
         if (item.cableSystem === cableSystem) {
           var option = document.createElement("option");
           option.value = item.value;
@@ -266,15 +276,15 @@
   }
 
   // Event listener for cable system selection change
-  document.addEventListener("DOMContentLoaded", function () {
-    document.getElementById("cableSystemSelect").addEventListener("change", function () {
+  document.addEventListener("DOMContentLoaded", function() {
+    document.getElementById("cableSystemSelect").addEventListener("change", function() {
       populateNames("inputAffectedSegment1"); // Update the first name dropdown when cable system changes
       populateNames("inputAffectedSegment2"); // Update the second name dropdown when cable system changes
       populateNames("inputAffectedSegment3"); // Update the third name dropdown when cable system changes
     });
 
     // Fetch sample data from Google Apps Script and populate the name dropdowns
-    google.script.run.withSuccessHandler(function (data) {
+    google.script.run.withSuccessHandler(function(data) {
       window.sampleData = data; // Define sampleData as a global variable
       populateNames("inputAffectedSegment1"); // Populate the first name dropdown initially
       populateNames("inputAffectedSegment2"); // Populate the second name dropdown initially

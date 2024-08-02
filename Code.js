@@ -375,7 +375,13 @@ function getCableNames() {
     let bool3 = processCableSegments(thirdCable, startDate, endDate, notifiedDate);
 
     if (!(bool1 || bool2 || bool3)) {
-      const combinedName = `${cableNameB} ${cableNameJ} ${cableNameK} ${cableNameL}`;
+      if (cableNameL !== "") addToCombinedCableNames(cableNameB, cableNameL, notifiedDate, startDate, endDate);
+      if (cableNameK !== "") addToCombinedCableNames(cableNameB, cableNameK, notifiedDate, startDate, endDate);
+      addToCombinedCableNames(cableNameB, cableNameJ, notifiedDate, startDate, endDate);
+    }
+
+    function addToCombinedCableNames(cableSystem, cableColumn, notifiedDate, startDate, endDate) {
+      const combinedName = `${cableSystem} ${cableColumn}`;
       combinedCableNames.push({
         combinedName: combinedName,
         notifiedDate: notifiedDate,

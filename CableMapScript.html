@@ -43,38 +43,45 @@
     document.getElementById("bottom-panel").classList.remove("active");
   }  // End bottom panel
 
-  function openAddPanel() {
-    document.getElementById("add-panel").classList.add("active");
-  }
+ const panels = {
+    add: "add-panel",
+    red: "red-notif-panel",
+    yellow: "yellow-notif-panel",
+    green: "green-notif-panel"
+};
 
+let activeNotificationTab = null;
 
-  function closeAddPanel() {
-    document.getElementById("add-panel").classList.remove("active");
-  }
+function togglePanel(panelId) {
+    
+    if (activeNotificationTab && activeNotificationTab !== panelId) {
+        document.getElementById(panels[activeNotificationTab]).classList.remove("active");
+    }
 
+    if (activeNotificationTab === panelId) {
+        document.getElementById(panels[panelId]).classList.remove("active");
+        activeNotificationTab = null;
+    }
+     else {
+        document.getElementById(panels[panelId]).classList.add("active");
+        activeNotificationTab = panelId;
+    }
+}
 
-  function toggleRedNotificationAdd() {
-    document.getElementById("red-notif-panel").classList.add("active");
-  }
+function openAddPanel() {
+    togglePanel('add');
+}
 
-  function toggleRedNotificationRemove() {
-    document.getElementById("red-notif-panel").classList.remove("active");
-  }
+function toggleRedNotificationAdd() {
+    togglePanel('red');
+}
 
-  function toggleYellowNotificationAdd() {
-    document.getElementById("yellow-notif-panel").classList.add("active");
-  }
+function toggleYellowNotificationAdd() {
+    togglePanel('yellow');
+}
 
-  function toggleYellowNotificationRemove() {
-    document.getElementById("yellow-notif-panel").classList.remove("active");
-  }
-
-  function toggleGreenNotificationAdd() {
-    document.getElementById("green-notif-panel").classList.add("active");
-  }
-
-  function toggleGreenNotificationRemove() {
-    document.getElementById("green-notif-panel").classList.remove("active");
-  }
+function toggleGreenNotificationAdd() {
+    togglePanel('green');
+}
 
 </script>

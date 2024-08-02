@@ -55,12 +55,12 @@
   </div>
 
   <div id="buttonsForCableEvents">
-    <button class="btn btn-light" onclick="openAddPanel()" data-tooltip="Add"><i class="fa fa-plus"></i></button>
-    <button class="btn btn-light" onclick="toggleYellowNotificationAdd()" data-tooltip="Notified"><i
+    <button class="btn btn-light" onclick="openAddPanel()" data-tooltip="Add" id="add_panel_toggle"><i class="fa fa-plus"></i></button>
+    <button class="btn btn-light" onclick="toggleYellowNotificationAdd()" data-tooltip="Notified" id="yellow_line_notification_toggle"><i
         class="fas fa-circle" style="color: yellow;"></i></button>
-    <button class="btn btn-light" onclick="toggleRedNotificationAdd()" data-tooltip="Started"><i class="fas fa-circle"
+    <button class="btn btn-light" onclick="toggleRedNotificationAdd()" data-tooltip="Started" id="red_line_notification_toggle"><i class="fas fa-circle"
         style="color: red;"></i></button>
-    <button class="btn btn-light" onclick="toggleGreenNotificationAdd()" data-tooltip="Ended"><i class="fas fa-circle"
+    <button class="btn btn-light" onclick="toggleGreenNotificationAdd()" data-tooltip="Ended" id="green_line_notification"><i class="fas fa-circle"
         style="color: green;"></i></button>
   </div>
 
@@ -90,17 +90,18 @@
   </div>
 
 
-  <div id="red-notif-panel">
-    <?!= HtmlService.createHtmlOutputFromFile('NotificationModal.html').getContent(); ?>
+  <div class="notif-panel" id="red-notif-panel">
+     <?!= HtmlService.createHtmlOutputFromFile('NotificationModal.html').getContent(); ?>
   </div>
 
-  <div id="yellow-notif-panel">
+  <div class="notif-panel" id="yellow-notif-panel">
     <?!= HtmlService.createHtmlOutputFromFile('NotificationYellowModal.html').getContent(); ?>
   </div>
 
-  <div id="green-notif-panel">
+  <div class="notif-panel" id="green-notif-panel">
     <?!= HtmlService.createHtmlOutputFromFile('NotificationGreenModal.html').getContent(); ?>
   </div>
+
 
 
   <?!= HtmlService.createHtmlOutputFromFile('NotificationModalRedDelete/Update.html').getContent(); ?>

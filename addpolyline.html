@@ -98,42 +98,54 @@
 
         // Get cable data
         const cableData = getCableData(notifiedCables);
+        console.log("=============================");
+        console.log(notifiedCables);
 
-        // Iterate over each cable data
         cableData.forEach(cable => {
             // Determine the color based on the date and cable information
             const color = determineColor(stringDate, cable);
 
-            // Construct the polyline ID based on cable system and segment
-            const polylineId = `${cable.cableSystem} ${cable.segment1}`;
+            // Construct the polyline IDs based on cable system and segments
+            const polylineIds = [
+                `${cable.cableSystem} ${cable.segment1}`,
+                `${cable.segment2 ? `${cable.cableSystem} ${cable.segment2}` : ''}`,
+                `${cable.segment3 ? `${cable.cableSystem} ${cable.segment3}` : ''}`
+            ];
 
-            // Find the corresponding cable path
-            const cablePath = cablePaths.find(path => path.value === polylineId);
-
-
-            // Check if cablePath is defined   
-            if (cablePath !== undefined) {
-                // Collect all non-empty paths
-                let pathsToUpdate = [];
-
-                for (let i = 1; i < 7; i++) {
-                    const pathKey = `path${i}`;
-                    if (cablePath[pathKey] && cablePath[pathKey] !== "") {
-                        pathsToUpdate.push(cablePath[pathKey]);
-                    }
+            // Update color for each polyline ID
+            polylineIds.forEach(polylineId => {
+                if (polylineId) {
+                    updateCablePaths(polylineId, color);
                 }
-
-                // Update the color for each path
-                pathsToUpdate.forEach(path => {
-                    updatePolylineColor(path, color);
-                });
-            } else {
-                // Optionally update color for polylineId if no paths are found
-                updatePolylineColor(polylineId, color);
-            }
+            });
         });
     }
 
+    function updateCablePaths(polylineId, color) {
+        // Find the corresponding cable path
+        const cablePath = cablePaths.find(path => path.value === polylineId);
+
+        if (cablePath) {
+            // Collect all non-empty paths
+            const pathsToUpdate = [];
+            for (let i = 1; i < 7; i++) {
+                const pathKey = `path${i}`;
+                if (cablePath[pathKey] && cablePath[pathKey] !== "") {
+                    pathsToUpdate.push(cablePath[pathKey]);
+                }
+            }
+
+            // Update the color for each path
+            pathsToUpdate.forEach(path => {
+                updatePolylineColor(path, color);
+            });
+        } else {
+            // Optionally handle the case where no paths are found
+            console.log("///////////////////////////////////");
+            console.log(polylineId);
+            updatePolylineColor(polylineId, color);
+        }
+    }
 
     function getDateFromElement(rangeIndex) {
         return document.getElementById(parseInt(rangeIndex) + 1).value;

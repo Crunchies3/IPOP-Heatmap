@@ -65,7 +65,7 @@
       var troubleTicket = document.getElementById("yedittroubleticket").value;
       var cableSystem = document.getElementById("yeditcablesystem").value;
       var notificationDateTime = document.getElementById("yeditndt").value;
-      var startDateTimeUTC = new Date();
+      var startDateTimeUTC = new Date().toLocaleString('en-GB', { hour12: false }).replace(',', '').replace(/:\d{2}$/, '');
       var endDateTimeUTC = document.getElementById("yeditedt").value;
       var outageDuration = document.getElementById("yeditoutagedur").value;
       var affectedSegment1 = document.getElementById("yeditas1").value;

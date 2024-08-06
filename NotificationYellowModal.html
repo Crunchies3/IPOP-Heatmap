@@ -204,7 +204,7 @@
 
   // Execute the Google Script function to load DataTables after the page has fully loaded
   google.script.run.withSuccessHandler(function (data) {
-    console.log('Data received:', data); // Log the data to the console for debugging
+    console.log('Notif Data received:', data); // Log the data to the console for debugging
 
     // Destroy existing DataTable instance if it exists
     if ($.fn.DataTable.isDataTable('#notiftableYellow')) {

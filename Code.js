@@ -170,9 +170,9 @@ function getSJCDataByCableSystem(cableSystem) {
 
 function getMIForDataTable(sheetName) {
   var spreadsheetId = '1vW8zgcrQC02iRLkWJSOIjfnqN5_lRNMgNjV6IBZF__c';
-  var sheet = SpreadsheetApp.openById(spreadsheetId).getSheetByName(sheetName);
+  var sheet = SpreadsheetApp.openById(spreadsheetId).getSheetByName('sheetName');
   var dataRange = sheet.getDataRange();
-  var values = dataRange.getValues();
+  var values = dataRange.getDisplayValues();
   values.shift();  // Assuming you want to remove the header row
   return values;
 }
@@ -331,11 +331,6 @@ function addDataToSheetNotif(sheetName, majorIncidents) {
   return 'success';
 }
 
-//the purpose of this function is to extract the cable names from the affectedSegment 1,2,3
-//this function also serves as the one who gets the full path of the affectedSegment thru gettingSegments(name) function
-//the basis when a cable name is a full path is if the affectedSegment doesnt match on any cablename in the spreadsheet of Project 3 located in cables sheet.
-//when a affected segment is detected as a full path, it will extract the corresponding cablename paths on the ipop heatmap spreadsheet located in the Segment sheet
-//refactor nyo nalang 
 function getCableNames() {
   var ss = SpreadsheetApp.openById('1vW8zgcrQC02iRLkWJSOIjfnqN5_lRNMgNjV6IBZF__c');
   var sheet = ss.getSheetByName('Notifications');
@@ -344,14 +339,16 @@ function getCableNames() {
   var data = cableNamesRange.getValues(); //getting the notif rows of affected segment
 
 
-  var sheetstart = ss.getSheetByName('Start Date');
-  var lastRowstart = sheetstart.getLastRow();
-  var cableNamesRangestart = sheetstart.getRange('B2:L' + lastRowstart);
-  var datastart = cableNamesRangestart.getValues(); //getting the start rows of affected segment
+  // var sheetstart = ss.getSheetByName('Start Date');
+  // var lastRowstart = sheetstart.getLastRow();
+  // var cableNamesRangestart = sheetstart.getRange('B2:L' + lastRowstart);
+  // var datastart = cableNamesRangestart.getValues(); //getting the start rows of affected segment
 
 
   var combinedCableNames = []; //this array stores all the affected segments/cablelines on the notification sheet (yellow)
   var combinedCableNamesStart = []; //this array stores all the affected segments/cablelines on the Start Date sheet (red)
+
+  const fullPaths = getFullPaths();
 
   //processing the notif values
   data.forEach(function (row) {
@@ -360,15 +357,29 @@ function getCableNames() {
     const cableNameK = row[9].trim(); //this extracts the Affected Segment2
     const cableNameL = row[10].trim();  //this extracts the Affected Segment3
 
-    const notifiedDate = formatDates(row[1].trim());
-    const startDate = formatDates(row[2].trim());
-    const endDate = formatDates(row[3].trim());
+    const notifiedDate = formatDates(row[1]);
+    const startDate = formatDates(row[2]);
+    const endDate = formatDates(row[3]);
 
+    if(cableNameB != ""&& cableNameJ !=""){
+     var index = fullPaths.findIndex(({value}) => value === cableNameB +" "+ cableNameJ);
+     if(index >= 0){
+      var firstCable = fullPaths[index];
+     }
+    }
+    if(cableNameK !=""){
+     var index = fullPaths.findIndex(({value}) => value === cableNameB +" "+ cableNameK);
+     if(index >= 0){
+      var secondCable = fullPaths[index];
+     }
+    }
+    if(cableNameL !=""){
+     var index = fullPaths.findIndex(({value}) => value === cableNameB +" "+ cableNameL);
+     if(index >= 0){
+      var thirdCable = fullPaths[index];
+     }
+    }
 
-
-    const firstCable = gettingSegments(row[8].trim());  //passing the Affected Segment1 to check if its a full path
-    const secondCable = gettingSegments(row[9].trim()); //passing the Affected Segment2 to check if its a full path
-    const thirdCable = gettingSegments(row[10].trim()); //passing the Affected Segment3 to check if its a full path
 
     let bool1 = processCableSegments(firstCable, startDate, endDate, notifiedDate);
     let bool2 = processCableSegments(secondCable, startDate, endDate, notifiedDate);
@@ -392,17 +403,18 @@ function getCableNames() {
 
 
     function processCableSegments(cableSegments, startDate, endDate, notifiedDate) {
-      //cableSegment is a 2d array, debug nyo nalang para makita nyo structure
-      if (cableSegments && cableSegments[0] && cableSegments[0][0]) {
-        for (let i = 0; i < cableSegments.length; i++) {
-          for (let k = 0; k < cableSegments[i].length; k++) {
-            //skipping values that are null
-            if (cableSegments[i] === "" || cableSegments[i][k] === "") {
-              continue;
-            }
-            const part2 = cableSegments[i][k].trim();
+      if(cableSegments != undefined || cableSegments != null){
+       var objectLength = Object.keys(cableSegments).length;        
+      }
+      if (objectLength > 0) {
+        for(var i =1; i < objectLength; i++){
+          const pathKey = `path${i}`;
+          if(cableSegments[pathKey] === ""){
+            break;
+          }
+          else{
             combinedCableNames.push({
-              combinedName: part2,
+              combinedName : cableSegments[pathKey],
               notifiedDate: notifiedDate,
               startDate: startDate,
               endDate: endDate
@@ -447,7 +459,7 @@ function getCableNames() {
   //   processCableSegments(secondCable2);
   //   processCableSegments(thirdCable3);
 
-  //   const combinedNameStart = `${cableNameBstart} ${cableNameJstart} ${cableNameKstart}, ${cableNameLstart}`;
+  //   const combinedNameStart = ${cableNameBstart} ${cableNameJstart} ${cableNameKstart}, ${cableNameLstart};
   //   combinedCableNamesStart.push(combinedNameStart);
   // });
   // Return combined cable names to the client-side JavaScript
@@ -470,6 +482,59 @@ function gettingSegments(name) {
   }
 
 }
+
+
+function transferNotifToStartDate() {
+  var ss = SpreadsheetApp.openById('1vW8zgcrQC02iRLkWJSOIjfnqN5_lRNMgNjV6IBZF__c');
+  var sheet = ss.getSheetByName('Notifications');
+  var lastRow = sheet.getLastRow();
+  var dataRange = sheet.getRange('A1:R' + lastRow);
+  var data = dataRange.getValues();
+
+  //getting start date sheet 
+  var sheet2 = ss.getSheetByName('Start Date');
+
+  var currentDate = new Date().toLocaleDateString();
+  var formattedCurrentDate = formatDates(currentDate);
+
+
+  const headers = data[0];
+  const startDateIndex = headers.indexOf('Start Date and Time (UTC)');
+  const copiedStatusIndex = headers.indexOf('Started?');
+
+  if (startDateIndex === -1 || copiedStatusIndex === -1) {
+    Logger.log('Start Date or Copied column not found');
+    return;
+  }
+
+  const rowsToCopy = [];
+  const updatedRows = [];
+
+  data.slice(1).forEach((row, index) => {
+    const startDate = row[startDateIndex];
+    const formattedStartDate = formatDates(startDate);
+    const copiedStatus = row[copiedStatusIndex];
+
+    if (formattedStartDate === formattedCurrentDate && copiedStatus !== 'Yes') {
+      rowsToCopy.push(row);
+      updatedRows.push(index + 2); // Adding 2 to account for the header row and zero-based index
+    }
+  });
+
+  if (rowsToCopy.length > 0) {
+    sheet2.getRange(sheet2.getLastRow() + 1, 1, rowsToCopy.length, rowsToCopy[0].length).setValues(rowsToCopy);
+    Logger.log(`${rowsToCopy.length} rows copied`);
+
+    // Update the 'Copied' column in the source sheet
+    updatedRows.forEach(rowNum => {
+      sheet.getRange(rowNum, copiedStatusIndex + 1).setValue('Yes'); // Adding 1 to convert zero-based index to 1-based index
+    });
+
+  } else {
+    Logger.log('No rows to copy or date is already on the Start Date');
+  }
+}
+
 
 function getFullPaths() {
   const ss = SpreadsheetApp.openById('1vW8zgcrQC02iRLkWJSOIjfnqN5_lRNMgNjV6IBZF__c');

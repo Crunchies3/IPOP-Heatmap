@@ -117,6 +117,30 @@
         });
     }
 
+    function changePolylineColorViaDatePicker(stringDate) {
+        // Get cable data
+        const cableData = getCableData(notifiedCables);
+
+        cableData.forEach(cable => {
+            // Determine the color based on the date and cable information
+            const color = determineColor(stringDate, cable);
+
+            // Construct the polyline IDs based on cable system and segments
+            const polylineIds = [
+                `${cable.cableSystem} ${cable.segment1}`,
+                `${cable.segment2 ? `${cable.cableSystem} ${cable.segment2}` : ''}`,
+                `${cable.segment3 ? `${cable.cableSystem} ${cable.segment3}` : ''}`
+            ];
+
+            // Update color for each polyline ID
+            polylineIds.forEach(polylineId => {
+                if (polylineId) {
+                    updateCablePaths(polylineId, color);
+                }
+            });
+        });
+    }
+
     function updateCablePaths(polylineId, color) {
         // Find the corresponding cable path
         const cablePath = cablePaths.find(path => path.value === polylineId);
@@ -197,6 +221,8 @@
         searchCableSystem();
         google.script.run.withSuccessHandler(getNotifiedCableData).extractDates(searchTerm);
         google.script.run.withSuccessHandler(getAllCablePaths).getFullPaths();
+
+        google.script.run.withSuccessHandler().transferNotifToStartDate();
     }
 
     // Call the initializeMap function when the page loads

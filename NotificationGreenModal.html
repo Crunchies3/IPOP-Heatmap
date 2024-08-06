@@ -1,7 +1,6 @@
 <body>
 
-  <span class="close-btn" onclick="toggleGreenNotificationAdd()"> <i class="fa fa-times"
-      aria-hidden="true"></i></span>
+  <span class="close-btn" onclick="toggleGreenNotificationAdd()"> <i class="fa fa-times" aria-hidden="true"></i></span>
   <form>
 
     <div>
@@ -172,8 +171,9 @@
 
     if (data && data.length > 0) {
       table = $('#notiftableGreen').DataTable({
-         responsive: true,
+        responsive: true,
         data: data,
+        order: [[4, 'desc']],
         columns: [
           { title: "Trouble Ticket" },
           { title: "Cable System" },

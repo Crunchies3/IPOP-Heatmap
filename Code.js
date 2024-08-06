@@ -640,7 +640,3 @@ function formatDates(dateString) {
   const formattedDate = formatter.format(originalDate);
   return formattedDate;
 }
-
-function getScriptURL() {
-  return ScriptApp.getService().getUrl();
-}

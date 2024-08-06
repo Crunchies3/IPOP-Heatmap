@@ -84,6 +84,8 @@
         troubleTicket, cableSystem, notificationDateTime, startDateTimeUTC, endDateTimeUTC, outageDuration, activityImpactDuration, impact, incidentType, affectedSegment1, affectedSegment2, affectedSegment3, location, rootCauseH, rootCauseSpecificInternal, additionalRemarks, monthYear
       ];
 
+      $('#spinnerModal').modal('show');
+
       google.script.run.withSuccessHandler(function () {
         // Close the spinner modal
         $('#spinnerModal').modal('hide');

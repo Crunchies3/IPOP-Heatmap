@@ -325,18 +325,18 @@
     position: fixed;
     left: 50%;
     /* Position it horizontally in the middle */
-      transform: translate(-50%, -50%);
+    transform: translate(-50%, -50%);
     /* Adjust to center horizontally */
     top: -50%;
     /* Initially hide the panel */
     width: 70%;
-   height: 81%;
+    height: 81%;
     /* Set the height of the panel */
     background-color: #fff;
     z-index: 1000;
     transition: top 0.3s ease;
     /* Change transition to 'top' property */
-  //  overflow-x: auto;
+    //  overflow-x: auto;
     padding: 20px;
     box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
     /* Add shadow for better visibility */
@@ -350,40 +350,37 @@
     /* Adjust to center vertically */
   }
 
-.notif-panel {
-  position: fixed;
-  left: 50%;
-  /* Center horizontally */
-  top: 0%;
-  /* Center vertically with a starting point */
-  transform: translate(-50%, -100%);
-  /* Initially hide the panel by moving it above the viewport */
-  width: 90%;
-  height: 38%%;
-  background-color: #fff;
-  z-index: 1000;
-  transition: transform 0.3s ease;
-  /* Transition only the 'transform' property */
-  overflow-x: auto;
-  padding: 20px;
-  box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
-  border-radius: 10px;
-}
+  .notif-panel {
+    position: fixed;
+    left: 50%;
+    /* Center horizontally */
+    top: 0%;
+    /* Center vertically with a starting point */
+    transform: translate(-50%, -100%);
+    /* Initially hide the panel by moving it above the viewport */
+    width: 90%;
+    height: 38%%;
+    background-color: #fff;
+    z-index: 1000;
+    transition: transform 0.3s ease;
+    /* Transition only the 'transform' property */
+    overflow-x: auto;
+    padding: 20px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+    border-radius: 10px;
+  }
 
-.notif-panel.active {
-  transform: translate(-50%, 1%);
-  /* Move to the center of the viewport */
-}
+  .notif-panel.active {
+    transform: translate(-50%, 1%);
+    /* Move to the center of the viewport */
+  }
 
-//Optional
-#red-notif-panel {
-}
+  //Optional
+  #red-notif-panel {}
 
-#yellow-notif-panel {
-}
+  #yellow-notif-panel {}
 
-#green-notif-panel {
-}
+  #green-notif-panel {}
 
 
   #bottom_date_picker {

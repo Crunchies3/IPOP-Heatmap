@@ -55,39 +55,22 @@
     $('#rsendtoEndDateBtn').off().on('click', function () {
 
       var troubleTicket = document.getElementById("redittroubleticket").value;
-      console.log(troubleTicket);
       var cableSystem = document.getElementById("reditcablesystem").value;
-      console.log(cableSystem);
       var notificationDateTime = document.getElementById("reditndt").value;
-      console.log(notificationDateTime);
       var startDateTimeUTC = document.getElementById("reditsdt").value;
-      console.log(startDateTimeUTC);
       var endDateTimeUTC = document.getElementById("reditedt").value;
-      console.log(endDateTimeUTC);
       var outageDuration = document.getElementById("reditoutagedur").value;
-      console.log(outageDuration);
       var affectedSegment1 = document.getElementById("reditas1").value;
-      console.log(affectedSegment1);
       var location = document.getElementById("reditlocation").value;
-      console.log(location);
       var activityImpactDuration = document.getElementById("reditaid").value;
-      console.log(activityImpactDuration);
       var affectedSegment2 = document.getElementById("reditas2").value;
-      console.log(affectedSegment2);
       var rootCauseH = document.getElementById("reditrootchl").value;
-      console.log(rootCauseH);
       var impact = document.getElementById("reditimpact").value;
-      console.log(impact);
       var affectedSegment3 = document.getElementById("reditas3").value;
-      console.log(affectedSegment3);
       var incidentType = document.getElementById("reditinctype").value;
-      console.log(incidentType);
       var rootCauseSpecificInternal = document.getElementById("reditrootcsi").value;
-      console.log(rootCauseSpecificInternal);
       var additionalRemarks = document.getElementById("reditaddrem").value;
-      console.log(additionalRemarks);
       var monthYear = document.getElementById("reditmoyr").value;
-      console.log(monthYear);
 
 
       var majorIncidents = [
@@ -132,8 +115,6 @@
         $('#reditaddrem').val(),
         $('#reditmoyr').val()
       ];
-
-      $('#spinnerModal').modal('show');
 
       // Call the server-side function to update data in the sheet
       google.script.run.withSuccessHandler(function (result) {

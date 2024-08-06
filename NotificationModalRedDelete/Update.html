@@ -1,10 +1,10 @@
-   <div id="alertContainer" class="position-fixed bottom-0 end-0 p-3" style="z-index: 11;">
-      <!-- Alert container goes here -->
-    </div>
-    
+<div id="alertContainer" class="position-fixed bottom-0 end-0 p-3" style="z-index: 11;">
+  <!-- Alert container goes here -->
+</div>
+
 <div id="selectedRowContainerRed" class="modal fade" tabindex="-1" role="dialog">
-  
-  <div class="modal-dialog custom-modal-width p-t-100" role="document" style="min-width: 1500px;" >
+
+  <div class="modal-dialog custom-modal-width p-t-100" role="document" style="min-width: 1500px;">
     <div class="modal-content">
 
       <div class="modal-header">
@@ -13,213 +13,230 @@
       </div>
 
       <div class="modal-body">
-    <form id="reditForm">
-      <!-- Input fields for each column -->
+        <form id="reditForm">
+          <!-- Input fields for each column -->
 
-      <div class="row">
+          <div class="row">
 
-        <div class="col-md-6">
-          <label for="redittroubleticket" class="form-label">Trouble Ticket</label>
-          <input type="text" class="form-control" id="redittroubleticket" name="redittroubleticket" placeholder="Add Category" readonly>
-        </div>
+            <div class="col-md-6">
+              <label for="redittroubleticket" class="form-label">Trouble Ticket</label>
+              <input type="text" class="form-control" id="redittroubleticket" name="redittroubleticket"
+                placeholder="Add Category" readonly>
+            </div>
 
-        <div class="col-md-6">
-          <label for="reditcablesystem" class="form-label">Cable System</label>
-          <input type="text" class="form-control" id="reditcablesystem" name="reditcablesystem" placeholder="Enter Cable System" readonly>
-        </div>
+            <div class="col-md-6">
+              <label for="reditcablesystem" class="form-label">Cable System</label>
+              <input type="text" class="form-control" id="reditcablesystem" name="reditcablesystem"
+                placeholder="Enter Cable System" readonly>
+            </div>
 
-      </div>
+          </div>
 
-      <br>
+          <br>
 
-      <div class="row">
-        <hr>
-        <div class="col-md-4">
-          <input type="checkbox" id="rmyCheckbox1" name="rmyCheckbox1" value="checked" style="display: none;">
-          <label for="reditndt" class="form-label">Notification Date and Time</label>
-          <input type="datetime-local" class="form-control" id="reditndt" name="reditndt" placeholder="Enter Notification Date and Time">
-        </div>
+          <div class="row">
+            <hr>
+            <div class="col-md-4">
+              <input type="checkbox" id="rmyCheckbox1" name="rmyCheckbox1" value="checked" style="display: none;">
+              <label for="reditndt" class="form-label">Notification Date and Time</label>
+              <input type="datetime-local" class="form-control" id="reditndt" name="reditndt"
+                placeholder="Enter Notification Date and Time">
+            </div>
 
-        <div class="col-md-4">
-          <input type="checkbox" id="rmyCheckbox2" name="rmyCheckbox2" value="checked">
-          <label for="reditsdt" class="form-label">Start Date and Time (UTC)</label>
-          <input type="datetime-local" class="form-control" id="reditsdt" name="reditsdt"placeholder="Enter Start Date and Time">
-        </div>
+            <div class="col-md-4">
+              <input type="checkbox" id="rmyCheckbox2" name="rmyCheckbox2" value="checked">
+              <label for="reditsdt" class="form-label">Start Date and Time (UTC)</label>
+              <input type="datetime-local" class="form-control" id="reditsdt" name="reditsdt"
+                placeholder="Enter Start Date and Time">
+            </div>
 
-        <div class="col-md-4">
+            <div class="col-md-4">
 
-          <label for="reditedt" class="form-label">End Date and Time (UTC)</label>
-          <input type="datetime-local" class="form-control" id="reditedt" name="reditedt" placeholder="Enter End Date and Time">
-        </div>
+              <label for="reditedt" class="form-label">End Date and Time (UTC)</label>
+              <input type="datetime-local" class="form-control" id="reditedt" name="reditedt"
+                placeholder="Enter End Date and Time">
+            </div>
 
-      </div>  
+          </div>
 
-  
-      <br>
 
-      <div class="row">
-<hr>
-        <div class="col-md-2">
-          <label for="reditoutagedur" class="form-label">Outage Duration</label>
-          <input type="text" class="form-control" id="yeditoutagedur" name="reditoutagedur" placeholder="Enter Outage Duration" readonly>
-        </div>
+          <br>
 
-<div class="col-md-2">
-          <label for="reditaid" class="form-label">Activity Impact Duration</label>
-          <input type="text" class="form-control" id="yeditaid" name="reditaid" placeholder="Enter Activity Impact Duration" readonly>
-        </div>
+          <div class="row">
+            <hr>
+            <div class="col-md-2">
+              <label for="reditoutagedur" class="form-label">Outage Duration</label>
+              <input type="text" class="form-control" id="yeditoutagedur" name="reditoutagedur"
+                placeholder="Enter Outage Duration" value="" readonly>
+            </div>
 
-        <div class="col-md-2">
-           <label for="reditimpact">Impact:</label>
-              <select class=" form-select" aria-label="Default select example" style="margin-bottom:10px;" id="reditimpact">
+            <div class="col-md-2">
+              <label for="reditaid" class="form-label">Activity Impact Duration</label>
+              <input type="text" class="form-control" id="yeditaid" name="reditaid"
+                placeholder="Enter Activity Impact Duration" value="" readonly>
+            </div>
+
+            <div class="col-md-2">
+              <label for="reditimpact">Impact:</label>
+              <select class=" form-select" aria-label="Default select example" style="margin-bottom:10px;"
+                id="reditimpact">
                 <option selected> </option>
                 <option value="2-5 Bearers">2-5 Bearers</option>
                 <option value="6-10 Bearers">6-10 Bearers</option>
                 <option value="11 and More">11 and More</option>
                 <option value="All Bearers">All Bearers</option>
               </select>
-        </div>
+            </div>
 
-        <div class="col-md-2">
-           <label for="reditlocation">Location:</label>
-            <select class=" form-select" aria-label="Default select example" style="margin-bottom:10px;" id="reditlocation">
+            <div class="col-md-2">
+              <label for="reditlocation">Location:</label>
+              <select class=" form-select" aria-label="Default select example" style="margin-bottom:10px;"
+                id="reditlocation">
                 <option selected> </option>
-                <option value="Terrestial/Dry Segment">Terrestial/Dry Segment</option>               
+                <option value="Terrestial/Dry Segment">Terrestial/Dry Segment</option>
                 <option value="Wet Segment">Wet Segment</option>
                 <option value="Undetermined">Undetermined</option>
                 <option value="Backhaul">Backhaul</option>
-            </select>
-        </div>
-  <br>
+              </select>
+            </div>
+            <br>
 
 
 
-        <div class="col-md-2">
+            <div class="col-md-2">
 
-           <label for="reditinctype">Incident Type:</label>
-                <select class=" form-select" aria-label="Default select example" style="margin-bottom:10px;" id="reditinctype">
-                  <option selected> </option>
-                  <option value="Outage">Outage</option>
-                  <option value="Planned Activity">Planned Activity</option>
-                </select>
-        </div>
+              <label for="reditinctype">Incident Type:</label>
+              <select class=" form-select" aria-label="Default select example" style="margin-bottom:10px;"
+                id="reditinctype">
+                <option selected> </option>
+                <option value="Outage">Outage</option>
+                <option value="Planned Activity">Planned Activity</option>
+              </select>
+            </div>
 
-      </div>  
-<br>
-<div class="row">
-  <hr>
-  <div class="col-md-4">
-    <label for="reditas1" class="form-label">Affected Segment 1</label>
-    <select class="form-select" id="reditas1" name="reditas1">
-      <option value="Japan">All Japan Traffic</option>
-      <option value="Philippines">All Philippine Traffic</option>
-      <option value="Singapore">All Singapore Traffic</option>
-      <option value="USA">All USA Traffic</option>
-      <option value="Guam-USA">Guam - USA</option>
-      <option value="Hongkong-Japan">Hong Kong - Japan</option>
-      <option value="Hongkong-Singapore">Hong Kong - Singapore</option>
-      <option value="Japan-USA">Japan - USA</option>
-      <option value="Philippines-Guam">Philippine - Guam</option>
-      <option value="Philippines-Hong Kong">Philippine - Hong Kong</option>
-      <option value="Philippines-Indonesia">Philippine - Indonesia</option>
-      <option value="Philippines-Japan">Philippine - Japan</option>
-      <option value="Philippines-Singapore">Philippine - Singapore</option>
-      <option value="Philippines-Taipei">Philippine - Taipei</option>
-      <option value="Philippines-USA">Philippine - USA</option>
-      <option value="Singapore-apan">Singapore - Japan</option>
-    </select>
-  </div>
+          </div>
+          <br>
+          <div class="row">
+            <hr>
+            <div class="col-md-4">
+              <label for="reditas1" class="form-label">Affected Segment 1</label>
+              <select class="form-select" id="reditas1" name="reditas1">
+                <option selected value="">N/A</option>
+                <option value="Japan">All Japan Traffic</option>
+                <option value="Philippines">All Philippine Traffic</option>
+                <option value="Singapore">All Singapore Traffic</option>
+                <option value="USA">All USA Traffic</option>
+                <option value="Guam-USA">Guam - USA</option>
+                <option value="Hongkong-Japan">Hong Kong - Japan</option>
+                <option value="Hongkong-Singapore">Hong Kong - Singapore</option>
+                <option value="Japan-USA">Japan - USA</option>
+                <option value="Philippines-Guam">Philippine - Guam</option>
+                <option value="Philippines-Hong Kong">Philippine - Hong Kong</option>
+                <option value="Philippines-Indonesia">Philippine - Indonesia</option>
+                <option value="Philippines-Japan">Philippine - Japan</option>
+                <option value="Philippines-Singapore">Philippine - Singapore</option>
+                <option value="Philippines-Taipei">Philippine - Taipei</option>
+                <option value="Philippines-USA">Philippine - USA</option>
+                <option value="Singapore-apan">Singapore - Japan</option>
+              </select>
+            </div>
 
-  <div class="col-md-4">
-    <label for="reditas2" class="form-label">Affected Segment 2</label>
-    <select class="form-select" id="reditas2" name="reditas2">
-     <option value="Japan">All Japan Traffic</option>
-      <option value="Philippines">All Philippine Traffic</option>
-      <option value="Singapore">All Singapore Traffic</option>
-      <option value="USA">All USA Traffic</option>
-      <option value="Guam-USA">Guam - USA</option>
-      <option value="Hongkong-Japan">Hong Kong - Japan</option>
-      <option value="Hongkong-Singapore">Hong Kong - Singapore</option>
-      <option value="Japan-USA">Japan - USA</option>
-      <option value="Philippines-Guam">Philippine - Guam</option>
-      <option value="Philippines-Hong Kong">Philippine - Hong Kong</option>
-      <option value="Philippines-Indonesia">Philippine - Indonesia</option>
-      <option value="Philippines-Japan">Philippine - Japan</option>
-      <option value="Philippines-Singapore">Philippine - Singapore</option>
-      <option value="Philippines-Taipei">Philippine - Taipei</option>
-      <option value="Philippines-USA">Philippine - USA</option>
-      <option value="Singapore-apan">Singapore - Japan</option>
-    </select>
-  </div>
+            <div class="col-md-4">
+              <label for="reditas2" class="form-label">Affected Segment 2</label>
+              <select class="form-select" id="reditas2" name="reditas2">
+                <option selected value="">N/A</option>
+                <option value="Japan">All Japan Traffic</option>
+                <option value="Philippines">All Philippine Traffic</option>
+                <option value="Singapore">All Singapore Traffic</option>
+                <option value="USA">All USA Traffic</option>
+                <option value="Guam-USA">Guam - USA</option>
+                <option value="Hongkong-Japan">Hong Kong - Japan</option>
+                <option value="Hongkong-Singapore">Hong Kong - Singapore</option>
+                <option value="Japan-USA">Japan - USA</option>
+                <option value="Philippines-Guam">Philippine - Guam</option>
+                <option value="Philippines-Hong Kong">Philippine - Hong Kong</option>
+                <option value="Philippines-Indonesia">Philippine - Indonesia</option>
+                <option value="Philippines-Japan">Philippine - Japan</option>
+                <option value="Philippines-Singapore">Philippine - Singapore</option>
+                <option value="Philippines-Taipei">Philippine - Taipei</option>
+                <option value="Philippines-USA">Philippine - USA</option>
+                <option value="Singapore-apan">Singapore - Japan</option>
+              </select>
+            </div>
 
-  <div class="col-md-4">
-    <label for="reditas3" class="form-label">Affected Segment 3</label>
-    <select class="form-select" id="reditas3" name="reditas3">
-     <option value="Japan">All Japan Traffic</option>
-      <option value="Philippines">All Philippine Traffic</option>
-      <option value="Singapore">All Singapore Traffic</option>
-      <option value="USA">All USA Traffic</option>
-      <option value="Guam-USA">Guam - USA</option>
-      <option value="Hongkong-Japan">Hong Kong - Japan</option>
-      <option value="Hongkong-Singapore">Hong Kong - Singapore</option>
-      <option value="Japan-USA">Japan - USA</option>
-      <option value="Philippines-Guam">Philippine - Guam</option>
-      <option value="Philippines-Hong Kong">Philippine - Hong Kong</option>
-      <option value="Philippines-Indonesia">Philippine - Indonesia</option>
-      <option value="Philippines-Japan">Philippine - Japan</option>
-      <option value="Philippines-Singapore">Philippine - Singapore</option>
-      <option value="Philippines-Taipei">Philippine - Taipei</option>
-      <option value="Philippines-USA">Philippine - USA</option>
-      <option value="Singapore-apan">Singapore - Japan</option>
-    </select>
-  </div>
-</div>
+            <div class="col-md-4">
+              <label for="reditas3" class="form-label">Affected Segment 3</label>
+              <select class="form-select" id="reditas3" name="reditas3">
+                <option selected value="">N/A</option>
+                <option value="Japan">All Japan Traffic</option>
+                <option value="Philippines">All Philippine Traffic</option>
+                <option value="Singapore">All Singapore Traffic</option>
+                <option value="USA">All USA Traffic</option>
+                <option value="Guam-USA">Guam - USA</option>
+                <option value="Hongkong-Japan">Hong Kong - Japan</option>
+                <option value="Hongkong-Singapore">Hong Kong - Singapore</option>
+                <option value="Japan-USA">Japan - USA</option>
+                <option value="Philippines-Guam">Philippine - Guam</option>
+                <option value="Philippines-Hong Kong">Philippine - Hong Kong</option>
+                <option value="Philippines-Indonesia">Philippine - Indonesia</option>
+                <option value="Philippines-Japan">Philippine - Japan</option>
+                <option value="Philippines-Singapore">Philippine - Singapore</option>
+                <option value="Philippines-Taipei">Philippine - Taipei</option>
+                <option value="Philippines-USA">Philippine - USA</option>
+                <option value="Singapore-apan">Singapore - Japan</option>
+              </select>
+            </div>
+          </div>
 
-<br>
-      <div class="row">
-        <hr>
+          <br>
+          <div class="row">
+            <hr>
 
-        <div class="col-md-3">
-          <label for="reditrootchl">Root Cause (High Level):</label>
-          <select class="form-select" aria-label="Default select example" style="margin-bottom: 10px;" id="reditrootchl">
-            <option selected></option>
-            <option value="BMH Issue">BMH Issue</option>
-            <option value="Cable Fault">Cable Fault</option>
-            <option value="Card Failure">Card Failure</option>
-            <option value="Configuration Issue">Configuration Issue</option>
-            <option value="Fan Issue">Fan Issue</option>
-            <option value="Force Majeure">Force Majeure</option>
-            <option value="Government/Private Project">Government/Private Project</option>
-            <option value="Human Error">Human Error</option>
-            <option value="PFE Issue">PFE Issue</option>
-            <option value="Physical Connection">Physical Connection</option>
-            <option value="Planned Maintenance">Planned Maintenance</option>
-            <option value="Shunt Fault">Shunt Fault</option>
-            <option value="Subsea Equipment Fault">Subsea Equipment Fault</option>
-            <option value="Unknown">Unknown</option>
-          </select>
-        </div>
+            <div class="col-md-3">
+              <label for="reditrootchl">Root Cause (High Level):</label>
+              <select class="form-select" aria-label="Default select example" style="margin-bottom: 10px;"
+                id="reditrootchl">
+                <option selected></option>
+                <option value="BMH Issue">BMH Issue</option>
+                <option value="Cable Fault">Cable Fault</option>
+                <option value="Card Failure">Card Failure</option>
+                <option value="Configuration Issue">Configuration Issue</option>
+                <option value="Fan Issue">Fan Issue</option>
+                <option value="Force Majeure">Force Majeure</option>
+                <option value="Government/Private Project">Government/Private Project</option>
+                <option value="Human Error">Human Error</option>
+                <option value="PFE Issue">PFE Issue</option>
+                <option value="Physical Connection">Physical Connection</option>
+                <option value="Planned Maintenance">Planned Maintenance</option>
+                <option value="Shunt Fault">Shunt Fault</option>
+                <option value="Subsea Equipment Fault">Subsea Equipment Fault</option>
+                <option value="Unknown">Unknown</option>
+              </select>
+            </div>
 
-          <div class="col-md-3">
-          <label for="reditrootcsi" class="form-label">Root Cause (Specific - Internal)</label>
-          <textarea type="text" class="form-control" id="reditrootcsi" name="reditrootcsi" placeholder="Enter Root Cause (Specific - Internal)"></textarea>
-        </div>
+            <div class="col-md-3">
+              <label for="reditrootcsi" class="form-label">Root Cause (Specific - Internal)</label>
+              <textarea type="text" class="form-control" id="reditrootcsi" name="reditrootcsi"
+                placeholder="Enter Root Cause (Specific - Internal)"></textarea>
+            </div>
 
-        <div class="col-md-3">
-          <label for="reditaddrem" class="form-label">Additional Remarks (Internal)</label>
-          <textarea type="text" class="form-control" id="reditaddrem" name="reditaddrem" placeholder="Enter Additional Remarks (Internal)"></textarea>
-        </div>
+            <div class="col-md-3">
+              <label for="reditaddrem" class="form-label">Additional Remarks (Internal)</label>
+              <textarea type="text" class="form-control" id="reditaddrem" name="reditaddrem"
+                placeholder="Enter Additional Remarks (Internal)"></textarea>
+            </div>
 
-        <div class="col-md-3">
-          <label for="reditmoyr" class="form-label">Month Year</label>
-          <input type="text" class="form-control" id="reditmoyr" name="reditmoyr" placeholder="Enter Month Year" readonly>
-        </div>
-            
-    
-      </div> 
+            <div class="col-md-3">
+              <label for="reditmoyr" class="form-label">Month Year</label>
+              <input type="text" class="form-control" id="reditmoyr" name="reditmoyr" placeholder="Enter Month Year"
+                readonly>
+            </div>
 
 
-      </form> 
+          </div>
+
+
+        </form>
       </div>
 
       <div class="modal-footer">
@@ -232,36 +249,36 @@
 </div>
 
 <script>
-//Checkbox
-document.addEventListener('DOMContentLoaded', function() {
-  var checkbox1 = document.getElementById('rmyCheckbox1');
-  var checkbox2 = document.getElementById('rmyCheckbox2');
- 
-  var dateTimeInput1 = document.getElementById('reditndt');
-  var dateTimeInput2 = document.getElementById('reditsdt');
+  //Checkbox
+  document.addEventListener('DOMContentLoaded', function () {
+    var checkbox1 = document.getElementById('rmyCheckbox1');
+    var checkbox2 = document.getElementById('rmyCheckbox2');
 
-  // Function to enable or disable datetime inputs based on checkbox state
-  function toggleDateTimeInput(checkbox, dateTimeInput) {
-    if (checkbox.checked) {
-      dateTimeInput.disabled = false; // Enable datetime input
-    } else {
-      dateTimeInput.disabled = true; // Disable datetime input
+    var dateTimeInput1 = document.getElementById('reditndt');
+    var dateTimeInput2 = document.getElementById('reditsdt');
+
+    // Function to enable or disable datetime inputs based on checkbox state
+    function toggleDateTimeInput(checkbox, dateTimeInput) {
+      if (checkbox.checked) {
+        dateTimeInput.disabled = false; // Enable datetime input
+      } else {
+        dateTimeInput.disabled = true; // Disable datetime input
+      }
     }
-  }
 
-  // Add event listeners to checkboxes
-  checkbox1.addEventListener('change', function() {
+    // Add event listeners to checkboxes
+    checkbox1.addEventListener('change', function () {
+      toggleDateTimeInput(checkbox1, dateTimeInput1);
+    });
+
+    checkbox2.addEventListener('change', function () {
+      toggleDateTimeInput(checkbox2, dateTimeInput2);
+    });
+
+
+
+    // Initial setup based on checkbox state
     toggleDateTimeInput(checkbox1, dateTimeInput1);
-  });
-
-  checkbox2.addEventListener('change', function() {
     toggleDateTimeInput(checkbox2, dateTimeInput2);
   });
-
-
-
-  // Initial setup based on checkbox state
-  toggleDateTimeInput(checkbox1, dateTimeInput1);
-  toggleDateTimeInput(checkbox2, dateTimeInput2);
-});
 </script>

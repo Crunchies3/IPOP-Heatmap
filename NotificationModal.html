@@ -76,6 +76,11 @@
         troubleTicket, cableSystem, notificationDateTime, startDateTimeUTC, endDateTimeUTC, outageDuration, activityImpactDuration, impact, incidentType, affectedSegment1, affectedSegment2, affectedSegment3, location, rootCauseH, rootCauseSpecificInternal, additionalRemarks, monthYear
       ];
 
+      console.log("=======================");
+      console.log(majorIncidents);
+
+      $('#spinnerModal').modal('show');
+
       google.script.run.withSuccessHandler(function (result) {
 
         console.log('Data added to the sheet');

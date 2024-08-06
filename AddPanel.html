@@ -323,7 +323,7 @@
         google.script.run.withSuccessHandler(function (response) {
           console.log('Data added to the sheet');
           Clear();
-          location.reload();
+          reLoad();
         }).addDataToSheetNotif('Notifications', majorIncidents);
       }
     }).checkTroubleTicketExistence(troubleTicket);
@@ -367,4 +367,13 @@
       populateNames("inputAffectedSegment3");
     }).getSampleData();
   });
+
+
+  function reLoad() {
+    google.script.run
+      .withSuccessHandler(function (url) {
+        window.open(url, '_top');
+      })
+      .getScriptURL();
+  }
 </script>

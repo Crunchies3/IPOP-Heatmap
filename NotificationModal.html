@@ -112,6 +112,8 @@
         $('#reditmoyr').val()
       ];
 
+      $('#spinnerModal').modal('show');
+
       // Call the server-side function to update data in the sheet
       google.script.run.withSuccessHandler(function (result) {
         if (result === 'success') {

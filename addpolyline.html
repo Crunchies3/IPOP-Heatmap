@@ -222,7 +222,7 @@
         google.script.run.withSuccessHandler(getNotifiedCableData).extractDates(searchTerm);
         google.script.run.withSuccessHandler(getAllCablePaths).getFullPaths();
 
-        google.script.run.withSuccessHandler().transferNotifToStartDate();
+        google.script.run.withSuccessHandler().transferNotifToStartandEndDate();
     }
 
     // Call the initializeMap function when the page loads

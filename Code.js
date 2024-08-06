@@ -170,7 +170,7 @@ function getSJCDataByCableSystem(cableSystem) {
 
 function getMIForDataTable(sheetName) {
   var spreadsheetId = '1vW8zgcrQC02iRLkWJSOIjfnqN5_lRNMgNjV6IBZF__c';
-  var sheet = SpreadsheetApp.openById(spreadsheetId).getSheetByName('sheetName');
+  var sheet = SpreadsheetApp.openById(spreadsheetId).getSheetByName(sheetName);
   var dataRange = sheet.getDataRange();
   var values = dataRange.getDisplayValues();
   values.shift();  // Assuming you want to remove the header row
@@ -361,23 +361,23 @@ function getCableNames() {
     const startDate = formatDates(row[2]);
     const endDate = formatDates(row[3]);
 
-    if(cableNameB != ""&& cableNameJ !=""){
-     var index = fullPaths.findIndex(({value}) => value === cableNameB +" "+ cableNameJ);
-     if(index >= 0){
-      var firstCable = fullPaths[index];
-     }
+    if (cableNameB != "" && cableNameJ != "") {
+      var index = fullPaths.findIndex(({ value }) => value === cableNameB + " " + cableNameJ);
+      if (index >= 0) {
+        var firstCable = fullPaths[index];
+      }
     }
-    if(cableNameK !=""){
-     var index = fullPaths.findIndex(({value}) => value === cableNameB +" "+ cableNameK);
-     if(index >= 0){
-      var secondCable = fullPaths[index];
-     }
+    if (cableNameK != "") {
+      var index = fullPaths.findIndex(({ value }) => value === cableNameB + " " + cableNameK);
+      if (index >= 0) {
+        var secondCable = fullPaths[index];
+      }
     }
-    if(cableNameL !=""){
-     var index = fullPaths.findIndex(({value}) => value === cableNameB +" "+ cableNameL);
-     if(index >= 0){
-      var thirdCable = fullPaths[index];
-     }
+    if (cableNameL != "") {
+      var index = fullPaths.findIndex(({ value }) => value === cableNameB + " " + cableNameL);
+      if (index >= 0) {
+        var thirdCable = fullPaths[index];
+      }
     }
 
 
@@ -403,18 +403,18 @@ function getCableNames() {
 
 
     function processCableSegments(cableSegments, startDate, endDate, notifiedDate) {
-      if(cableSegments != undefined || cableSegments != null){
-       var objectLength = Object.keys(cableSegments).length;        
+      if (cableSegments != undefined || cableSegments != null) {
+        var objectLength = Object.keys(cableSegments).length;
       }
       if (objectLength > 0) {
-        for(var i =1; i < objectLength; i++){
+        for (var i = 1; i < objectLength; i++) {
           const pathKey = `path${i}`;
-          if(cableSegments[pathKey] === ""){
+          if (cableSegments[pathKey] === "") {
             break;
           }
-          else{
+          else {
             combinedCableNames.push({
-              combinedName : cableSegments[pathKey],
+              combinedName: cableSegments[pathKey],
               notifiedDate: notifiedDate,
               startDate: startDate,
               endDate: endDate

@@ -1,7 +1,6 @@
 <body>
 
-  <span class="close-btn" onclick="toggleYellowNotificationAdd()"> <i class="fa fa-times"
-      aria-hidden="true"></i></span>
+  <span class="close-btn" onclick="toggleYellowNotificationAdd()"> <i class="fa fa-times" aria-hidden="true"></i></span>
   <form>
 
     <div>
@@ -66,7 +65,7 @@
       var troubleTicket = document.getElementById("yedittroubleticket").value;
       var cableSystem = document.getElementById("yeditcablesystem").value;
       var notificationDateTime = document.getElementById("yeditndt").value;
-      var startDateTimeUTC = document.getElementById("yeditsdt").value;
+      var startDateTimeUTC = new Date().toLocaleString('en-GB', { hour12: false }).replace(',', '').replace(/:\d{2}$/, '');
       var endDateTimeUTC = document.getElementById("yeditedt").value;
       var outageDuration = document.getElementById("yeditoutagedur").value;
       var affectedSegment1 = document.getElementById("yeditas1").value;
@@ -97,31 +96,17 @@
         }
       }).addDataToSheetMI('Start Date', majorIncidents);
 
-      google.script.run.withSuccessHandler(function (deleteResult) {
-        if (deleteResult === 'success') {
-          // Close the spinner modal
-          $('#spinnerModal').modal('hide');
+      google.script.run.withSuccessHandler(function () {
+        // Close the spinner modal
+        $('#spinnerModal').modal('hide');
+        // Show success alert
+        showGoogleScriptAlert('Record added successfully. Refresh the page.', 'success');
 
-          // Show success alert
-          showGoogleScriptAlert('Record added successfully. Refresh the page.', 'success');
+        // Close the modal
+        $('#selectedRowContainerYellow').modal('hide');
 
-          // Remove the DataTable row for the deleted data
-          table.row(rowIndex).remove().draw();
-
-          // Close the modal
-          $('#selectedRowContainerYellow').modal('hide');
-        } else {
-          // Data deletion failed
-          console.error('Error deleting data:', deleteResult);
-
-          // Show error alert
-          showGoogleScriptAlert('Failed to delete record. Please try again.', 'error');
-        }
-      }).deleteRowMI('Notifications', rowData[0]);
-
+      });
     });
-
-
 
     // Add click event to "Save Changes" button
     $('#ysaveChangesBtn').off().on('click', function () {

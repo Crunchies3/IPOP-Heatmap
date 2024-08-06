@@ -84,18 +84,6 @@
         troubleTicket, cableSystem, notificationDateTime, startDateTimeUTC, endDateTimeUTC, outageDuration, activityImpactDuration, impact, incidentType, affectedSegment1, affectedSegment2, affectedSegment3, location, rootCauseH, rootCauseSpecificInternal, additionalRemarks, monthYear
       ];
 
-      google.script.run.withSuccessHandler(function (result) {
-        if (result === 'success') {
-          console.log('Data added to the sheet');
-
-        } else {
-          // Data update failed
-          console.error('Error updating data:', result);
-          $('#spinnerModal').modal('hide');
-          showGoogleScriptAlert('Failed to add record. Please try again.', 'error');
-        }
-      }).addDataToSheetMI('Start Date', majorIncidents);
-
       google.script.run.withSuccessHandler(function () {
         // Close the spinner modal
         $('#spinnerModal').modal('hide');
@@ -105,7 +93,9 @@
         // Close the modal
         $('#selectedRowContainerYellow').modal('hide');
 
-      });
+      }).copyToStartTableWithTheCurrentDate('Start Date', troubleTicket);
+
+
     });
 
     // Add click event to "Save Changes" button

@@ -465,26 +465,104 @@ function getCableNames() {
   // Return combined cable names to the client-side JavaScript
   return { combinedCableNames: combinedCableNames, combinedCableNamesStart: combinedCableNamesStart };
 }
+function getCurrentDateTableFormat() {
+  const now = new Date();
 
-//this function gets the name as parameter and checks if the name matches on the segment sheet
-//if the name matches, it will return the full path on its side on an array format.
-function gettingSegments(name) {
-  const ss = SpreadsheetApp.openById('1vW8zgcrQC02iRLkWJSOIjfnqN5_lRNMgNjV6IBZF__c');
-  var segmentRows = ss.getSheetByName('Segment').getDataRange().getValues();
-  const nameColumn = 2;
-  const targetRow = segmentRows.findIndex(row => row[nameColumn] === name);
-  if (targetRow !== -1) {
-    const results = [segmentRows[targetRow].slice(3)];
-    return results;
-  } else {
-    // Handle case where no match is found 
-    return []; // or throw an error, or return an empty array
-  }
+  // Get the components of the date
+  const year = now.getFullYear();
+  const month = String(now.getMonth() + 1).padStart(2, '0'); // Months are 0-based
+  const day = String(now.getDate()).padStart(2, '0');
+  const hour = String(now.getHours()).padStart(2, '0');
+  const minute = String(now.getMinutes()).padStart(2, '0');
 
+  // Format as YYYY-MM-DD Hour:Minute
+  const formattedDate = `${year}-${month}-${day} ${hour}:${minute}`;
+
+  return formattedDate;
 }
 
 
-function transferNotifToStartDate() {
+function copyToStartTableWithTheCurrentDate(sheetType, ticketNumber) {
+  var ss = SpreadsheetApp.openById('1vW8zgcrQC02iRLkWJSOIjfnqN5_lRNMgNjV6IBZF__c');
+  var sheet = ss.getSheetByName('Notifications');
+  var lastRow = sheet.getLastRow();
+  var dataRange = sheet.getRange('A1:R' + lastRow);
+  var data = dataRange.getValues();
+
+  var sheetToTransferOrCopy = ss.getSheetByName(sheetType);
+  var sheetRange = sheetToTransferOrCopy.getRange('C2:E');
+
+
+  //getting startDate sheet
+  var sheetStart = ss.getSheetByName('Start Date');
+  var sheetStartData = sheetStart.getDataRange().getValues();
+  
+
+
+
+  var currentDate = getCurrentDateTableFormat();
+  console.log(currentDate);
+
+  var rowToCopy = null;
+  var rowIndex = -1;
+  if (sheetType == 'Start Date') {
+    for (var i = 0; i < data.length; i++) {
+      if (data[i][0] === ticketNumber) { // Assuming ticket number is in the first column (index 0)
+        rowToCopy = data[i].slice(); // Clone the row
+        rowIndex = i;
+        break;
+      }
+    }
+
+    if (rowToCopy[17] != "Yes") {
+      rowToCopy[3] = currentDate;
+      rowToCopy[17] = 'Yes';
+
+      sheetToTransferOrCopy.appendRow(rowToCopy);
+      sheetRange.setNumberFormat('yyyy-mm-dd hh:mm');
+      sheet.getRange(rowIndex + 1, 18).setValue('Yes'); // Update status in the original sheet
+      sheet.getRange(rowIndex + 1, 4).setValue(currentDate); // Update status in the original sheet
+    } else {
+      Logger.log('Data is already on the Start Date Cell');
+    }
+  }
+  
+  if(sheetType == 'End Date'){
+    var rowToCopyEndDate = null;
+    var rowIndexEndDate = -1;
+
+        for (var i = 1; i < sheetStartData.length; i++) {
+      if (sheetStartData[i][0] === ticketNumber) { // Assuming ticket number is in the first column (index 0)
+        rowToCopyEndDate = sheetStartData[i].slice(); // Clone the row
+        rowIndexEndDate = i;
+        break;
+      }
+    }
+        if (rowToCopyEndDate) {
+      rowToCopyEndDate[4] = currentDate; // Update end date (assuming it’s in the 5th column)
+
+      // Append the updated row to the End Date sheet
+      sheetToTransferOrCopy.appendRow(rowToCopyEndDate);
+      sheetRange.setNumberFormat('yyyy-mm-dd hh:mm');
+
+      // Delete the row from the Start Date sheet
+      sheetStart.deleteRow(rowIndexEndDate + 1); // Adjust for 1-based index
+
+      // Delete the row from the Notifications sheet
+      for (var j = 0; j < data.length; j++) {
+        if (data[j][0] === ticketNumber) {
+          sheet.deleteRow(j + 1); // Adjust for 1-based index
+          break;
+        }
+      }
+    } else {
+      Logger.log('Data is not found in Start Date sheet.');
+    }
+  }
+}
+
+
+function transferNotifToStartandEndDate() {
   var ss = SpreadsheetApp.openById('1vW8zgcrQC02iRLkWJSOIjfnqN5_lRNMgNjV6IBZF__c');
   var sheet = ss.getSheetByName('Notifications');
   var lastRow = sheet.getLastRow();
@@ -492,15 +570,21 @@ function transferNotifToStartDate() {
   var data = dataRange.getValues();
 
   //getting start date sheet 
-  var sheet2 = ss.getSheetByName('Start Date');
+  var startDateSheet = ss.getSheetByName('Start Date');
+  var endDateSheet = ss.getSheetByName('End Date');
 
-  var currentDate = new Date().toLocaleDateString();
+
+  var currentDate = getCurrentDateTableFormat();
+  console.log(currentDate);
   var formattedCurrentDate = formatDates(currentDate);
+
 
 
   const headers = data[0];
   const startDateIndex = headers.indexOf('Start Date and Time (UTC)');
   const copiedStatusIndex = headers.indexOf('Started?');
+  const endDateIndex = headers.indexOf('End Date and Time (UTC)');
+
 
   if (startDateIndex === -1 || copiedStatusIndex === -1) {
     Logger.log('Start Date or Copied column not found');
@@ -508,22 +592,33 @@ function transferNotifToStartDate() {
   }
 
   const rowsToCopy = [];
+  const rowsToTransfer = [];
   const updatedRows = [];
+  const rowsToDelete = [];
 
   data.slice(1).forEach((row, index) => {
     const startDate = row[startDateIndex];
+    const endDate = row[endDateIndex]
     const formattedStartDate = formatDates(startDate);
+    const formattedEndDate = formatDates(endDate);
     const copiedStatus = row[copiedStatusIndex];
 
     if (formattedStartDate === formattedCurrentDate && copiedStatus !== 'Yes') {
       rowsToCopy.push(row);
       updatedRows.push(index + 2); // Adding 2 to account for the header row and zero-based index
     }
+
+    if (formattedCurrentDate > formattedEndDate) {
+      rowsToTransfer.push(row);
+      rowsToDelete.push(index + 2);
+    }
+
   });
 
+
   if (rowsToCopy.length > 0) {
-    sheet2.getRange(sheet2.getLastRow() + 1, 1, rowsToCopy.length, rowsToCopy[0].length).setValues(rowsToCopy);
-    Logger.log(`${rowsToCopy.length} rows copied`);
+    startDateSheet.getRange(startDateSheet.getLastRow() + 1, 1, rowsToCopy.length, rowsToCopy[0].length).setValues(rowsToCopy);
+    Logger.log(`${rowsToCopy.length} rows copied.`);
 
     // Update the 'Copied' column in the source sheet
     updatedRows.forEach(rowNum => {
@@ -533,6 +628,19 @@ function transferNotifToStartDate() {
   } else {
     Logger.log('No rows to copy or date is already on the Start Date');
   }
+
+  if (rowsToTransfer.length > 0) {
+    endDateSheet.getRange(endDateSheet.getLastRow() + 1, 1, rowsToTransfer.length, rowsToTransfer[0].length).setValues(rowsToTransfer);
+    Logger.log(`${rowsToTransfer.length} rows copied to End Date.`);
+
+    //Delete the rows from the notif and start sheet
+    rowsToDelete.forEach(row => {
+      const rowIndex = data.indexOf(row) + 3; // Adding 2 to account for the header row and zero-based index
+      sheet.deleteRow(rowIndex);
+      startDateSheet.deleteRow(rowIndex);
+    });
+  }
+
 }
 
 

@@ -1,5 +1,6 @@
 <head>
-  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet"
+    integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
 </head>
 <div id="alertContainer" class="position-fixed bottom-0 end-0 p-3" style="z-index: 11;">
   <!-- Alert container goes here -->
@@ -14,7 +15,7 @@
     <hr>
     <div class="form-group col-md-6">
       <label for="inputTroubleTicket" class="form-label ">Trouble Ticket:</label>
-      <input type="text" class="form-control" id="inputTroubleTicket"  required>
+      <input type="text" class="form-control" id="inputTroubleTicket" required>
       <div class="invalid-feedback">
         Please enter a trouble ticket.
       </div>
@@ -22,7 +23,8 @@
 
     <div class="form-group col-md-6">
       <label for="cableSystemSelect" class="form-label">Cable System:</label>
-      <select class="form-select form-control p-1" aria-label="Default select example" id="cableSystemSelect" style="margin-bottom:10px;" required>
+      <select class="form-select form-control p-1" aria-label="Default select example" id="cableSystemSelect"
+        style="margin-bottom:10px;" required>
         <option value="" disabled selected>Select Cable System</option>
         <option value="C2C">C2C</option>
         <option value="EAC">EAC</option>
@@ -40,16 +42,18 @@
     <hr>
     <div class="form-group col-md-4">
       <label for="inputNotificationDateTime" class="form-label">Notification Date and Time:</label>
-      <input type="datetime-local" class="form-control" id="inputNotificationDateTime" style="margin-bottom: 10px;" required>
-        <div class="invalid-feedback">
+      <input type="datetime-local" class="form-control" id="inputNotificationDateTime" style="margin-bottom: 10px;"
+        required>
+      <div class="invalid-feedback">
         Please select date and time
       </div>
     </div>
 
     <div class="form-group col-md-4">
       <label for="inputStartDateTimeUTC" class="form-label">Start Date and Time (UTC):</label>
-      <input type="datetime-local" class="form-control" id="inputStartDateTimeUTC" style="margin-bottom: 10px;"required>
-       <div class="invalid-feedback">
+      <input type="datetime-local" class="form-control" id="inputStartDateTimeUTC" style="margin-bottom: 10px;"
+        required>
+      <div class="invalid-feedback">
         Please select start date and time
       </div>
     </div>
@@ -57,8 +61,8 @@
     <div class="form-group col-md-4">
       <label for="inputEndDateTimeUTC" class="form-label">End Date and Time (UTC):</label>
       <input type="datetime-local" class="form-control" id="inputEndDateTimeUTC" style="margin-bottom: 10px;" required>
-       <div class="invalid-feedback">
-       Please select end date and time
+      <div class="invalid-feedback">
+        Please select end date and time
       </div>
     </div>
   </div>
@@ -76,7 +80,8 @@
 
     <div class="form-group col-md-6">
       <label for="inputImpact" class="form-label">Impact:</label>
-      <select class="form-select form-control p-1" aria-label="Default select example" id="inputImpact" style="margin-bottom:10px;" required>
+      <select class="form-select form-control p-1" aria-label="Default select example" id="inputImpact"
+        style="margin-bottom:10px;" required>
         <option value="" disabled selected>Select Impact</option>
         <option value="2-5 Bearers">2-5 Bearers</option>
         <option value="6-10 Bearers">6-10 Bearers</option>
@@ -90,7 +95,8 @@
 
     <div class="form-group col-md-6">
       <label for="inputIncidentType" class="form-label">Incident Type:</label>
-      <select class="form-select form-control p-1" aria-label="Default select example" id="inputIncidentType" style="margin-bottom:10px;" required>
+      <select class="form-select form-control p-1" aria-label="Default select example" id="inputIncidentType"
+        style="margin-bottom:10px;" required>
         <option value="" disabled selected>Select Incident Type</option>
         <option value="Outage">Outage</option>
         <option value="Planned Activity">Planned Activity</option>
@@ -105,18 +111,20 @@
     <hr>
     <div class="form-group col-md-4">
       <label for="inputAffectedSegment1" class="form-label">Affected Segment 1:</label>
-      <select class="form-select form-control p-1" aria-label="Default select example" id="inputAffectedSegment1" style="margin-bottom: 10px;">
+      <select class="form-select form-control p-1" aria-label="Default select example" id="inputAffectedSegment1"
+        style="margin-bottom: 10px;">
         <option value="">Select a Segment</option>
         <!-- Options will be populated dynamically using JavaScript -->
       </select>
-        <div class="invalid-feedback">
+      <div class="invalid-feedback">
         Please select at least 1 segment.
       </div>
     </div>
 
     <div class="form-group col-md-4">
       <label for="inputAffectedSegment2" class="form-label">Affected Segment 2:</label>
-      <select class="form-select form-control p-1" aria-label="Default select example" id="inputAffectedSegment2" style="margin-bottom: 10px;">
+      <select class="form-select form-control p-1" aria-label="Default select example" id="inputAffectedSegment2"
+        style="margin-bottom: 10px;">
         <option value="">Select a Segment</option>
         <!-- Options will be populated dynamically using JavaScript -->
       </select>
@@ -124,7 +132,8 @@
 
     <div class="form-group col-md-4">
       <label for="inputAffectedSegment3" class="form-label">Affected Segment 3:</label>
-      <select class="form-select form-control p-1" aria-label="Default select example" id="inputAffectedSegment3" style="margin-bottom: 10px;">
+      <select class="form-select form-control p-1" aria-label="Default select example" id="inputAffectedSegment3"
+        style="margin-bottom: 10px;">
         <option value="">Select a Segment</option>
         <!-- Options will be populated dynamically using JavaScript -->
       </select>
@@ -134,7 +143,8 @@
   <div class="row">
     <div class="form-group col-md-4">
       <label for="inputLocation" class="form-label">Location:</label>
-      <select class="form-select form-control p-1" aria-label="Default select example" id="inputLocation" style="margin-bottom:10px;" required>
+      <select class="form-select form-control p-1" aria-label="Default select example" id="inputLocation"
+        style="margin-bottom:10px;" required>
         <option value="" disabled selected>Select Location</option>
         <option value="Terrestial/Dry Segment">Terrestial/Dry Segment</option>
         <option value="Wet Segment">Wet Segment</option>
@@ -148,7 +158,8 @@
 
     <div class="form-group col-md-4">
       <label for="inputRootCauseH" class="form-label">Root Cause (High Level):</label>
-      <select class="form-select form-control p-1" aria-label="Default select example" id="inputRootCauseH" style="margin-bottom: 10px;" required>
+      <select class="form-select form-control p-1" aria-label="Default select example" id="inputRootCauseH"
+        style="margin-bottom: 10px;" required>
         <option value="" disabled selected>Select Root Cause</option>
         <option value="BMH Issue">BMH Issue</option>
         <option value="Cable Fault">Cable Fault</option>
@@ -197,132 +208,132 @@
 </form>
 
 <script>
-function showGoogleScriptAlert(message, type) {
-  var alertColorClass;
-  switch (type) {
-    case 'success':
-      alertColorClass = 'alert-success';
-      break;
-    case 'error':
-      alertColorClass = 'alert-danger';
-      break;
-    default:
-      alertColorClass = 'alert-warning';
-  }
+  function showGoogleScriptAlert(message, type) {
+    var alertColorClass;
+    switch (type) {
+      case 'success':
+        alertColorClass = 'alert-success';
+        break;
+      case 'error':
+        alertColorClass = 'alert-danger';
+        break;
+      default:
+        alertColorClass = 'alert-warning';
+    }
 
-  var alertHtml = `
+    var alertHtml = `
     <div class="alert ${alertColorClass} alert-dismissible fade show" role="alert">
         ${message}
         <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
     </div>
   `;
 
-  $('#alertContainer').prepend(alertHtml);
-}
-
-// Add To Sheets
-function AddRow() {
-  // Get the values from input fields
-  var troubleTicket = document.getElementById("inputTroubleTicket").value.trim();
-  var cableSystem = document.getElementById("cableSystemSelect").value;
-  var notificationDateTime = document.getElementById("inputNotificationDateTime").value;
-  var startDateTimeUTC = document.getElementById("inputStartDateTimeUTC").value;
-  var endDateTimeUTC = document.getElementById("inputEndDateTimeUTC").value;
-  var outageDuration = document.getElementById("inputOutageDuration").value;
-  var affectedSegment1 = document.getElementById("inputAffectedSegment1").value;
-  var location = document.getElementById("inputLocation").value;
-  var activityImpactDuration = document.getElementById("inputActivityImpactDuration").value;
-  var affectedSegment2 = document.getElementById("inputAffectedSegment2").value;
-  var rootCauseH = document.getElementById("inputRootCauseH").value;
-  var impact = document.getElementById("inputImpact").value;
-  var affectedSegment3 = document.getElementById("inputAffectedSegment3").value;
-  var incidentType = document.getElementById("inputIncidentType").value;
-  var rootCauseSpecificInternal = document.getElementById("inputRootCauseSpecificInternal").value;
-  var additionalRemarks = document.getElementById("inputAdditionalRemarks").value;
-  var monthYear = document.getElementById("inputMonthYear").value;
-
-  console.log("============================");
-  console.log(notificationDateTime);
-
-  // Clear previous invalid feedback
-  document.querySelectorAll('.is-invalid').forEach(function(el) {
-    el.classList.remove('is-invalid');
-  });
-
-  // Validate required fields
-  var hasError = false;
-
-  if (!troubleTicket) {
-    document.getElementById("inputTroubleTicket").classList.add("is-invalid");
-    hasError = true;
+    $('#alertContainer').prepend(alertHtml);
   }
 
-  if (!cableSystem) {
-    document.getElementById("cableSystemSelect").classList.add("is-invalid");
-    hasError = true;
-  }
+  // Add To Sheets
+  function AddRow() {
+    // Get the values from input fields
+    var troubleTicket = document.getElementById("inputTroubleTicket").value.trim();
+    var cableSystem = document.getElementById("cableSystemSelect").value;
+    var notificationDateTime = document.getElementById("inputNotificationDateTime").value;
+    var startDateTimeUTC = document.getElementById("inputStartDateTimeUTC").value;
+    var endDateTimeUTC = document.getElementById("inputEndDateTimeUTC").value;
+    var outageDuration = document.getElementById("inputOutageDuration").value;
+    var affectedSegment1 = document.getElementById("inputAffectedSegment1").value;
+    var location = document.getElementById("inputLocation").value;
+    var activityImpactDuration = document.getElementById("inputActivityImpactDuration").value;
+    var affectedSegment2 = document.getElementById("inputAffectedSegment2").value;
+    var rootCauseH = document.getElementById("inputRootCauseH").value;
+    var impact = document.getElementById("inputImpact").value;
+    var affectedSegment3 = document.getElementById("inputAffectedSegment3").value;
+    var incidentType = document.getElementById("inputIncidentType").value;
+    var rootCauseSpecificInternal = document.getElementById("inputRootCauseSpecificInternal").value;
+    var additionalRemarks = document.getElementById("inputAdditionalRemarks").value;
+    var monthYear = document.getElementById("inputMonthYear").value;
 
-  if (!notificationDateTime) {
-    document.getElementById("inputNotificationDateTime").classList.add("is-invalid");
-    hasError = true;
-  }
+    // Clear previous invalid feedback
+    document.querySelectorAll('.is-invalid').forEach(function (el) {
+      el.classList.remove('is-invalid');
+    });
 
-  if (!affectedSegment1) {
-    document.getElementById("inputAffectedSegment1").classList.add("is-invalid");
-    hasError = true;
-  }
+    // Validate required fields
+    var hasError = false;
 
-  if (!location) {
-    document.getElementById("inputLocation").classList.add("is-invalid");
-    hasError = true;
-  }
-
-  // Check for other fields only if they are visible
-  if (document.getElementById("inputStartDateTimeUTC").style.display !== 'none' && !startDateTimeUTC) {
-    document.getElementById("inputStartDateTimeUTC").classList.add("is-invalid");
-    hasError = true;
-  }
-
-  if (document.getElementById("inputEndDateTimeUTC").style.display !== 'none' && !endDateTimeUTC) {
-    document.getElementById("inputEndDateTimeUTC").classList.add("is-invalid");
-    hasError = true;
-  }
-
-  if (hasError) {
-    return;
-  }
-
-  // Proceed if no errors
-  google.script.run.withSuccessHandler(function(ticketExists) {
-    if (ticketExists) {
-      showGoogleScriptAlert('Trouble ticket already exists.', 'warning');
-    } else {
-      $('#spinnerModal').modal('show');
-
-      var majorIncidents = [
-        troubleTicket, cableSystem, notificationDateTime, startDateTimeUTC, endDateTimeUTC, outageDuration, activityImpactDuration, impact, incidentType, affectedSegment1, affectedSegment2, affectedSegment3, location, rootCauseH, rootCauseSpecificInternal, additionalRemarks, monthYear
-      ];
-
-      google.script.run.withSuccessHandler(function(response) {
-        console.log('Data added to the sheet');
-        Clear();
-        $('#spinnerModal').modal('hide');
-        showGoogleScriptAlert(troubleTicket + ' added successfully. Refresh the page.', 'success');
-      }).addDataToSheetMI('MAJOR INCIDENTS', majorIncidents);
-
-      google.script.run.withSuccessHandler(function(response) {
-        console.log('Data added to the sheet');
-        Clear();
-      }).addDataToSheetNotif('Notifications', majorIncidents);
+    if (!troubleTicket) {
+      document.getElementById("inputTroubleTicket").classList.add("is-invalid");
+      hasError = true;
     }
-  }).checkTroubleTicketExistence(troubleTicket);
-}
 
-function Clear() {
-  document.querySelectorAll('input[type="text"]').forEach(el => el.value = '');
-  document.querySelectorAll('textarea').forEach(el => el.value = '');
-  document.querySelectorAll('select').forEach(el => el.value = '');
-}
+    if (!cableSystem) {
+      document.getElementById("cableSystemSelect").classList.add("is-invalid");
+      hasError = true;
+    }
+
+    if (!notificationDateTime) {
+      document.getElementById("inputNotificationDateTime").classList.add("is-invalid");
+      hasError = true;
+    }
+
+    if (!affectedSegment1) {
+      document.getElementById("inputAffectedSegment1").classList.add("is-invalid");
+      hasError = true;
+    }
+
+    if (!location) {
+      document.getElementById("inputLocation").classList.add("is-invalid");
+      hasError = true;
+    }
+
+    // Check for other fields only if they are visible
+    if (document.getElementById("inputStartDateTimeUTC").style.display !== 'none' && !startDateTimeUTC) {
+      document.getElementById("inputStartDateTimeUTC").classList.add("is-invalid");
+      hasError = true;
+    }
+
+    if (document.getElementById("inputEndDateTimeUTC").style.display !== 'none' && !endDateTimeUTC) {
+      document.getElementById("inputEndDateTimeUTC").classList.add("is-invalid");
+      hasError = true;
+    }
+
+    if (hasError) {
+      return;
+    }
+
+    $('#spinnerModal').modal('show');
+
+    // Proceed if no errors
+    google.script.run.withSuccessHandler(function (ticketExists) {
+      if (ticketExists) {
+        showGoogleScriptAlert('Trouble ticket already exists.', 'warning');
+      } else {
+        // $('#spinnerModal').modal('show');
+
+        var majorIncidents = [
+          troubleTicket, cableSystem, notificationDateTime, startDateTimeUTC, endDateTimeUTC, outageDuration, activityImpactDuration, impact, incidentType, affectedSegment1, affectedSegment2, affectedSegment3, location, rootCauseH, rootCauseSpecificInternal, additionalRemarks, monthYear
+        ];
+
+        google.script.run.withSuccessHandler(function (response) {
+          console.log('Data added to the sheet');
+          Clear();
+          $('#spinnerModal').modal('hide');
+          showGoogleScriptAlert(troubleTicket + ' added successfully. Refresh the page.', 'success');
+        }).addDataToSheetMI('MAJOR INCIDENTS', majorIncidents);
+
+        google.script.run.withSuccessHandler(function (response) {
+          console.log('Data added to the sheet');
+          Clear();
+          location.reload();
+        }).addDataToSheetNotif('Notifications', majorIncidents);
+      }
+    }).checkTroubleTicketExistence(troubleTicket);
+  }
+
+  function Clear() {
+    document.querySelectorAll('input[type="text"]').forEach(el => el.value = '');
+    document.querySelectorAll('textarea').forEach(el => el.value = '');
+    document.querySelectorAll('select').forEach(el => el.value = '');
+  }
 </script>
 
 <script>
@@ -331,7 +342,7 @@ function Clear() {
     var nameSelect = document.getElementById(nameSelectId);
     nameSelect.innerHTML = '<option value="">Select Name</option>';
     if (window.sampleData) {
-      window.sampleData.forEach(function(item) {
+      window.sampleData.forEach(function (item) {
         if (item.cableSystem === cableSystem) {
           var option = document.createElement("option");
           option.value = item.value;
@@ -342,14 +353,14 @@ function Clear() {
     }
   }
 
-  document.addEventListener("DOMContentLoaded", function() {
-    document.getElementById("cableSystemSelect").addEventListener("change", function() {
+  document.addEventListener("DOMContentLoaded", function () {
+    document.getElementById("cableSystemSelect").addEventListener("change", function () {
       populateNames("inputAffectedSegment1");
       populateNames("inputAffectedSegment2");
       populateNames("inputAffectedSegment3");
     });
 
-    google.script.run.withSuccessHandler(function(data) {
+    google.script.run.withSuccessHandler(function (data) {
       window.sampleData = data;
       populateNames("inputAffectedSegment1");
       populateNames("inputAffectedSegment2");

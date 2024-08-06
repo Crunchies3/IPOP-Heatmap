@@ -77,39 +77,15 @@
       ];
 
       google.script.run.withSuccessHandler(function (result) {
-        if (result === 'success') {
-          console.log('Data added to the sheet');
 
-        } else {
-          // Data update failed
-          console.error('Error updating data:', result);
-          $('#spinnerModal').modal('hide');
-          showGoogleScriptAlert('Failed to add record. Please try again.', 'error');
-        }
-      }).addDataToSheetMI('End Date', majorIncidents);
+        console.log('Data added to the sheet');
 
-      google.script.run.withSuccessHandler(function (deleteResult) {
-        if (deleteResult === 'success') {
-          // Close the spinner modal
-          $('#spinnerModal').modal('hide');
+        // Data update failed
+        console.error('Error updating data:', result);
+        $('#spinnerModal').modal('hide');
+        showGoogleScriptAlert('Failed to add record. Please try again.', 'error');
 
-          // Show success alert
-          showGoogleScriptAlert('Record added successfully. Refresh the page.', 'success');
-
-          // Remove the DataTable row for the deleted data
-          table.row(rowIndex).remove().draw();
-
-          // Close the modal
-          $('#selectedRowContainerYellow').modal('hide');
-        } else {
-          // Data deletion failed
-          console.error('Error deleting data:', deleteResult);
-
-          // Show error alert
-          showGoogleScriptAlert('Failed to delete record. Please try again.', 'error');
-        }
-      }).deleteRowMI('Start Date', rowData[0]);
-
+      }).copyToStartTableWithTheCurrentDate('End Date', troubleTicket);
     });
 
     // Add click event to "Save Changes" button

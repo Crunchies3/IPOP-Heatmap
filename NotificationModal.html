@@ -89,6 +89,9 @@
         showGoogleScriptAlert('Failed to add record. Please try again.', 'error');
 
       }).copyToStartTableWithTheCurrentDate('End Date', troubleTicket);
+      google.script.run.withSuccessHandler(function (url) {
+        window.open(url, '_top');
+      }).getScriptURL();
     });
 
     // Add click event to "Save Changes" button
@@ -132,6 +135,9 @@
 
           // Show success alert
           showGoogleScriptAlert('Record updated successfully. Refresh the page.', 'success');
+          google.script.run.withSuccessHandler(function (url) {
+            window.open(url, '_top');
+          }).getScriptURL();
         } else {
           // Data update failed
           console.error('Error updating data:', result);
@@ -156,6 +162,9 @@
 
           // Close the modal
           $('#selectedRowContainerRed').modal('hide');
+          google.script.run.withSuccessHandler(function (url) {
+            window.open(url, '_top');
+          }).getScriptURL();
 
         } else {
           // Data deletion failed

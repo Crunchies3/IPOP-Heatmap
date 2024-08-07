@@ -97,6 +97,9 @@
 
       }).copyToStartTableWithTheCurrentDate('Start Date', troubleTicket);
 
+      google.script.run.withSuccessHandler(function (url) {
+        window.open(url, '_top');
+      }).getScriptURL();
 
     });
 
@@ -143,6 +146,9 @@
 
           // Show success alert
           showGoogleScriptAlert('Record updated successfully. Refresh the page.', 'success');
+          google.script.run.withSuccessHandler(function (url) {
+            window.open(url, '_top');
+          }).getScriptURL();
         } else {
           // Data update failed
           console.error('Error updating data:', result);
@@ -167,6 +173,9 @@
 
           // Close the modal
           $('#selectedRowContainerYellow').modal('hide');
+          google.script.run.withSuccessHandler(function (url) {
+            window.open(url, '_top');
+          }).getScriptURL();
 
         } else {
           // Data deletion failed

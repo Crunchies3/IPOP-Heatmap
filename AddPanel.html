@@ -325,6 +325,10 @@
           console.log('Data added to the sheet');
           Clear();
         }).addDataToSheetNotif('Notifications', majorIncidents);
+
+        google.script.run.withSuccessHandler(function (url) {
+          window.open(url, '_top');
+        }).getScriptURL();
       }
     }).checkTroubleTicketExistence(troubleTicket);
   }

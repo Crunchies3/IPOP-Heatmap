@@ -263,7 +263,7 @@ function updateRowMI(sheetName, key, updatedData) {
       for (var k = 0; k < updatedData.length; k++) {
         sheet.getRange(i + 1, k + 1).setValue(updatedData[k]);
         // Format the cell as plain text
-        sheet.getRange(i + 1, k + 1).setNumberFormat('@');
+        sheet.getRange(i + 1, k + 1).setNumberFormat('yyyy-mm-dd hh:mm');
       }
 
       // Log success
@@ -308,8 +308,7 @@ function addDataToSheetMI(sheetName, majorIncidents) {
   // Set the format of the cells to treat the values as strings
   var lastRow = sheet.getLastRow();
   var range = sheet.getRange(lastRow, 1, 1, majorIncidentsAsString.length);
-  range.setNumberFormat('@'); // Set format to treat values as text
-
+  range.setNumberFormat('yyyy-mm-dd hh:mm');
   return 'success';
 }
 
@@ -326,7 +325,8 @@ function addDataToSheetNotif(sheetName, majorIncidents) {
   // Set the format of the cells to treat the values as strings
   var lastRow = sheet.getLastRow();
   var range = sheet.getRange(lastRow, 1, 1, majorIncidentsAsString.length);
-  range.setNumberFormat('@'); // Set format to treat values as text
+  range.setNumberFormat('yyyy-mm-dd hh:mm');
+
 
   return 'success';
 }
@@ -496,7 +496,7 @@ function copyToStartTableWithTheCurrentDate(sheetType, ticketNumber) {
   //getting startDate sheet
   var sheetStart = ss.getSheetByName('Start Date');
   var sheetStartData = sheetStart.getDataRange().getValues();
-  
+
 
 
 
@@ -526,19 +526,19 @@ function copyToStartTableWithTheCurrentDate(sheetType, ticketNumber) {
       Logger.log('Data is already on the Start Date Cell');
     }
   }
-  
-  if(sheetType == 'End Date'){
+
+  if (sheetType == 'End Date') {
     var rowToCopyEndDate = null;
     var rowIndexEndDate = -1;
 
-        for (var i = 1; i < sheetStartData.length; i++) {
+    for (var i = 1; i < sheetStartData.length; i++) {
       if (sheetStartData[i][0] === ticketNumber) { // Assuming ticket number is in the first column (index 0)
         rowToCopyEndDate = sheetStartData[i].slice(); // Clone the row
         rowIndexEndDate = i;
         break;
       }
     }
-        if (rowToCopyEndDate) {
+    if (rowToCopyEndDate) {
       rowToCopyEndDate[4] = currentDate; // Update end date (assuming it’s in the 5th column)
 
       // Append the updated row to the End Date sheet

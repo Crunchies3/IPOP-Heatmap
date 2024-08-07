@@ -305,6 +305,7 @@
     // Proceed if no errors
     google.script.run.withSuccessHandler(function (ticketExists) {
       if (ticketExists) {
+        $('#spinnerModal').modal('hide');
         showGoogleScriptAlert('Trouble ticket already exists.', 'warning');
       } else {
         // $('#spinnerModal').modal('show');

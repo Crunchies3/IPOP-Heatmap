@@ -99,7 +99,7 @@
 
       google.script.run.withSuccessHandler(function (url) {
         window.open(url, '_top');
-      }).getScriptURL();
+      }).getScriptUrl();
 
     });
 
@@ -148,7 +148,7 @@
           showGoogleScriptAlert('Record updated successfully. Refresh the page.', 'success');
           google.script.run.withSuccessHandler(function (url) {
             window.open(url, '_top');
-          }).getScriptURL();
+          }).getScriptUrl();
         } else {
           // Data update failed
           console.error('Error updating data:', result);
@@ -175,7 +175,7 @@
           $('#selectedRowContainerYellow').modal('hide');
           google.script.run.withSuccessHandler(function (url) {
             window.open(url, '_top');
-          }).getScriptURL();
+          }).getScriptUrl();
 
         } else {
           // Data deletion failed

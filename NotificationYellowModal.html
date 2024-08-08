@@ -37,7 +37,13 @@
 
 <script>
 
+      window.onload = startAutoRefresh();
 
+
+    function startAutoRefresh() {
+            fetchDataFromNotifTable(); // Call immediately on load
+            setInterval(fetchDataFromNotifTable, 1 * 60 * 1000); // Repeat every 5 minutes
+        }
   // Function to show the selected row data in a modal
   function showSelectedRowDataYellow(rowData, rowIndex) {
     // Set the values of input boxes based on the selected row data
@@ -190,6 +196,10 @@
     $('#selectedRowContainerYellow').modal('show');
   }
 
+fetchDataFromNotifTable();
+function fetchDataFromNotifTable(){
+  console.log('refreshing the notif table');
+
   // Execute the Google Script function to load DataTables after the page has fully loaded
   google.script.run.withSuccessHandler(function (data) {
     console.log('Notif Data received:', data); // Log the data to the console for debugging
@@ -237,5 +247,8 @@
       });
     }
   }).getMIForDataTable('Notifications');
+}
+
+
 
 </script>

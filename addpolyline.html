@@ -41,7 +41,6 @@
     google.script.run.withSuccessHandler(addMarkers).getSJCLocations();
 
     function addPolylines(cables) {
-
         let date = new Date();
 
         // Fetch cable names from Google Sheets using Google Apps Script
@@ -233,9 +232,9 @@
 
 
     function startAutoRefresh() {
-            initializeMap(); // Call immediately on load
-            setInterval(initializeMap, 1 * 60 * 1000); // Repeat every 5 minutes
-        }
+        initializeMap(); // Call immediately on load
+        setInterval(initializeMap, 15 * 60 * 1000); // Repeat every 5 minutes
+    }
     // Function to update map data every 30 seconds
     function updateMapData() {
         google.script.run.withSuccessHandler(addMarkers).getSJCLocations();
@@ -257,7 +256,7 @@
             google.script.run.withSuccessHandler(addPolylines).getSJCData();
 
             // Set the opacity of all cables to 0.2
-            setAllCablesOpacity(1);
+            // setAllCablesOpacity(1);
             $('#spinnerModal').modal('hide');
 
         } else if (searchTerm !== "") {

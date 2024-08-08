@@ -363,7 +363,9 @@ function getCableNames() {
     const cableNameK = row[9].trim(); //this extracts the Affected Segment2
     const cableNameL = row[10].trim();  //this extracts the Affected Segment3
 
-    const notifiedDate = formatDates(row[1]);
+    if(row[1] != ""){
+      var notifiedDate = formatDates(row[1]);
+    }
     const startDate = formatDates(row[2]);
     const endDate = formatDates(row[3]);
 

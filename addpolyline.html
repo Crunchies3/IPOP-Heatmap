@@ -216,6 +216,7 @@
     }
 
     function initializeMap() {
+        console.log('refreshing shenanigans');
         google.script.run.withSuccessHandler(addMarkers).getSJCLocations();
         google.script.run.withSuccessHandler(addPolylines).getSJCData();
         searchCableSystem();
@@ -227,7 +228,13 @@
 
     // Call the initializeMap function when the page loads
     window.onload = initializeMap;
+    window.onload = startAutoRefresh;
 
+
+    function startAutoRefresh() {
+            initializeMap(); // Call immediately on load
+            setInterval(initializeMap, 1 * 60 * 1000); // Repeat every 5 minutes
+        }
     // Function to update map data every 30 seconds
     function updateMapData() {
         google.script.run.withSuccessHandler(addMarkers).getSJCLocations();

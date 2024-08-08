@@ -55,13 +55,14 @@
   </div>
 
   <div id="buttonsForCableEvents">
-    <button class="btn btn-light" onclick="openAddPanel()" data-tooltip="Add" id="add_panel_toggle"><i class="fa fa-plus"></i></button>
-    <button class="btn btn-light" onclick="toggleYellowNotificationAdd()" data-tooltip="Notified" id="yellow_line_notification_toggle"><i
-        class="fas fa-circle" style="color: yellow;"></i></button>
-    <button class="btn btn-light" onclick="toggleRedNotificationAdd()" data-tooltip="Started" id="red_line_notification_toggle"><i class="fas fa-circle"
-        style="color: red;"></i></button>
-    <button class="btn btn-light" onclick="toggleGreenNotificationAdd()" data-tooltip="Ended" id="green_line_notification"><i class="fas fa-circle"
-        style="color: green;"></i></button>
+    <button class="btn btn-light" onclick="openAddPanel()" data-tooltip="Add" id="add_panel_toggle"><i
+        class="fa fa-plus"></i></button>
+    <button class="btn btn-light" onclick="toggleYellowNotificationAdd()" data-tooltip="Notified"
+      id="yellow_line_notification_toggle"><i class="fas fa-circle" style="color: yellow;"></i></button>
+    <button class="btn btn-light" onclick="toggleRedNotificationAdd()" data-tooltip="Started"
+      id="red_line_notification_toggle"><i class="fas fa-circle" style="color: red;"></i></button>
+    <button class="btn btn-light" onclick="toggleGreenNotificationAdd()" data-tooltip="Ended"
+      id="green_line_notification"><i class="fas fa-circle" style="color: green;"></i></button>
   </div>
 
   <div id="containerAsNavBar">
@@ -91,7 +92,7 @@
 
 
   <div class="notif-panel" id="red-notif-panel">
-     <?!= HtmlService.createHtmlOutputFromFile('NotificationModal.html').getContent(); ?>
+    <?!= HtmlService.createHtmlOutputFromFile('NotificationModal.html').getContent(); ?>
   </div>
 
   <div class="notif-panel" id="yellow-notif-panel">

@@ -15,6 +15,8 @@
   <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
 
 
+  <!-- Bootsrap for bi bi icons -->
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css">
 
   <!-- for datepicker ui -->
   <link rel="stylesheet" href="https://code.jquery.com/ui/1.13.3/themes/base/jquery-ui.css">
@@ -63,11 +65,25 @@
       id="red_line_notification_toggle"><i class="fas fa-circle" style="color: red;"></i></button>
     <button class="btn btn-light" onclick="toggleGreenNotificationAdd()" data-tooltip="Ended"
       id="green_line_notification"><i class="fas fa-circle" style="color: green;"></i></button>
+    <button class="btn btn-light" onclick="openAddPanel()" data-tooltip="Add" id="add_panel_toggle"><i
+        class="fa fa-plus"></i></button>
+    <button class="btn btn-light" onclick="toggleYellowNotificationAdd()" data-tooltip="Notified"
+      id="yellow_line_notification_toggle"><i class="fas fa-circle" style="color: yellow;"></i></button>
+    <button class="btn btn-light" onclick="toggleRedNotificationAdd()" data-tooltip="Started"
+      id="red_line_notification_toggle"><i class="fas fa-circle" style="color: red;"></i></button>
+    <button class="btn btn-light" onclick="toggleGreenNotificationAdd()" data-tooltip="Ended"
+      id="green_line_notification"><i class="fas fa-circle" style="color: green;"></i></button>
   </div>
 
   <div id="containerAsNavBar">
+    <button id="statisticsButton" class="btn btn-primary">
+      <i class="bi bi-pie-chart-fill"></i> Statistics
+    </button>
+    <button id="ganttChartButton" class="btn btn-primary">
+      <i class="bi bi-bar-chart-steps"></i> Gantt Chart
+    </button>
     <div id="search-container" class="input-group">
-      <select class=" form-select" aria-label="Default select example" id="search-input">
+      <select class="form-select" aria-label="Default select example" id="search-input">
         <option value="Show All Cable Systems">Show All Cable Systems</option>
         <option value="SEAUS">SEA-US</option>
         <option value="SJC">SJC</option>
@@ -75,21 +91,16 @@
         <option value="C2C">C2C</option>
         <option value="TGN">TGN-IA/TGN-P</option>
       </select>
-
       <div class="input-group-btn">
-        <button type="button" class="btn btn-primary" style="margin-right:15px;"
-          onclick="searchCableSystem()">Search</button>
-
-        <div>
-          <div class="btn btn-primary" onclick="toTransferPage('gantt')">
-            gantt
-          </div>
-        </div>
+        <button type="button" class="btn btn-primary" onclick="searchCableSystem()">Search</button>
       </div>
     </div>
-    <button id="MenuBtn" class="btn btn-light" onclick="openSidePanel()"><i
-        class="fas fa-bars fa-2x menu-icon"></i></button>
+    <button id="MenuBtn" class="btn btn-light" onclick="openSidePanel()">
+      <i class="fas fa-bars fa-2x menu-icon"></i>
+    </button>
   </div>
+
+
 
   <div id="add-panel">
     <?!= HtmlService.createHtmlOutputFromFile('AddPanel.html').getContent(); ?>
@@ -98,6 +109,7 @@
 
 
   <div class="notif-panel" id="red-notif-panel">
+    <?!= HtmlService.createHtmlOutputFromFile('NotificationModal.html').getContent(); ?>
     <?!= HtmlService.createHtmlOutputFromFile('NotificationModal.html').getContent(); ?>
   </div>
 

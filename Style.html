@@ -43,22 +43,19 @@
 
   #containerAsNavBar {
     position: absolute;
-    /* Position the search container absolutely */
     top: 25px;
-    /* Adjust top position as needed */
     right: 30px;
-    /* Adjust right position as needed */
     z-index: 1000;
-    /* Ensure search container is above the map */
-    width: 380px;
-    /* Set width to auto */
+    width: auto;
     display: flex;
-    /* Use flexbox for layout */
     align-items: center;
-    /* Center items vertically */
+    gap: 15px;
+    /* Adjust spacing between elements */
   }
 
   #search-container {
+    display: flex;
+    align-items: center;
     /* Add margin between search and menu buttons */
     box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
     /* Add drop shadow */
@@ -112,7 +109,6 @@
     /* Center items vertically */
   }
 
-
   #containerForButtonsTopLeft button {
     margin-right: 5px;
     /* Add some space between buttons */
@@ -122,6 +118,39 @@
     /* Add drop shadow */
   }
 
+  #statisticsButton,
+  #ganttChartButton {
+    display: flex;
+    align-items: center;
+    gap: 5px;
+    height: 40px;
+    border: none;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.2);
+  }
+
+  #statisticsButton {
+    background-color: #114A9F;
+    width: 150px;
+  }
+
+  #statisticsButton:hover {
+    background-color: #0E3B82;
+  }
+
+  #ganttChartButton {
+    background-color: #47509E;
+    width: 220px;
+  }
+
+  #ganttChartButton:hover {
+    background-color: #3A427F;
+  }
+
+  #statisticsButton:focus,
+  #ganttChartButton:focus {
+    outline: none;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+  }
 
 
 
@@ -234,7 +263,6 @@
   #MenuBtn {
     height: 40px;
     box-shadow: 0 0 10px rgba(0, 0, 0, 0.2);
-    /* Add drop shadow */
   }
 
   /* Style for the side panel */
@@ -375,7 +403,6 @@
     /* Move to the center of the viewport */
   }
 
-  //Optional
   #red-notif-panel {}
 
   #yellow-notif-panel {}

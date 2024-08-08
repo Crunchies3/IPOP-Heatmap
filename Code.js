@@ -1,7 +1,13 @@
 function doGet(e) {
-  var htmloutput = HtmlService.createTemplateFromFile('CableMap').evaluate().setTitle('Map View');
+  if (!e.parameter.page) {
+    var htmloutput = HtmlService.createTemplateFromFile('CableMap').evaluate().setTitle('Map View');
+    return htmloutput;
+  }
+  else if (e.parameter['page'] == 'gantt') {
+    var htmloutput = HtmlService.createTemplateFromFile('gantt-chart' + '/' + 'index').evaluate().setTitle('Gantt Chart View');
+    return htmloutput;
+  }
 
-  return htmloutput;
 }
 
 function onEdit(e) {
@@ -357,7 +363,9 @@ function getCableNames() {
     const cableNameK = row[9].trim(); //this extracts the Affected Segment2
     const cableNameL = row[10].trim();  //this extracts the Affected Segment3
 
-    const notifiedDate = formatDates(row[1]);
+    if(row[1] != ""){
+      var notifiedDate = formatDates(row[1]);
+    }
     const startDate = formatDates(row[2]);
     const endDate = formatDates(row[3]);
 
@@ -749,6 +757,6 @@ function formatDates(dateString) {
   return formattedDate;
 }
 
-function getScriptUrl(){
+function getScriptUrl() {
   return ScriptApp.getService().getUrl();
 }

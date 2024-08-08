@@ -42,8 +42,8 @@
     <hr>
     <div class="form-group col-md-4">
       <label for="inputNotificationDateTime" class="form-label">Notification Date and Time:</label>
-      <input type="datetime-local" class="form-control" id="inputNotificationDateTime" style="margin-bottom: 10px;"
-        required>
+      <input type="datetime-local" class="form-control" id="inputNotificationDateTime" name="inputNotificationDateTime"
+        style="margin-bottom: 10px;" required>
       <div class="invalid-feedback">
         Please select date and time
       </div>
@@ -51,8 +51,8 @@
 
     <div class="form-group col-md-4">
       <label for="inputStartDateTimeUTC" class="form-label">Start Date and Time (UTC):</label>
-      <input type="datetime-local" class="form-control" id="inputStartDateTimeUTC" style="margin-bottom: 10px;"
-        required>
+      <input type="datetime-local" class="form-control" id="inputStartDateTimeUTC" name="inputStartDateTimeUTC"
+        style="margin-bottom: 10px;" required>
       <div class="invalid-feedback">
         Please select start date and time
       </div>
@@ -270,7 +270,7 @@
       hasError = true;
     }
 
-    if (!notificationDateTime) {
+    if (!notificationDateTime && document.getElementById('inputIncidentType').value != "Outage") {
       document.getElementById("inputNotificationDateTime").classList.add("is-invalid");
       hasError = true;
     }
@@ -370,5 +370,34 @@
       populateNames("inputAffectedSegment2");
       populateNames("inputAffectedSegment3");
     }).getSampleData();
+  });
+
+
+  //disabling the dates if the incident type chosen is outage (red automatic)
+  document.addEventListener('DOMContentLoaded', function () {
+    const incidentType = document.getElementById('inputIncidentType');
+    const disabling = document.querySelectorAll('#inputNotificationDateTime,#inputStartDateTimeUTC')
+
+    incidentType.addEventListener('change', function () {
+      if (this.value === "Outage") {
+        disabling.forEach(input => {
+          input.disabled = true;
+          var dateTime = document.getElementById('inputStartDateTimeUTC');
+          const now = new Date();
+          const year = now.getFullYear();
+          const month = String(now.getMonth() + 1).padStart(2, '0'); // Months are 0-indexed
+          const day = String(now.getDate()).padStart(2, '0');
+          const hours = String(now.getHours()).padStart(2, '0');
+          const minutes = String(now.getMinutes()).padStart(2, '0');
+
+          const formattedDateTime = `${year}-${month}-${day}T${hours}:${minutes}`;
+          dateTime.value = formattedDateTime;
+        });
+      } else {
+        disabling.forEach(input => {
+          input.disabled = false;
+        });
+      }
+    });
   });
 </script>

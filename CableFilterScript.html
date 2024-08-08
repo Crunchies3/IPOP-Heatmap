@@ -1,299 +1,67 @@
 <script>
-  //------------------------------------------Get Red Segments-----------------------------------------------------//
-  function redPolylines(cables) {
-    // Fetch cable names from Google Sheets using Google Apps Script
-    google.script.run.withSuccessHandler(function (data) {
-      if (Array.isArray(data.combinedCableNamesStart) && Array.isArray(data.combinedCableNames)) { // Check if combinedCableNames is an array
-        cables.forEach(function (cable) {
-          var latitudeFrom = parseFloat(cable.latitudeFrom);
-          var longitudeFrom = parseFloat(cable.longitudeFrom);
-          var latitudeTo = parseFloat(cable.latitudeTo);
-          var longitudeTo = parseFloat(cable.longitudeTo);
-          var cableName = cable.cableName.toUpperCase(); // Convert cable name to uppercase for case-insensitive comparison
 
-          // Check if parsed values are valid numbers
-          if (!isNaN(latitudeFrom) && !isNaN(longitudeFrom) && !isNaN(latitudeTo) && !isNaN(longitudeTo)) {
-            var coordinates = [
-              [longitudeFrom, latitudeFrom],
-              [longitudeTo, latitudeTo]
-            ];
-
-            var color;
-
-            var matchFoundstart = data.combinedCableNamesStart.some(function (combinedNamestart) {
-              var combinedNameUpperCase = combinedNamestart.toUpperCase();
-              var parts = combinedNameUpperCase.split(' ');
-              var firstPart = parts[0];
-              var secondPart = parts[1];
-              var thirdPart = parts[2];
-
-              // Check if the second part contains a hyphen
-              if (secondPart.includes('-')) {
-                var subParts = secondPart.split('-'); // Split the second part by hyphen
-                // Create separate variables for each sub-part
-                var secondPart1 = subParts[0];
-                var secondPart2 = subParts[1];
-
-                // Check if both parts of the combined cable name are present in the polyline name
-                return cableName.includes(firstPart) && cableName.includes(secondPart1) ||
-                  cableName.includes(secondPart2) ||
-                  cableName.indexOf(secondPart1) < cableName.indexOf(secondPart2);
-              }
-              else {
-                return cableName.includes(firstPart) && cableName.includes(secondPart) &&
-                  cableName.indexOf(firstPart) < cableName.indexOf(secondPart);
-              }
-
-            });
-
-            if (matchFoundstart) {
-              color = 'red'; // Change color to yellow
-            }
-
-            var matchFoundsstart = data.combinedCableNamesStart.some(function (combinedNamestart) {
-              var combinedNameUpperCase = combinedNamestart.toUpperCase();
-              var parts = combinedNameUpperCase.split(' ');
-              var firstPart = parts[0];
-              var secondPart = parts[1];
-              var thirdPart = parts[2];
-
-              if (thirdPart.includes('-')) {
-                var subPartss = thirdPart.split('-'); // Split the second part by hyphen
-                // Create separate variables for each sub-part
-                var thirdPart1 = subPartss[0];
-                var thirdPart2 = subPartss[1];
-
-                // Check if both parts of the combined cable name are present in the polyline name
-                return cableName.includes(firstPart) && cableName.includes(thirdPart1) ||
-                  cableName.includes(thirdPart2) ||
-                  cableName.indexOf(thirdPart1) < cableName.indexOf(thirdPart2);
-              }
-              else {
-                return cableName.includes(firstPart) && cableName.includes(thirdPart) &&
-                  cableName.indexOf(firstPart) < cableName.indexOf(thirdPart);
-              }
-
-            });
-
-            if (matchFoundsstart) {
-              color = 'red'; // Change color to yellow
-            }
-
-            var matchFoundssstart = data.combinedCableNamesStart.some(function (combinedNamestart) {
-              var combinedNameUpperCase = combinedNamestart.toUpperCase();
-              var parts = combinedNameUpperCase.split(' ');
-              var firstPart = parts[0];
-              var secondPart = parts[1];
-              var thirdPart = parts[2];
-              var fourthPart = parts[3];
-
-              if (fourthPart.includes('-')) {
-                var subPartsss = fourthPart.split('-'); // Split the second part by hyphen
-                // Create separate variables for each sub-part
-                var fourthPart1 = subPartsss[0];
-                var fourthPart2 = subPartsss[1];
-
-                // Check if both parts of the combined cable name are present in the polyline name
-                return cableName.includes(firstPart) && cableName.includes(fourthPart1) ||
-                  cableName.includes(fourthPart2) ||
-                  cableName.indexOf(fourthPart1) < cableName.indexOf(fourthPart2);
-              }
-              else {
-                return cableName.includes(firstPart) && cableName.includes(fourthPart) &&
-                  cableName.indexOf(firstPart) < cableName.indexOf(fourthPart);
-              }
-
-            });
-
-            if (matchFoundssstart) {
-              color = 'red'; // Change color to yellow
-            }
-
-            L.polyline(coordinates, { color: color, weight: 2 }).addTo(map).bindPopup(cable.cableName);
-          }
-        });
-      } else {
-        console.error('Invalid data format for combinedCableNames:', data.combinedCableNamesStart);
-      }
-    }).getCableNames(); // Call the getCableNames function in your Google Apps Script
-  }
-
-  //------------------------------------------Get Yellow Segments-----------------------------------------------------//
-  function yellowPolylines(cables) {
-    // Fetch cable names from Google Sheets using Google Apps Script
-    google.script.run.withSuccessHandler(function (data) {
-      if (Array.isArray(data.combinedCableNamesStart) && Array.isArray(data.combinedCableNames)) { // Check if combinedCableNames is an array
-        cables.forEach(function (cable) {
-          var latitudeFrom = parseFloat(cable.latitudeFrom);
-          var longitudeFrom = parseFloat(cable.longitudeFrom);
-          var latitudeTo = parseFloat(cable.latitudeTo);
-          var longitudeTo = parseFloat(cable.longitudeTo);
-          var cableName = cable.cableName.toUpperCase(); // Convert cable name to uppercase for case-insensitive comparison
-
-          // Check if parsed values are valid numbers
-          if (!isNaN(latitudeFrom) && !isNaN(longitudeFrom) && !isNaN(latitudeTo) && !isNaN(longitudeTo)) {
-            var coordinates = [
-              [longitudeFrom, latitudeFrom],
-              [longitudeTo, latitudeTo]
-            ];
-
-            var color;
-
-            var matchFound = data.combinedCableNames.some(function (combinedName) {
-              var combinedNameUpperCase = combinedName.toUpperCase();
-              var parts = combinedNameUpperCase.split(' ');
-              var firstPart = parts[0];
-              var secondPart = parts[1];
-              var thirdPart = parts[2];
-
-              // Check if the second part contains a hyphen
-              if (secondPart.includes('-')) {
-                var subParts = secondPart.split('-'); // Split the second part by hyphen
-                // Create separate variables for each sub-part
-                var secondPart1 = subParts[0];
-                var secondPart2 = subParts[1];
-
-                // Check if both parts of the combined cable name are present in the polyline name
-                return cableName.includes(firstPart) && cableName.includes(secondPart1) ||
-                  cableName.includes(secondPart2) ||
-                  cableName.indexOf(secondPart1) < cableName.indexOf(secondPart2);
-              }
-              else {
-                return cableName.includes(firstPart) && cableName.includes(secondPart) &&
-                  cableName.indexOf(firstPart) < cableName.indexOf(secondPart);
-              }
-
-            });
-
-            if (matchFound) {
-              color = 'yellow'; // Change color to yellow
-            }
-
-            var matchFounds = data.combinedCableNames.some(function (combinedName) {
-              var combinedNameUpperCase = combinedName.toUpperCase();
-              var parts = combinedNameUpperCase.split(' ');
-              var firstPart = parts[0];
-              var secondPart = parts[1];
-              var thirdPart = parts[2];
-
-              if (thirdPart.includes('-')) {
-                var subPartss = thirdPart.split('-'); // Split the second part by hyphen
-                // Create separate variables for each sub-part
-                var thirdPart1 = subPartss[0];
-                var thirdPart2 = subPartss[1];
-
-                // Check if both parts of the combined cable name are present in the polyline name
-                return cableName.includes(firstPart) && cableName.includes(thirdPart1) ||
-                  cableName.includes(thirdPart2) ||
-                  cableName.indexOf(thirdPart1) < cableName.indexOf(thirdPart2);
-              }
-              else {
-                return cableName.includes(firstPart) && cableName.includes(thirdPart) &&
-                  cableName.indexOf(firstPart) < cableName.indexOf(thirdPart);
-              }
-
-            });
-
-            if (matchFounds) {
-              color = 'yellow'; // Change color to yellow
-            }
-
-            var matchFoundss = data.combinedCableNames.some(function (combinedName) {
-              var combinedNameUpperCase = combinedName.toUpperCase();
-              var parts = combinedNameUpperCase.split(' ');
-              var firstPart = parts[0];
-              var secondPart = parts[1];
-              var thirdPart = parts[2];
-              var fourthPart = parts[3];
-
-              if (fourthPart.includes('-')) {
-                var subPartsss = fourthPart.split('-'); // Split the second part by hyphen
-                // Create separate variables for each sub-part
-                var fourthPart1 = subPartsss[0];
-                var fourthPart2 = subPartsss[1];
-
-                // Check if both parts of the combined cable name are present in the polyline name
-                return cableName.includes(firstPart) && cableName.includes(fourthPart1) ||
-                  cableName.includes(fourthPart2) ||
-                  cableName.indexOf(fourthPart1) < cableName.indexOf(fourthPart2);
-              }
-              else {
-                return cableName.includes(firstPart) && cableName.includes(fourthPart) &&
-                  cableName.indexOf(firstPart) < cableName.indexOf(fourthPart);
-              }
-
-            });
-
-            if (matchFoundss) {
-              color = 'yellow'; // Change color to yellow
-            }
-
-            L.polyline(coordinates, { color: color, weight: 2 }).addTo(map).bindPopup(cable.cableName);
-          }
-        });
-      } else {
-        console.error('Invalid data format for combinedCableNames:', data.combinedCableNamesStart);
-      }
-    }).getCableNames(); // Call the getCableNames function in your Google Apps Script
-  }
-
-  //------------------------------------------Get Green Segments-----------------------------------------------------//
-  function greenPolylines(cables) {
-    // Fetch cable names from Google Sheets using Google Apps Script
-    google.script.run.withSuccessHandler(function (data) {
-      if (Array.isArray(data.combinedCableNamesStart) && Array.isArray(data.combinedCableNames)) { // Check if combinedCableNames is an array
-        cables.forEach(function (cable) {
-          var latitudeFrom = parseFloat(cable.latitudeFrom);
-          var longitudeFrom = parseFloat(cable.longitudeFrom);
-          var latitudeTo = parseFloat(cable.latitudeTo);
-          var longitudeTo = parseFloat(cable.longitudeTo);
-          var cableName = cable.cableName.toUpperCase(); // Convert cable name to uppercase for case-insensitive comparison
-
-          // Check if parsed values are valid numbers
-          if (!isNaN(latitudeFrom) && !isNaN(longitudeFrom) && !isNaN(latitudeTo) && !isNaN(longitudeTo)) {
-            var coordinates = [
-              [longitudeFrom, latitudeFrom],
-              [longitudeTo, latitudeTo]
-            ];
-
-            var color = 'green'; // Default color
-
-            L.polyline(coordinates, { color: color, weight: 2 }).addTo(map).bindPopup(cable.cableName);
-          }
-        });
-      } else {
-        console.error('Invalid data format for combinedCableNames:', data.combinedCableNamesStart);
-      }
-    }).getCableNames(); // Call the getCableNames function in your Google Apps Script
-  }
-
-  // Function to update map data every 30 seconds
-  function updateMapData() {
-    google.script.run.withSuccessHandler(addMarkers).getSJCLocations();
-    google.script.run.withSuccessHandler(addPolylines).getSJCData();
-  }
-
-  updateMapData();
+  var selectedEntries = {};
+  var unselectedEntries = {};
 
   //---------------------------------------Button function for filters-------------------------------//
   function redCables() {
-    var searchTerm = document.getElementById("search-input").value; // Convert search term to uppercase for case-insensitive comparison
 
-    // Check if search term is not empty
-    if (searchTerm === "Show All Cable Systems") {
-      // Hide all cables first
-      hideAllCables();
-      google.script.run.withSuccessHandler(addMarkers).getSJCLocations();
-      google.script.run.withSuccessHandler(redPolylines).getSJCData();
+    var search = document.getElementById("search-input").value;
+    var searchTerm = convertSearchTerm(search);
 
-    } else if (searchTerm !== "") {
-      // Hide all cables first
-      hideAllCables();
+    var filteredEntries
+    var unfilteredEntries
 
-      // Update map data based on the search term
-      google.script.run.withSuccessHandler(addMarkers).getSJCLocationsByCableSystem(searchTerm);
-      google.script.run.withSuccessHandler(redPolylines).getSJCDataByCableSystem(searchTerm);
+    console.log("++++++++++++++++");
+    console.log(polylinesData);
+
+    console.log(searchTerm);
+
+    if (searchTerm === "ALL") {
+
+      console.log("all nigana bako?????");
+      selectedEntries = polylinesData; // polylinesData can be found in script_js.html file
+      unselectedEntries = {};
+    } else {
+
+      console.log("lahi ni siya nigana bako?????");
+
+      filteredEntries = Object.entries(polylinesData).filter(([key, _]) => key.includes(searchTerm));
+
+      console.log(filteredEntries);
+
+      selectedEntries = Object.fromEntries(filteredEntries); // Convert the filtered entries back into an object
+
+      console.log("humana kog gana?????");
+
+      unfilteredEntries = Object.entries(polylinesData).filter(([key, _]) => !key.includes(searchTerm));
+      unselectedEntries = Object.fromEntries(unfilteredEntries); // Convert the filtered entries back into an object
+      console.log("===================");
+      console.log(unselectedEntries);
     }
+
+    console.log("///////////////////////////");
+    console.log(selectedEntries);
+
+    unfilteredEntries = Object.entries(selectedEntries).filter(([key, value]) => value.options.color !== "red");
+    unfilteredEntries = Object.fromEntries(unfilteredEntries);
+
+
+    console.log("ssssssssssssssssssssssssssssssssssssss");
+    console.log(unfilteredEntries);
+
+    // Merge filteredUnselectedEntries into unselectedEntries
+    unselectedEntries = { ...unselectedEntries, ...unfilteredEntries };
+
+    console.log("===================");
+    console.log(unselectedEntries);
+
+
+    Object.keys(unselectedEntries).forEach(key => {
+      var element = unselectedEntries[key];
+      map.removeLayer(element);
+    });
+    console.log("=======humana============");
   }
 
   // Function to search for a cable system and filter the cables accordingly
@@ -310,10 +78,6 @@
     } else if (searchTerm !== "") {
       // Hide all cables first
       hideAllCables();
-
-      // Update map data based on the search term
-      google.script.run.withSuccessHandler(addMarkers).getSJCLocationsByCableSystem(searchTerm);
-      google.script.run.withSuccessHandler(yellowPolylines).getSJCDataByCableSystem(searchTerm);
     }
   }
 
@@ -337,13 +101,13 @@
     }
   }
 
-  // Function to hide all cables from the map
-  function hideAllCables() {
-    map.eachLayer(function (layer) {
-      if (layer instanceof L.Polyline) {
-        map.removeLayer(layer);
-      }
-    });
+
+  function convertSearchTerm(searchTerm) {
+    if (searchTerm === "Show All Cable Systems") return "ALL";
+    else if (searchTerm === "SEA-US") return "SEAUS";
+    else if (searchTerm === "SJC") return "SJC";
+    else if (searchTerm === "EAC") return "EAC";
+    else if (searchTerm === "TGN-IA/TGN-P") return "TGN";
   }
 
 </script>

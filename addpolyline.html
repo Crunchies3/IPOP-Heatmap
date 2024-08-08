@@ -1,6 +1,4 @@
 <script>
-    const polylinesData = {}; // will track each polyline.
-
     var notifiedCables; // will hold the data about the notified cable maintenance/etc. will be use for forecasting status of the cables.
     var cablePaths;
     var searchTerm;
@@ -8,7 +6,7 @@
     if (!map) {
         var bounds = L.latLngBounds([[90, -70], [-90, 310]]);
 
-        var map = L.map('map', {
+        map = L.map('map', {
             maxZoom: 18,
             minZoom: 3,
             dragging: true,
@@ -68,6 +66,9 @@
 
                 // Add polyline to the map
                 const polyline = L.polyline(coordinates, { color: "green", weight: 2 }).addTo(map).bindPopup(cable.cableName);
+
+
+                // polylinesData can be found in script_js.html file
                 polylinesData[cable.cableName] = polyline;
             });
 

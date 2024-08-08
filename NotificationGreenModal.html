@@ -160,53 +160,65 @@
     $('#selectedRowContainerGreen').modal('show');
   }
 
-  // Execute the Google Script function to load DataTables after the page has fully loaded
-  google.script.run.withSuccessHandler(function (data) {
-    console.log('Data received:', data); // Log the data to the console for debugging
+  window.onload = startAutoRefresh();
 
-    // Destroy existing DataTable instance if it exists
-    if ($.fn.DataTable.isDataTable('#notiftableGreen')) {
-      $('#notiftableGreen').DataTable().destroy();
-    }
 
-    if (data && data.length > 0) {
-      table = $('#notiftableGreen').DataTable({
-        responsive: true,
-        data: data,
-        order: [[4, 'desc']],
-        columns: [
-          { title: "Trouble Ticket" },
-          { title: "Cable System" },
-          { title: "Notification Date and Time" },
-          { title: "Start Date and Time (UTC)" },
-          { title: "End Date and Time (UTC)" },
-          { title: "Outage Duration" },
-          { title: "Activity Impact Duration" },
-          { title: "Impact" },
-          { title: "Incident Type" },
-          { title: "Affected Segment 1" },
-          { title: "Affected Segment 2" },
-          { title: "Affected Segment 3" },
-          { title: "Location" },
-          { title: "Root Cause (High Level)" },
-          { title: "Root Cause (Specific - Internal)" },
-          { title: "Additional Remarks (Internal)" },
-          { title: "Month Year" }
-        ],
+  function startAutoRefresh() {
+    fetchFromEndDate(); // Call immediately on load
+    setInterval(fetchFromEndDate, 1 * 60 * 1000); // Repeat every 5 minutes
+  }
 
-        scrollY: 450,
-        scrollX: true,
-        fixedColumns: {
-          leftColumns: 2
-        },
-        rowCallback: function (row, data, index) {
-          // Add click event to each row
-          $(row).on('click', function () {
-            showSelectedRowDataGreen(data, index);
-          });
-        }
-      });
-    }
-  }).getMIForDataTable('End Date');
+  function fetchFromEndDate() {
+
+
+    // Execute the Google Script function to load DataTables after the page has fully loaded
+    google.script.run.withSuccessHandler(function (data) {
+      console.log('Data received:', data); // Log the data to the console for debugging
+
+      // Destroy existing DataTable instance if it exists
+      if ($.fn.DataTable.isDataTable('#notiftableGreen')) {
+        $('#notiftableGreen').DataTable().destroy();
+      }
+
+      if (data && data.length > 0) {
+        table = $('#notiftableGreen').DataTable({
+          responsive: true,
+          data: data,
+          order: [[4, 'desc']],
+          columns: [
+            { title: "Trouble Ticket" },
+            { title: "Cable System" },
+            { title: "Notification Date and Time" },
+            { title: "Start Date and Time (UTC)" },
+            { title: "End Date and Time (UTC)" },
+            { title: "Outage Duration" },
+            { title: "Activity Impact Duration" },
+            { title: "Impact" },
+            { title: "Incident Type" },
+            { title: "Affected Segment 1" },
+            { title: "Affected Segment 2" },
+            { title: "Affected Segment 3" },
+            { title: "Location" },
+            { title: "Root Cause (High Level)" },
+            { title: "Root Cause (Specific - Internal)" },
+            { title: "Additional Remarks (Internal)" },
+            { title: "Month Year" }
+          ],
+
+          scrollY: 450,
+          scrollX: true,
+          fixedColumns: {
+            leftColumns: 2
+          },
+          rowCallback: function (row, data, index) {
+            // Add click event to each row
+            $(row).on('click', function () {
+              showSelectedRowDataGreen(data, index);
+            });
+          }
+        });
+      }
+    }).getMIForDataTable('End Date');
+  }
 
 </script>

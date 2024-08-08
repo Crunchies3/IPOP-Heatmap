@@ -1,3 +1,17 @@
-<script>
+<script type="text/javascript">
+    //  gantt.config.scale_height = 75;
+    // Initialize Gantt
+    gantt.config.scales = [
+        { unit: "month", step: 1, format: "%F, %Y" },
+        { unit: "day", step: 1, format: "%j" }
+    ];
 
+
+    gantt.init("gantt_here"); // initialize ang chart always put design on top
+    gantt.parse({
+        data: [
+            { id: 1, text: "Task #1", start_date: "01-08-2024", duration: 5, progress: 0.6 },
+            { id: 2, text: "Task #2", start_date: "03-08-2024", duration: 7, progress: 0.8 }
+        ]
+    });
 </script>

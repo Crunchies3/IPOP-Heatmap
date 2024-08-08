@@ -2,17 +2,25 @@
 <html lang="en">
 
 <head>
+    <base target="_top">
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Document</title>
+    <title>Globe Chart</title>
+
+    <!-- gantt imports -->
+    <link rel="stylesheet" href="https://cdn.dhtmlx.com/gantt/edge/dhtmlxgantt.css">
+    <script src="https://cdn.dhtmlx.com/gantt/edge/dhtmlxgantt.js"></script>
 
     <!-- styles css -->
-    <?!= HtmlService.createHtmlOutputFromFile('style_css.html').getContent(); ?>
+    <?!= HtmlService.createHtmlOutputFromFile('gantt-chart/style_css.html').getContent(); ?>
 
 </head>
 
 <body>
 
+    <div class="gantt_scale_cell" id="gantt_here" style="width:100%; height:600px;"></div>
+    <!-- gantt chart javascipt -->
+    <?!= HtmlService.createHtmlOutputFromFile('gantt-chart/script_js.html').getContent(); ?>
 </body>
 
 </html>

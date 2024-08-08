@@ -1,7 +1,13 @@
 function doGet(e) {
-  var htmloutput = HtmlService.createTemplateFromFile('CableMap').evaluate().setTitle('Map View');
+  if (!e.parameter.page) {
+    var htmloutput = HtmlService.createTemplateFromFile('CableMap').evaluate().setTitle('Map View');
+    return htmloutput;
+  }
+  else if (e.parameter['page'] == 'gantt') {
+    var htmloutput = HtmlService.createTemplateFromFile('gantt-chart' + '/' + 'index').evaluate().setTitle('Gantt Chart View');
+    return htmloutput;
+  }
 
-  return htmloutput;
 }
 
 function onEdit(e) {
@@ -749,6 +755,6 @@ function formatDates(dateString) {
   return formattedDate;
 }
 
-function getScriptUrl(){
+function getScriptUrl() {
   return ScriptApp.getService().getUrl();
 }

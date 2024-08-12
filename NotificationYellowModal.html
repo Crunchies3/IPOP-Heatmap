@@ -37,13 +37,13 @@
 
 <script>
 
-      window.onload = startAutoRefresh();
+  window.onload = startAutoRefresh();
 
 
-    function startAutoRefresh() {
-            fetchDataFromNotifTable(); // Call immediately on load
-            setInterval(fetchDataFromNotifTable, 1 * 60 * 1000); // Repeat every 5 minutes
-        }
+  function startAutoRefresh() {
+    fetchDataFromNotifTable(); // Call immediately on load
+    setInterval(fetchDataFromNotifTable, 1 * 60 * 1000); // Repeat every 5 minutes
+  }
   // Function to show the selected row data in a modal
   function showSelectedRowDataYellow(rowData, rowIndex) {
     // Set the values of input boxes based on the selected row data
@@ -102,6 +102,8 @@
         $('#selectedRowContainerYellow').modal('hide');
 
       }).copyToStartTableWithTheCurrentDate('Start Date', troubleTicket);
+      console.log('Sending to start date==================================')
+      google.script.run.withSuccessHandler().addToActivityLog('toStartDate', troubleTicket, "");
 
       google.script.run.withSuccessHandler(function (url) {
         window.open(url, '_top');
@@ -149,6 +151,8 @@
           for (var k = 0; k < updatedData.length; k++) {
             table.cell(rowNode, k).data(updatedData[k]);
           }
+          console.log('Updating==================================')
+          google.script.run.withSuccessHandler().addToActivityLog('Update', $('#yedittroubleticket').val(), "");
 
           // Show success alert
           showGoogleScriptAlert('Record updated successfully. Refresh the page.', 'success');
@@ -177,6 +181,9 @@
           // Remove the DataTable row for the deleted data
           table.row(rowIndex).remove().draw();
 
+          console.log('Deleting==================================')
+          google.script.run.withSuccessHandler().addToActivityLog('Delete', $('#yedittroubleticket').val(), "");
+
           // Close the modal
           $('#selectedRowContainerYellow').modal('hide');
           google.script.run.withSuccessHandler(function (url) {
@@ -196,58 +203,58 @@
     $('#selectedRowContainerYellow').modal('show');
   }
 
-fetchDataFromNotifTable();
-function fetchDataFromNotifTable(){
-  console.log('refreshing the notif table');
+  fetchDataFromNotifTable();
+  function fetchDataFromNotifTable() {
+    console.log('refreshing the notif table');
 
-  // Execute the Google Script function to load DataTables after the page has fully loaded
-  google.script.run.withSuccessHandler(function (data) {
-    console.log('Notif Data received:', data); // Log the data to the console for debugging
+    // Execute the Google Script function to load DataTables after the page has fully loaded
+    google.script.run.withSuccessHandler(function (data) {
+      console.log('Notif Data received:', data); // Log the data to the console for debugging
 
-    // Destroy existing DataTable instance if it exists
-    if ($.fn.DataTable.isDataTable('#notiftableYellow')) {
-      $('#notiftableYellow').DataTable().destroy();
-    }
+      // Destroy existing DataTable instance if it exists
+      if ($.fn.DataTable.isDataTable('#notiftableYellow')) {
+        $('#notiftableYellow').DataTable().destroy();
+      }
 
-    if (data && data.length > 0) {
-      table = $('#notiftableYellow').DataTable({
-        responsive: true,
-        data: data,
-        order: [[3, 'asc']],
-        columns: [
-          { title: "Trouble Ticket" },
-          { title: "Cable System" },
-          { title: "Notification Date and Time" },
-          { title: "Start Date and Time (UTC)" },
-          { title: "End Date and Time (UTC)" },
-          { title: "Outage Duration" },
-          { title: "Activity Impact Duration" },
-          { title: "Impact" },
-          { title: "Incident Type" },
-          { title: "Affected Segment 1" },
-          { title: "Affected Segment 2" },
-          { title: "Affected Segment 3" },
-          { title: "Location" },
-          { title: "Root Cause (High Level)" },
-          { title: "Root Cause (Specific - Internal)" },
-          { title: "Additional Remarks (Internal)" },
-          { title: "Month Year" }
-        ],
-        scrollY: 450,
-        scrollX: true,
-        fixedColumns: {
-          leftColumns: 2
-        },
-        rowCallback: function (row, data, index) {
-          // Add click event to each row
-          $(row).on('click', function () {
-            showSelectedRowDataYellow(data, index);
-          });
-        }
-      });
-    }
-  }).getMIForDataTable('Notifications');
-}
+      if (data && data.length > 0) {
+        table = $('#notiftableYellow').DataTable({
+          responsive: true,
+          data: data,
+          order: [[3, 'asc']],
+          columns: [
+            { title: "Trouble Ticket" },
+            { title: "Cable System" },
+            { title: "Notification Date and Time" },
+            { title: "Start Date and Time (UTC)" },
+            { title: "End Date and Time (UTC)" },
+            { title: "Outage Duration" },
+            { title: "Activity Impact Duration" },
+            { title: "Impact" },
+            { title: "Incident Type" },
+            { title: "Affected Segment 1" },
+            { title: "Affected Segment 2" },
+            { title: "Affected Segment 3" },
+            { title: "Location" },
+            { title: "Root Cause (High Level)" },
+            { title: "Root Cause (Specific - Internal)" },
+            { title: "Additional Remarks (Internal)" },
+            { title: "Month Year" }
+          ],
+          scrollY: 450,
+          scrollX: true,
+          fixedColumns: {
+            leftColumns: 2
+          },
+          rowCallback: function (row, data, index) {
+            // Add click event to each row
+            $(row).on('click', function () {
+              showSelectedRowDataYellow(data, index);
+            });
+          }
+        });
+      }
+    }).getMIForDataTable('Notifications');
+  }
 
 
 

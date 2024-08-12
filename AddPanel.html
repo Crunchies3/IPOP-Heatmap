@@ -326,6 +326,9 @@
           Clear();
         }).addDataToSheetNotif('Notifications', majorIncidents);
 
+        console.log('Adding==================================')
+        google.script.run.withSuccessHandler().addToActivityLog('Add', troubleTicket, incidentType);
+
         google.script.run.withSuccessHandler(function (url) {
           window.open(url, '_top');
         }).getScriptUrl();

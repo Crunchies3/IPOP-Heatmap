@@ -1,6 +1,6 @@
 <div class="row">
     <div class="col-2">
-        <input type="text" class="form-control w-100" id="calendar-input" onchange="changePolylineColorViaDatePicker(this.value)">
+        <input type="text" class="form-control w-100" id="calendar-input">
         <input hidden name="selectedDate" type="text" class="form-control w-100" id="selected_date">
     </div>
     <div class="col-9">
@@ -25,7 +25,8 @@
     </div>
     <div class="col-1">
         <div class="px-3">
-            <div class="align-items-center justify-content-center btn btn-primary w-100 " onclick="nextWeeks(); changePolylineColor(0);">
+            <div class="align-items-center justify-content-center btn btn-primary w-100 "
+                onclick="nextWeeks(); changePolylineColor(0);">
                 <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="currentColor"
                     class="bi bi-fast-forward-fill" viewBox="0 2 16 16">
                     <path
@@ -40,7 +41,28 @@
 
 <script>
 
-    $("#calendar-input").datepicker();
+    $("#calendar-input").datepicker({
+        onSelect: function (dateText, inst) {
+            // Remove href attributes after datepicker is rendered
+            $(".ui-datepicker-calendar a").removeAttr('href');
+
+            console.log("nigana ang onchange?");
+            document.getElementById("date_range").value = "0";
+            var currentDateOnCalendar = document.getElementById("calendar-input");
+            const dateString = currentDateOnCalendar.value;
+            const dateObject = moment(dateString, "MM/DD/YYYY").toDate();
+            dateformat = convertFullDatetoString(dateObject);
+            setDateToSliderBar(dateformat);
+            today = dateObject;
+            dateToSliderBar(today);
+
+            console.log("nigana ang value?: " + this.value);
+
+
+            changePolylineColorViaDatePicker(this.value);
+
+        }
+    });
 
     var today = new Date();
     var lastDayOfSlider;
@@ -48,17 +70,6 @@
 
     todayString = convertFullDatetoString(today);
     setDateToSliderBar(todayString);
-
-    $("#calendar-input").change(function () {
-        document.getElementById("date_range").value = "0";
-        var currentDateOnCalendar = document.getElementById("calendar-input");
-        const dateString = currentDateOnCalendar.value;
-        const dateObject = moment(dateString, "MM/DD/YYYY").toDate();
-        dateformat = convertFullDatetoString(dateObject);
-        setDateToSliderBar(dateformat);
-        today = dateObject;
-        dateToSliderBar(today);
-    });
 
     <!-- functions -->
 

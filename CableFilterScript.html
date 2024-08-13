@@ -3,203 +3,87 @@
   var selectedEntries = {};
   var unselectedEntries = {};
 
-  //---------------------------------------Button function for filters-------------------------------//
-  function redCables() {
-
+  function filterCablesByColor(color) {
+    // Add all layers initially
     Object.keys(polylinesData).forEach(key => {
       var element = polylinesData[key];
       map.addLayer(element);
     });
 
+    // Get the search term from the input
     var search = document.getElementById("search-input").value;
     var searchTerm = convertSearchTerm(search);
 
-    var filteredEntries
-    var unfilteredEntries
+    var filteredEntries;
+    var unfilteredEntries;
 
-    console.log("++++++++++++++++");
+    console.log("BEFORE");
     console.log(polylinesData);
 
+    console.log("SEARCH TERM");
     console.log(searchTerm);
 
+    // Determine selected and unselected entries based on the search term
     if (searchTerm === "ALL") {
-
-      console.log("all nigana bako?????");
-      selectedEntries = polylinesData; // polylinesData can be found in script_js.html file
+      selectedEntries = polylinesData;
       unselectedEntries = {};
     } else {
-
-      console.log("lahi ni siya nigana bako?????");
-
       filteredEntries = Object.entries(polylinesData).filter(([key, _]) => key.includes(searchTerm));
-
+      console.log("FILTERED BY CABLE SYSTEM ENTRIES");
       console.log(filteredEntries);
-
-      selectedEntries = Object.fromEntries(filteredEntries); // Convert the filtered entries back into an object
-
-      console.log("humana kog gana?????");
-
+      selectedEntries = Object.fromEntries(filteredEntries);
       unfilteredEntries = Object.entries(polylinesData).filter(([key, _]) => !key.includes(searchTerm));
-      unselectedEntries = Object.fromEntries(unfilteredEntries); // Convert the filtered entries back into an object
-      console.log("===================");
+      unselectedEntries = Object.fromEntries(unfilteredEntries);
+      console.log("UNSELECTED ENTRIES");
       console.log(unselectedEntries);
     }
 
-    console.log("///////////////////////////");
+    console.log("SELECTED ENTRIES");
     console.log(selectedEntries);
 
-    unfilteredEntries = Object.entries(selectedEntries).filter(([key, value]) => value.options.color !== "red");
+    // Filter out entries that do not match the specified color
+    unfilteredEntries = Object.entries(selectedEntries).filter(([key, value]) => value.options.color !== color);
     unfilteredEntries = Object.fromEntries(unfilteredEntries);
 
-
-    console.log("ssssssssssssssssssssssssssssssssssssss");
+    console.log(`NON ${color.toUpperCase()} ENTRIES`);
     console.log(unfilteredEntries);
 
-    // Merge filteredUnselectedEntries into unselectedEntries
+    // Merge filtered entries into unselectedEntries
     unselectedEntries = { ...unselectedEntries, ...unfilteredEntries };
 
-    console.log("===================");
+    console.log(`NON ${color.toUpperCase()} ENTRIES TO BE CHANGED`);
     console.log(unselectedEntries);
 
-
+    // Remove layers that do not match the specified color
+    console.log(`REMOVING NON ${color.toUpperCase()}`);
     Object.keys(unselectedEntries).forEach(key => {
       var element = unselectedEntries[key];
       map.removeLayer(element);
     });
-    console.log("=======humana============");
+
+    console.log(`FINISHED REMOVING NON ${color.toUpperCase()}`);
+
+    console.log("AFTER");
+    console.log("unselected");
+    console.log(unselectedEntries);
+    console.log("polylines");
+    console.log(polylinesData);
   }
 
-  // Function to search for a cable system and filter the cables accordingly
+  // Example usage:
+  function redCables() {
+    filterCablesByColor("red");
+  }
+
   function yellowCables() {
-
-    Object.keys(polylinesData).forEach(key => {
-      var element = polylinesData[key];
-      map.addLayer(element);
-    });
-
-    var search = document.getElementById("search-input").value;
-    var searchTerm = convertSearchTerm(search);
-
-    var filteredEntries = {};
-    var unfilteredEntries = {};
-
-    console.log("++++++++++++++++");
-    console.log(polylinesData);
-
-    console.log(searchTerm);
-
-    if (searchTerm === "ALL") {
-
-      console.log("all nigana bako?????");
-      selectedEntries = polylinesData; // polylinesData can be found in script_js.html file
-      unselectedEntries = {};
-    } else {
-
-      console.log("lahi ni siya nigana bako?????");
-
-      filteredEntries = Object.entries(polylinesData).filter(([key, _]) => key.includes(searchTerm));
-
-      console.log(filteredEntries);
-
-      selectedEntries = Object.fromEntries(filteredEntries); // Convert the filtered entries back into an object
-
-      console.log("humana kog gana?????");
-
-      unfilteredEntries = Object.entries(polylinesData).filter(([key, _]) => !key.includes(searchTerm));
-      unselectedEntries = Object.fromEntries(unfilteredEntries); // Convert the filtered entries back into an object
-      console.log("===================");
-      console.log(unselectedEntries);
-    }
-
-    console.log("///////////////////////////");
-    console.log(selectedEntries);
-
-    unfilteredEntries = Object.entries(selectedEntries).filter(([key, value]) => value.options.color !== "yellow");
-    unfilteredEntries = Object.fromEntries(unfilteredEntries);
-
-
-    console.log("ssssssssssssssssssssssssssssssssssssss");
-    console.log(unfilteredEntries);
-
-    // Merge filteredUnselectedEntries into unselectedEntries
-    unselectedEntries = { ...unselectedEntries, ...unfilteredEntries };
-
-    console.log("===================");
-    console.log(unselectedEntries);
-
-
-    Object.keys(unselectedEntries).forEach(key => {
-      var element = unselectedEntries[key];
-      map.removeLayer(element);
-    });
-    console.log("=======humana============");
+    filterCablesByColor("yellow");
   }
 
   function greenCables() {
-
-    Object.keys(polylinesData).forEach(key => {
-      var element = polylinesData[key];
-      map.addLayer(element);
-    });
-
-    var search = document.getElementById("search-input").value;
-    var searchTerm = convertSearchTerm(search);
-
-    var filteredEntries
-    var unfilteredEntries
-
-    console.log("++++++++++++++++");
-    console.log(polylinesData);
-
-    console.log(searchTerm);
-
-    if (searchTerm === "ALL") {
-
-      console.log("all nigana bako?????");
-      selectedEntries = polylinesData; // polylinesData can be found in script_js.html file
-      unselectedEntries = {};
-    } else {
-
-      console.log("lahi ni siya nigana bako?????");
-
-      filteredEntries = Object.entries(polylinesData).filter(([key, _]) => key.includes(searchTerm));
-
-      console.log(filteredEntries);
-
-      selectedEntries = Object.fromEntries(filteredEntries); // Convert the filtered entries back into an object
-
-      console.log("humana kog gana?????");
-
-      unfilteredEntries = Object.entries(polylinesData).filter(([key, _]) => !key.includes(searchTerm));
-      unselectedEntries = Object.fromEntries(unfilteredEntries); // Convert the filtered entries back into an object
-      console.log("===================");
-      console.log(unselectedEntries);
-    }
-
-    console.log("///////////////////////////");
-    console.log(selectedEntries);
-
-    unfilteredEntries = Object.entries(selectedEntries).filter(([key, value]) => value.options.color !== "green");
-    unfilteredEntries = Object.fromEntries(unfilteredEntries);
-
-
-    console.log("ssssssssssssssssssssssssssssssssssssss");
-    console.log(unfilteredEntries);
-
-    // Merge filteredUnselectedEntries into unselectedEntries
-    unselectedEntries = { ...unselectedEntries, ...unfilteredEntries };
-
-    console.log("===================");
-    console.log(unselectedEntries);
-
-
-    Object.keys(unselectedEntries).forEach(key => {
-      var element = unselectedEntries[key];
-      map.removeLayer(element);
-      console.log(element);
-    });
-    console.log("=======humana============");
+    filterCablesByColor("green");
   }
+
+
 
 
   function convertSearchTerm(searchTerm) {

@@ -92,9 +92,11 @@
     console.log(url);
     var link = document.createElement('a');
     link.href = url + '?page=' + pagename;
+    link.target = '_blank';  // Ensure it opens in a new tab
     link.id = 'linkURL';
     document.body.appendChild(link);
     document.getElementById('linkURL').click();
-
+    document.body.removeChild(link);  // Clean up the DOM
   }
+
 </script>

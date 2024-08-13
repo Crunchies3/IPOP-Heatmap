@@ -8,16 +8,30 @@
       }
     });
 
-    // Re-add polylines of the selected color
-    Object.keys(polylines).forEach(function (type) {
-      Object.keys(polylines[type]).forEach(function (cableName) {
-        var item = polylines[type][cableName];
-        console.log("item:", item); // Debugging line to check the item structure
+    var filter = document.getElementById("search-input").value;
+    var cableSystem = convertSearchTerm(filter);
+
+    if (cableSystem !== "ALL") {
+
+      Object.keys(polylines[cableSystem]).forEach(function (cableName) {
+        var item = polylines[cableSystem][cableName];
+        console.log("item:", item);
         if (item["options"].color === color) {
           item.addTo(map);
         }
       });
-    });
+
+    } else {
+      Object.keys(polylines).forEach(function (type) {
+        Object.keys(polylines[type]).forEach(function (cableName) {
+          var item = polylines[type][cableName];
+          console.log("item:", item);
+          if (item["options"].color === color) {
+            item.addTo(map);
+          }
+        });
+      });
+    }
   }
 
   // Example usage:
@@ -32,8 +46,6 @@
   function greenCables() {
     filterByColor("green");
   }
-
-
 
 
   function convertSearchTerm(searchTerm) {

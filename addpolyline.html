@@ -20,6 +20,14 @@
             attribution: '&copy; <a ></a> K.Y.L.C',
             language: 'en',
         }).addTo(map);
+
+
+        // Layer groups used for filtering
+        var sjc = L.layerGroup().addTo(map);
+        var c2c = L.layerGroup().addTo(map);
+        var tgn = L.layerGroup().addTo(map);
+        var seaus = L.layerGroup().addTo(map);
+        var eac = L.layerGroup().addTo(map);
     }
 
 
@@ -41,7 +49,6 @@
     google.script.run.withSuccessHandler(addMarkers).getSJCLocations();
 
     function addPolylines(cables) {
-
         let date = new Date();
 
         // Fetch cable names from Google Sheets using Google Apps Script
@@ -64,30 +71,51 @@
                     [longitudeTo, latitudeTo]
                 ];
 
-                // Add polyline to the map
-                const polyline = L.polyline(coordinates, { color: "green", weight: 2 }).addTo(map).bindPopup(cable.cableName);
 
+                var type = getCableType(cableName);
 
-                // polylinesData can be found in script_js.html file
-                polylinesData[cable.cableName] = polyline;
+                var color = "green";
+                var polyline = L.polyline(coordinates, { color: color, weight: 2 }).bindPopup(cable.cableName);
+                polylines[type][cable.cableName] = polyline;
+                polyline.addTo(polylines[type].group || (type === 'SJC' ? sjc : type === 'C2C' ? c2c : type === 'TGN' ? tgn : type === 'EAC' ? eac : seaus));
             });
 
 
             data.combinedCableNames.forEach(cables => {
                 let color = "green";
                 let cable_name = cables.combinedName.trim();
+
+                var type = getCableType(cable_name);
+
                 let notifiedDate = parseDate(cables.notifiedDate);
                 let startDate = parseDate(cables.startDate);
                 let endDate = parseDate(cables.endDate);
                 if (date >= startDate && date <= endDate) color = 'red';
                 if (date < startDate && date >= notifiedDate) color = 'yellow';
-                updatePolylineColor(cable_name, color);
+
+                updatePolylineColor(type, cable_name, color);
             });
+
+
+            console.log("polyline data structure");
+            console.log(polylines);
+
 
 
         }).getCableNames();
     }
 
+
+
+    function getCableType(cable_type) {
+        var type;
+        if (cable_type.includes('SJC')) type = "SJC";
+        else if (cable_type.includes('EAC')) type = "EAC";
+        else if (cable_type.includes('C2C')) type = "C2C";
+        else if (cable_type.includes('SEAUS')) type = "SEAUS";
+        else if (cable_type.includes('TGN')) type = "TGN";
+        return type;
+    }
 
     // ======================================<<START>>=================================
 
@@ -95,12 +123,19 @@
         // Get the string date from the element
         const stringDate = getDateFromElement(rangeIndex);
 
+        console.log("current date: " + stringDate);
+
         // Get cable data
         const cableData = getCableData(notifiedCables);
+
+        console.log("notified cables");
+        console.log(cableData);
 
         cableData.forEach(cable => {
             // Determine the color based on the date and cable information
             const color = determineColor(stringDate, cable);
+
+            console.log("color: " + color);
 
             // Construct the polyline IDs based on cable system and segments
             const polylineIds = [
@@ -109,14 +144,23 @@
                 `${cable.segment3 ? `${cable.cableSystem} ${cable.segment3}` : ''}`
             ];
 
+            console.log("polyline ids");
+            console.log(polylineIds);
+
+            var type = getCableType(cable.cableSystem);
+
+            console.log("type: " + type);
+
+
             // Update color for each polyline ID
             polylineIds.forEach(polylineId => {
                 if (polylineId) {
-                    updateCablePaths(polylineId, color);
+                    updateCablePaths(polylineId, color, type);
                 }
             });
         });
     }
+
 
     function changePolylineColorViaDatePicker(stringDate) {
         // Get cable data
@@ -136,13 +180,13 @@
             // Update color for each polyline ID
             polylineIds.forEach(polylineId => {
                 if (polylineId) {
-                    updateCablePaths(polylineId, color);
+                    updateCablePaths(polylineId, color, type);
                 }
             });
         });
     }
 
-    function updateCablePaths(polylineId, color) {
+    function updateCablePaths(polylineId, color, type) {
         // Find the corresponding cable path
         const cablePath = cablePaths.find(path => path.value === polylineId);
 
@@ -156,13 +200,18 @@
                 }
             }
 
+            console.log("path to updates");
+            console.log(pathsToUpdate);
+
             // Update the color for each path
             pathsToUpdate.forEach(path => {
-                updatePolylineColor(path, color);
+                updatePolylineColor(type, path, color);
             });
         } else {
             // Optionally handle the case where no paths are found
-            updatePolylineColor(polylineId, color);
+            console.log("path to updates (polyline id)");
+            console.log(polylineId);
+            updatePolylineColor(type, polylineId, color);
         }
     }
 
@@ -193,12 +242,12 @@
         return 'green';
     }
 
-    function updatePolylineColor(id, color) {
-        const polyline = polylinesData[id];
-        if (polyline) {
-            polyline.setStyle({ color });
+    function updatePolylineColor(type, id, newColor) {
+
+        if (polylines[type] && polylines[type][id]) {
+            polylines[type][id].setStyle({ color: newColor });
         } else {
-            console.log(`Polyline with id "${id}" not found!`);
+            console.error('Polyline not found:', type, id);
         }
     }
 
@@ -209,6 +258,8 @@
 
 
     function getNotifiedCableData(data) {
+        console.log("notified cables data");
+        console.log(data);
         notifiedCables = data;
     }
 
@@ -223,7 +274,6 @@
         searchCableSystem();
         google.script.run.withSuccessHandler(getNotifiedCableData).extractDates(searchTerm);
         google.script.run.withSuccessHandler(getAllCablePaths).getFullPaths();
-
         google.script.run.withSuccessHandler().transferNotifToStartandEndDate();
     }
 
@@ -234,53 +284,50 @@
 
     function startAutoRefresh() {
         initializeMap(); // Call immediately on load
-        setInterval(initializeMap, 1 * 60 * 1000); // Repeat every 5 minutes
-    }
-    // Function to update map data every 30 seconds
-    function updateMapData() {
-        google.script.run.withSuccessHandler(addMarkers).getSJCLocations();
-        google.script.run.withSuccessHandler(addPolylines).getSJCData();
+        setInterval(initializeMap, 1 * 60 * 1000); // Repeat every 1 minute
     }
 
-    updateMapData();
 
     // Function to search for a cable system and filter the cables accordingly
     function searchCableSystem() {
-        $('#spinnerModal').modal('show');
-        searchTerm = document.getElementById("search-input").value; // Convert search term to uppercase for case-insensitive comparison
+        searchTerm = document.getElementById("search-input").value;
 
-        // Check if search term is not empty
-        if (searchTerm === "Show All Cable Systems") {
+        let type = convertSearchTerm(searchTerm);
 
+        if (type != "ALL") {
 
-            google.script.run.withSuccessHandler(addMarkers).getSJCLocations();
-            google.script.run.withSuccessHandler(addPolylines).getSJCData();
+            map.eachLayer(function (layer) {
+                if (layer instanceof L.Polyline) {
+                    map.removeLayer(layer);
+                }
+            });
 
-            // Set the opacity of all cables to 0.2
-            setAllCablesOpacity(1);
-            $('#spinnerModal').modal('hide');
+            Object.values(polylines[type]).forEach(function (polyline) {
+                polyline.addTo(map);
+            });
 
-        } else if (searchTerm !== "") {
-            // Update map data based on the search term
-            google.script.run.withSuccessHandler(addMarkers).getSJCLocationsByCableSystem(searchTerm);
-            google.script.run.withSuccessHandler(addPolylines).getSJCDataByCableSystem(searchTerm);
+        } else {
+            map.eachLayer(function (layer) {
+                if (layer instanceof L.Polyline) {
+                    map.removeLayer(layer);
+                }
+            });
 
-            // Set the opacity of all cables to 0.2
-            setAllCablesOpacity(0.01);
-            $('#spinnerModal').modal('hide');
+            Object.values(polylines).forEach(function (group) {
+                Object.values(group).forEach(function (polyline) {
+                    polyline.addTo(map);
+                });
+            });
         }
 
 
-
-        // added new functionality for cable status forecasting
-
+        // Very important. will be used in extracting dates
         if (searchTerm === "Show All Cable Systems") searchTerm = "All";
         else if (searchTerm === "SEA-US") searchTerm = "SEAUS";
         else if (searchTerm === "SJC") searchTerm = "SJC";
         else if (searchTerm === "EAC") searchTerm = "EAC";
         else if (searchTerm === "C2C") searchTerm = "C2C";
         else if (searchTerm === "TGN-IA/TGN-P") searchTerm = "TGN-IA/TGN-P";
-
     }
 
     // Function to set the opacity of all cables on the map
@@ -292,5 +339,10 @@
         });
     }
 
+    function convertSearchTerm(searchTerm) {
+        if (searchTerm === "Show All Cable Systems") return "ALL";
+        else if (searchTerm === "TGN-IA/TGN-P") return "TGN";
+        else return searchTerm;
+    }
 
 </script>

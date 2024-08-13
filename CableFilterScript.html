@@ -1,86 +1,36 @@
 <script>
 
-  var selectedEntries = {};
-  var unselectedEntries = {};
-
-  function filterCablesByColor(color) {
-    // Add all layers initially
-    Object.keys(polylinesData).forEach(key => {
-      var element = polylinesData[key];
-      map.addLayer(element);
+  function filterByColor(color) {
+    // Clear the map
+    map.eachLayer(function (layer) {
+      if (layer instanceof L.Polyline) {
+        map.removeLayer(layer);
+      }
     });
 
-    // Get the search term from the input
-    var search = document.getElementById("search-input").value;
-    var searchTerm = convertSearchTerm(search);
-
-    var filteredEntries;
-    var unfilteredEntries;
-
-    console.log("BEFORE");
-    console.log(polylinesData);
-
-    console.log("SEARCH TERM");
-    console.log(searchTerm);
-
-    // Determine selected and unselected entries based on the search term
-    if (searchTerm === "ALL") {
-      selectedEntries = polylinesData;
-      unselectedEntries = {};
-    } else {
-      filteredEntries = Object.entries(polylinesData).filter(([key, _]) => key.includes(searchTerm));
-      console.log("FILTERED BY CABLE SYSTEM ENTRIES");
-      console.log(filteredEntries);
-      selectedEntries = Object.fromEntries(filteredEntries);
-      unfilteredEntries = Object.entries(polylinesData).filter(([key, _]) => !key.includes(searchTerm));
-      unselectedEntries = Object.fromEntries(unfilteredEntries);
-      console.log("UNSELECTED ENTRIES");
-      console.log(unselectedEntries);
-    }
-
-    console.log("SELECTED ENTRIES");
-    console.log(selectedEntries);
-
-    // Filter out entries that do not match the specified color
-    unfilteredEntries = Object.entries(selectedEntries).filter(([key, value]) => value.options.color !== color);
-    unfilteredEntries = Object.fromEntries(unfilteredEntries);
-
-    console.log(`NON ${color.toUpperCase()} ENTRIES`);
-    console.log(unfilteredEntries);
-
-    // Merge filtered entries into unselectedEntries
-    unselectedEntries = { ...unselectedEntries, ...unfilteredEntries };
-
-    console.log(`NON ${color.toUpperCase()} ENTRIES TO BE CHANGED`);
-    console.log(unselectedEntries);
-
-    // Remove layers that do not match the specified color
-    console.log(`REMOVING NON ${color.toUpperCase()}`);
-    Object.keys(unselectedEntries).forEach(key => {
-      var element = unselectedEntries[key];
-      map.removeLayer(element);
+    // Re-add polylines of the selected color
+    Object.keys(polylines).forEach(function (type) {
+      Object.keys(polylines[type]).forEach(function (cableName) {
+        var item = polylines[type][cableName];
+        console.log("item:", item); // Debugging line to check the item structure
+        if (item["options"].color === color) {
+          item.addTo(map);
+        }
+      });
     });
-
-    console.log(`FINISHED REMOVING NON ${color.toUpperCase()}`);
-
-    console.log("AFTER");
-    console.log("unselected");
-    console.log(unselectedEntries);
-    console.log("polylines");
-    console.log(polylinesData);
   }
 
   // Example usage:
   function redCables() {
-    filterCablesByColor("red");
+    filterByColor("red");
   }
 
   function yellowCables() {
-    filterCablesByColor("yellow");
+    filterByColor("yellow");
   }
 
   function greenCables() {
-    filterCablesByColor("green");
+    filterByColor("green");
   }
 
 

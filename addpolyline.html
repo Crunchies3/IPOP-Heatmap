@@ -3,16 +3,6 @@
     var cablePaths;
     var searchTerm;
 
-    var polylines = {
-        'SJC': {},
-        'C2C': {},
-        'TGN': {},
-        'SEAUS': {},
-        'EAC': {}
-    };
-
-
-
     if (!map) {
         var bounds = L.latLngBounds([[90, -70], [-90, 310]]);
 
@@ -82,14 +72,7 @@
                 ];
 
 
-                var type;
-
-                if (cableName.includes('SJC')) type = "SJC";
-                else if (cableName.includes('EAC')) type = "EAC";
-                else if (cableName.includes('C2C')) type = "C2C";
-                else if (cableName.includes('SEAUS')) type = "SEAUS";
-                else if (cableName.includes('TGN')) type = "TGN";
-
+                var type = getCableType(cableName);
 
                 var color = "green";
                 var polyline = L.polyline(coordinates, { color: color, weight: 2 }).bindPopup(cable.cableName);
@@ -98,20 +81,41 @@
             });
 
 
-            // data.combinedCableNames.forEach(cables => {
-            //     let color = "green";
-            //     let cable_name = cables.combinedName.trim();
-            //     let notifiedDate = parseDate(cables.notifiedDate);
-            //     let startDate = parseDate(cables.startDate);
-            //     let endDate = parseDate(cables.endDate);
-            //     if (date >= startDate && date <= endDate) color = 'red';
-            //     if (date < startDate && date >= notifiedDate) color = 'yellow';
-            //     updatePolylineColor(cable_name, color);
-            // });
+            data.combinedCableNames.forEach(cables => {
+                let color = "green";
+                let cable_name = cables.combinedName.trim();
+
+                var type = getCableType(cable_name);
+
+                let notifiedDate = parseDate(cables.notifiedDate);
+                let startDate = parseDate(cables.startDate);
+                let endDate = parseDate(cables.endDate);
+                if (date >= startDate && date <= endDate) color = 'red';
+                if (date < startDate && date >= notifiedDate) color = 'yellow';
+
+                updatePolylineColor(type, cable_name, color);
+            });
+
+
+            console.log("polyline data structure");
+            console.log(polylines);
+
+
 
         }).getCableNames();
     }
 
+
+
+    function getCableType(cable_type) {
+        var type;
+        if (cable_type.includes('SJC')) type = "SJC";
+        else if (cable_type.includes('EAC')) type = "EAC";
+        else if (cable_type.includes('C2C')) type = "C2C";
+        else if (cable_type.includes('SEAUS')) type = "SEAUS";
+        else if (cable_type.includes('TGN')) type = "TGN";
+        return type;
+    }
 
     // ======================================<<START>>=================================
 
@@ -119,12 +123,19 @@
         // Get the string date from the element
         const stringDate = getDateFromElement(rangeIndex);
 
+        console.log("current date: " + stringDate);
+
         // Get cable data
         const cableData = getCableData(notifiedCables);
+
+        console.log("notified cables");
+        console.log(cableData);
 
         cableData.forEach(cable => {
             // Determine the color based on the date and cable information
             const color = determineColor(stringDate, cable);
+
+            console.log("color: " + color);
 
             // Construct the polyline IDs based on cable system and segments
             const polylineIds = [
@@ -133,14 +144,23 @@
                 `${cable.segment3 ? `${cable.cableSystem} ${cable.segment3}` : ''}`
             ];
 
+            console.log("polyline ids");
+            console.log(polylineIds);
+
+            var type = getCableType(cable.cableSystem);
+
+            console.log("type: " + type);
+
+
             // Update color for each polyline ID
             polylineIds.forEach(polylineId => {
                 if (polylineId) {
-                    updateCablePaths(polylineId, color);
+                    updateCablePaths(polylineId, color, type);
                 }
             });
         });
     }
+
 
     function changePolylineColorViaDatePicker(stringDate) {
         // Get cable data
@@ -160,13 +180,13 @@
             // Update color for each polyline ID
             polylineIds.forEach(polylineId => {
                 if (polylineId) {
-                    updateCablePaths(polylineId, color);
+                    updateCablePaths(polylineId, color, type);
                 }
             });
         });
     }
 
-    function updateCablePaths(polylineId, color) {
+    function updateCablePaths(polylineId, color, type) {
         // Find the corresponding cable path
         const cablePath = cablePaths.find(path => path.value === polylineId);
 
@@ -180,13 +200,18 @@
                 }
             }
 
+            console.log("path to updates");
+            console.log(pathsToUpdate);
+
             // Update the color for each path
             pathsToUpdate.forEach(path => {
-                updatePolylineColor(path, color);
+                updatePolylineColor(type, path, color);
             });
         } else {
             // Optionally handle the case where no paths are found
-            updatePolylineColor(polylineId, color);
+            console.log("path to updates (polyline id)");
+            console.log(polylineId);
+            updatePolylineColor(type, polylineId, color);
         }
     }
 
@@ -217,12 +242,12 @@
         return 'green';
     }
 
-    function updatePolylineColor(id, color) {
-        const polyline = polylinesData[id];
-        if (polyline) {
-            polyline.setStyle({ color });
+    function updatePolylineColor(type, id, newColor) {
+
+        if (polylines[type] && polylines[type][id]) {
+            polylines[type][id].setStyle({ color: newColor });
         } else {
-            console.log(`Polyline with id "${id}" not found!`);
+            console.error('Polyline not found:', type, id);
         }
     }
 
@@ -233,6 +258,8 @@
 
 
     function getNotifiedCableData(data) {
+        console.log("notified cables data");
+        console.log(data);
         notifiedCables = data;
     }
 
@@ -244,6 +271,7 @@
         console.log('refreshing shenanigans');
         google.script.run.withSuccessHandler(addMarkers).getSJCLocations();
         google.script.run.withSuccessHandler(addPolylines).getSJCData();
+        searchCableSystem();
         google.script.run.withSuccessHandler(getNotifiedCableData).extractDates(searchTerm);
         google.script.run.withSuccessHandler(getAllCablePaths).getFullPaths();
         google.script.run.withSuccessHandler().transferNotifToStartandEndDate();
@@ -279,7 +307,6 @@
             });
 
         } else {
-
             map.eachLayer(function (layer) {
                 if (layer instanceof L.Polyline) {
                     map.removeLayer(layer);
@@ -293,6 +320,8 @@
             });
         }
 
+
+        // Very important. will be used in extracting dates
         if (searchTerm === "Show All Cable Systems") searchTerm = "All";
         else if (searchTerm === "SEA-US") searchTerm = "SEAUS";
         else if (searchTerm === "SJC") searchTerm = "SJC";

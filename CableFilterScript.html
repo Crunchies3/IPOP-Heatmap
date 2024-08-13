@@ -1,18 +1,31 @@
 <script>
 
+  /**
+   * Filters and displays polylines on the map based on the specified color.
+   * 
+   * This function removes all existing polylines from the map and then adds only those
+   * polylines whose color matches the specified filter color. It takes into account whether
+   * a specific cable system is selected or if all systems should be considered.
+   * 
+   * @param {string} color - The color to filter polylines by. Only polylines with this color
+   *                         will be added to the map.
+   * 
+   * @returns {void} - This function does not return any value. It updates the map to display
+   *                    only the polylines that match the specified color.
+   */
   function filterByColor(color) {
-    // Clear the map
+    // Clear the map of all existing polylines
     map.eachLayer(function (layer) {
       if (layer instanceof L.Polyline) {
         map.removeLayer(layer);
       }
     });
-
+    // Get the current filter term from the input field
     var filter = document.getElementById("search-input").value;
     var cableSystem = convertSearchTerm(filter);
-
+    // Add polylines matching the specified color based on the cable system filter
     if (cableSystem !== "ALL") {
-
+      // If a specific cable system is selected
       Object.keys(polylines[cableSystem]).forEach(function (cableName) {
         var item = polylines[cableSystem][cableName];
         console.log("item:", item);
@@ -20,8 +33,8 @@
           item.addTo(map);
         }
       });
-
     } else {
+      // If all cable systems are to be considered
       Object.keys(polylines).forEach(function (type) {
         Object.keys(polylines[type]).forEach(function (cableName) {
           var item = polylines[type][cableName];
@@ -33,6 +46,7 @@
       });
     }
   }
+
 
   // Example usage:
   function redCables() {

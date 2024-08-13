@@ -164,6 +164,8 @@
 
     function changePolylineColorViaDatePicker(stringDate) {
         // Get cable data
+
+        console.log("changePolylineColorViaDatePicker");
         const cableData = getCableData(notifiedCables);
 
         cableData.forEach(cable => {
@@ -176,6 +178,8 @@
                 `${cable.segment2 ? `${cable.cableSystem} ${cable.segment2}` : ''}`,
                 `${cable.segment3 ? `${cable.cableSystem} ${cable.segment3}` : ''}`
             ];
+
+            var type = getCableType(cable.cableSystem);
 
             // Update color for each polyline ID
             polylineIds.forEach(polylineId => {

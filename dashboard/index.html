@@ -2,13 +2,25 @@
 <html lang="en">
 
 <head>
+    <!-- vanilla calendar cdn -->
+    <link href="https://cdn.jsdelivr.net/npm/vanilla-calendar-pro/build/vanilla-calendar.min.css" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/vanilla-calendar-pro/build/vanilla-calendar.min.js" defer></script>
+    <link href="./vanilla-calendar.min.css" rel="stylesheet">
+    <script src="./vanilla-calendar.min.js" defer></script>
+
+    <!-- styles css -->
+    <?!= HtmlService.createHtmlOutputFromFile('dashboard/style_css.html').getContent(); ?>
+
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Document</title>
 </head>
 
 <body>
+    <div id="calendar"></div>
 
+    <!-- vanilla calendar javascipt -->
+    <?!= HtmlService.createHtmlOutputFromFile('dashboard/script_js.html').getContent(); ?>
 </body>
 
 </html>

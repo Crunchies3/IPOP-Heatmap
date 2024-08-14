@@ -1,11 +1,10 @@
 <script>
-    var notifiedCables; // will hold the data about the notified cable maintenance/etc. will be use for forecasting status of the cables.
+    var notifiedCables;
     var cablePaths;
     var searchTerm;
 
     if (!map) {
         var bounds = L.latLngBounds([[90, -70], [-90, 310]]);
-
         map = L.map('map', {
             maxZoom: 18,
             minZoom: 3,
@@ -15,137 +14,213 @@
             center: [8.345422, 158.581226],
             zoom: 3
         });
-
         L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
             attribution: '&copy; <a ></a> K.Y.L.C',
             language: 'en',
         }).addTo(map);
+        // Layer groups used for filtering
+        var sjc = L.layerGroup().addTo(map);
+        var c2c = L.layerGroup().addTo(map);
+        var tgn = L.layerGroup().addTo(map);
+        var seaus = L.layerGroup().addTo(map);
+        var eac = L.layerGroup().addTo(map);
     }
 
-
-    // Function to add markers to the map
+    /**
+     * Adds custom markers to the map for each location in the given array.
+     *
+     * This function iterates over an array of location objects and creates a marker for each location on the map.
+     * The markers are styled using a custom icon defined with `L.divIcon`. Each marker is placed at the specified
+     * longitude and latitude and is equipped with a popup displaying the `pointName` of the location.
+     *
+     * @param {Array<Object>} locations - An array of location objects, where each object has the following properties:
+     *   - {number} longitude - The longitude coordinate of the marker.
+     *   - {number} latitude - The latitude coordinate of the marker.
+     *   - {string} pointName - The name to be displayed in the marker's popup.
+     * 
+     * @returns {void} This function does not return any value. It directly modifies the map by adding markers.
+     */
     function addMarkers(locations) {
         locations.forEach(function (location) {
             var pointIcon = L.divIcon({
                 className: 'point-icon', // CSS class for styling
                 html: '<div class="point-marker"></div>', // HTML for the point symbol
                 iconAnchor: [3, 3], // Center the marker at the coordinates
-
             });
 
-            L.marker([location.longitude, location.latitude], { icon: pointIcon }).addTo(map).bindPopup(location.pointName);
+            L.marker([location.longitude, location.latitude], { icon: pointIcon })
+                .addTo(map)
+                .bindPopup(location.pointName);
         });
     }
 
     // Fetch locations from Google Sheets and add markers
     google.script.run.withSuccessHandler(addMarkers).getSJCLocations();
 
+    /**
+     * Adds polylines to the map representing cables and updates their colors based on specific conditions.
+     *
+     * This function first retrieves cable names and other related data from a Google Sheets document using Google Apps Script.
+     * It then iterates over an array of cable objects to create polylines on the map for each cable, setting their colors
+     * based on predefined logic. It also updates the color of the polylines based on the current date and other date-related
+     * information retrieved from the Google Sheets document.
+     *
+     * @param {Array<Object>} cables - An array of cable objects where each object contains:
+     *   - {string} latitudeFrom - Latitude of the starting point of the cable.
+     *   - {string} longitudeFrom - Longitude of the starting point of the cable.
+     *   - {string} latitudeTo - Latitude of the ending point of the cable.
+     *   - {string} longitudeTo - Longitude of the ending point of the cable.
+     *   - {string} cableName - The name of the cable.
+     *
+     * @returns {void} This function does not return any value. It directly updates the map with polylines and modifies
+     * the colors of existing polylines based on the retrieved data and the current date.
+     */
     function addPolylines(cables) {
-
         let date = new Date();
-
-        // Fetch cable names from Google Sheets using Google Apps Script
+        // Fetch cable names and related data from Google Sheets using Google Apps Script
         google.script.run.withSuccessHandler(function (data) {
-
             cables.forEach(function (cable) {
                 var latitudeFrom = parseFloat(cable.latitudeFrom);
                 var longitudeFrom = parseFloat(cable.longitudeFrom);
                 var latitudeTo = parseFloat(cable.latitudeTo);
                 var longitudeTo = parseFloat(cable.longitudeTo);
-                var cableName = cable.cableName.trim(); // Convert cable name to uppercase for case-insensitive comparison
-
+                var cableName = cable.cableName.trim(); // Clean up cable name
                 // Check if parsed values are valid numbers
                 if (isNaN(latitudeFrom) || isNaN(longitudeFrom) || isNaN(latitudeTo) || isNaN(longitudeTo)) {
                     return; // Skip this cable if coordinates are invalid
                 }
-
                 var coordinates = [
                     [longitudeFrom, latitudeFrom],
                     [longitudeTo, latitudeTo]
                 ];
-
-                // Add polyline to the map
-                const polyline = L.polyline(coordinates, { color: "green", weight: 2 }).addTo(map).bindPopup(cable.cableName);
-
-
-                // polylinesData can be found in script_js.html file
-                polylinesData[cable.cableName] = polyline;
+                var type = getCableType(cableName);
+                var color = "green";
+                var polyline = L.polyline(coordinates, { color: color, weight: 2 }).bindPopup(cable.cableName);
+                polylines[type][cable.cableName] = polyline;
+                polyline.addTo(polylines[type].group || (type === 'SJC' ? sjc : type === 'C2C' ? c2c : type === 'TGN' ? tgn : type === 'EAC' ? eac : seaus));
             });
-
-
+            // Update polyline colors based on the retrieved data
             data.combinedCableNames.forEach(cables => {
                 let color = "green";
                 let cable_name = cables.combinedName.trim();
+                var type = getCableType(cable_name);
                 let notifiedDate = parseDate(cables.notifiedDate);
                 let startDate = parseDate(cables.startDate);
                 let endDate = parseDate(cables.endDate);
                 if (date >= startDate && date <= endDate) color = 'red';
                 if (date < startDate && date >= notifiedDate) color = 'yellow';
-                updatePolylineColor(cable_name, color);
+                updatePolylineColor(type, cable_name, color);
             });
-
-
         }).getCableNames();
     }
 
+    /**
+     * Determines the type of cable based on the given string.
+     * 
+     * This function checks the provided `cable_type` string for specific substrings
+     * and returns a corresponding cable type. If none of the specified substrings are found,
+     * the function returns `undefined`.
+     * 
+     * @param {string} cable_type - The string representing the cable type to be checked.
+     * @returns {string|undefined} - The cable type as a string if found, otherwise `undefined`.
+     */
+    function getCableType(cable_type) {
+        var type;
+        if (cable_type.includes('SJC')) type = "SJC";
+        else if (cable_type.includes('EAC')) type = "EAC";
+        else if (cable_type.includes('C2C')) type = "C2C";
+        else if (cable_type.includes('SEAUS')) type = "SEAUS";
+        else if (cable_type.includes('TGN')) type = "TGN";
+        return type;
+    }
 
-    // ======================================<<START>>=================================
-
+    /**
+     * Changes the color of polylines based on cable data and a specified date range index.
+     * 
+     * This function retrieves a date string from an element using the provided `rangeIndex`,
+     * fetches cable data, and determines the appropriate color for each cable based on the
+     * date and cable information. It then updates the color of polylines associated with
+     * each cable segment.
+     * 
+     * @param {number} rangeIndex - The index used to retrieve the date string from an element.
+     * 
+     * @returns {void} - This function does not return any value. It performs updates to the polyline colors.
+     */
     function changePolylineColor(rangeIndex) {
         // Get the string date from the element
         const stringDate = getDateFromElement(rangeIndex);
-
         // Get cable data
         const cableData = getCableData(notifiedCables);
-
         cableData.forEach(cable => {
             // Determine the color based on the date and cable information
             const color = determineColor(stringDate, cable);
-
             // Construct the polyline IDs based on cable system and segments
             const polylineIds = [
                 `${cable.cableSystem} ${cable.segment1}`,
                 `${cable.segment2 ? `${cable.cableSystem} ${cable.segment2}` : ''}`,
                 `${cable.segment3 ? `${cable.cableSystem} ${cable.segment3}` : ''}`
             ];
-
+            // Get the cable type
+            var type = getCableType(cable.cableSystem);
             // Update color for each polyline ID
             polylineIds.forEach(polylineId => {
                 if (polylineId) {
-                    updateCablePaths(polylineId, color);
+                    updateCablePaths(polylineId, color, type);
                 }
             });
         });
     }
 
+    /**
+     * Changes the color of polylines based on cable data and a selected date.
+     * 
+     * This function receives a date string from a date picker, fetches cable data,
+     * and determines the appropriate color for each cable segment based on the provided date and cable
+     * information. It then updates the color of the polylines representing these cable segments.
+     * 
+     * @param {string} stringDate - The date string used to determine the color for the cable segments.
+     * 
+     * @returns {void} - This function does not return any value. It performs updates to the polyline colors.
+     */
     function changePolylineColorViaDatePicker(stringDate) {
         // Get cable data
         const cableData = getCableData(notifiedCables);
-
         cableData.forEach(cable => {
             // Determine the color based on the date and cable information
             const color = determineColor(stringDate, cable);
-
             // Construct the polyline IDs based on cable system and segments
             const polylineIds = [
                 `${cable.cableSystem} ${cable.segment1}`,
                 `${cable.segment2 ? `${cable.cableSystem} ${cable.segment2}` : ''}`,
                 `${cable.segment3 ? `${cable.cableSystem} ${cable.segment3}` : ''}`
             ];
-
+            // Determine the cable type
+            var type = getCableType(cable.cableSystem);
             // Update color for each polyline ID
             polylineIds.forEach(polylineId => {
                 if (polylineId) {
-                    updateCablePaths(polylineId, color);
+                    updateCablePaths(polylineId, color, type);
                 }
             });
         });
     }
 
-    function updateCablePaths(polylineId, color) {
+    /**
+     * Updates the color of cable paths based on the provided polyline ID, color, and cable type.
+     * 
+     * This function searches for the cable path matching the given `polylineId` and then updates
+     * the color of all non-empty paths associated with it. If no matching cable path is found,
+     * it updates the color of a default path using the `polylineId`.
+     * 
+     * @param {string} polylineId - The ID of the polyline to update, used to find the corresponding cable path.
+     * @param {string} color - The color to apply to the cable paths.
+     * @param {string} type - The type of cable which may affect the update process.
+     * 
+     * @returns {void} - This function does not return any value. It performs updates to the cable path colors.
+     */
+    function updateCablePaths(polylineId, color, type) {
         // Find the corresponding cable path
         const cablePath = cablePaths.find(path => path.value === polylineId);
-
         if (cablePath) {
             // Collect all non-empty paths
             const pathsToUpdate = [];
@@ -155,21 +230,42 @@
                     pathsToUpdate.push(cablePath[pathKey]);
                 }
             }
-
             // Update the color for each path
             pathsToUpdate.forEach(path => {
-                updatePolylineColor(path, color);
+                updatePolylineColor(type, path, color);
             });
         } else {
             // Optionally handle the case where no paths are found
-            updatePolylineColor(polylineId, color);
+            updatePolylineColor(type, polylineId, color);
         }
     }
 
+    /**
+     * Retrieves the value of an HTML element representing a date, based on a given index.
+     * 
+     * This function takes an index, increments it by 1 to form the ID of an HTML element,
+     * and returns the value of that element.
+     * 
+     * @param {number} rangeIndex - The index used to construct the element ID. The function increments this index by 1.
+     * 
+     * @returns {string} - The value of the HTML element with the constructed ID, expected to be a date string.
+     */
     function getDateFromElement(rangeIndex) {
+        // Increment the index by 1 and retrieve the value from the corresponding HTML element
         return document.getElementById(parseInt(rangeIndex) + 1).value;
     }
 
+    /**
+     * Transforms an array of cable data tuples into an array of objects with named properties.
+     * 
+     * This function takes an array of tuples, where each tuple represents data related to a cable.
+     * It maps each tuple to an object with the following properties: `cableSystem`, `notifiedDate`,
+     * `startDate`, `endDate`, `segment1`, `segment2`, and `segment3`.
+     * 
+     * @param {Array<Array<string | Date>>} data - An array of tuples where each tuple contains cable information.
+     * 
+     * @returns {Array<Object>} - An array of objects where each object represents a cable with named properties.
+     */
     function getCableData(data) {
         return data.map(([cableSystem, notifiedDate, startDate, endDate, segment1, segment2, segment3]) => ({
             cableSystem,
@@ -182,6 +278,23 @@
         }));
     }
 
+    /**
+     * Determines the color based on a date and cable date range.
+     * 
+     * This function evaluates a given date against the start date, end date, and notified date
+     * of a cable to decide the appropriate color. The function uses the following criteria:
+     * - Returns `'red'` if the date falls within the cable's start and end dates.
+     * - Returns `'yellow'` if the date is before the start date but on or after the notified date.
+     * - Returns `'green'` if neither of the above conditions is met.
+     * 
+     * @param {string} stringDate - The date to compare, typically provided as a string.
+     * @param {Object} cable - An object representing cable data with date properties.
+     * @param {string} cable.startDate - The start date of the cable's period, in string format.
+     * @param {string} cable.endDate - The end date of the cable's period, in string format.
+     * @param {string} cable.notifiedDate - The notified date related to the cable, in string format.
+     * 
+     * @returns {string} - The color code (`'red'`, `'yellow'`, or `'green'`) based on the date comparison.
+     */
     function determineColor(stringDate, cable) {
         const date = parseDate(stringDate);
         const startDate = parseDate(cable.startDate);
@@ -193,104 +306,203 @@
         return 'green';
     }
 
-    function updatePolylineColor(id, color) {
-        const polyline = polylinesData[id];
-        if (polyline) {
-            polyline.setStyle({ color });
+    /**
+     * Updates the color of a specific polyline based on its type and ID.
+     * 
+     * This function changes the color of a polyline if it exists within the `polylines` object.
+     * It first checks if the polyline type and ID exist, and if so, it updates the polyline's style.
+     * If the polyline is not found, an error is logged to the console.
+     * 
+     * @param {string} type - The type of the polyline, which is used as a key to access the `polylines` object.
+     * @param {string} id - The ID of the specific polyline within the given type.
+     * @param {string} newColor - The new color to apply to the polyline, in any valid CSS color format.
+     * 
+     * @returns {void} - This function does not return any value. It performs updates to the polyline's style.
+     */
+    function updatePolylineColor(type, id, newColor) {
+        if (polylines[type] && polylines[type][id]) {
+            polylines[type][id].setStyle({ color: newColor });
         } else {
-            console.log(`Polyline with id "${id}" not found!`);
+            console.error('Polyline not found:', type, id);
         }
     }
 
+    /**
+     * Parses a date string into a Date object.
+     * 
+     * This function converts a date string into a JavaScript `Date` object. The date string should
+     * be in a format recognized by the `Date` constructor. This is useful for date comparisons
+     * and manipulations.
+     * 
+     * @param {string} dateStr - The date string to be parsed into a `Date` object.
+     * 
+     * @returns {Date} - The corresponding `Date` object.
+     */
     function parseDate(dateStr) {
         return new Date(dateStr);
     }
-    // ======================================<<END>>=================================
 
 
+    /**
+     * Sets the global `notifiedCables` variable with the provided data.
+     * 
+     * This function assigns the given data to the global `notifiedCables` variable. It is used to
+     * update the data that represents cables which have been notified or flagged in some manner.
+     * 
+     * @param {Array} data - The data to be assigned to the `notifiedCables` variable. The format of this
+     *                       data should be compatible with the expected structure for `notifiedCables`.
+     * 
+     * @returns {void} - This function does not return any value. It modifies the global `notifiedCables` variable.
+     */
     function getNotifiedCableData(data) {
         notifiedCables = data;
     }
 
+
+    /**
+     * Sets the global `cablePaths` variable with the provided paths data.
+     * 
+     * This function assigns the given array of paths to the global `cablePaths` variable. It is used
+     * to update the data that represents the paths associated with different cables.
+     * 
+     * @param {Array<Object>} paths - The array of path objects to be assigned to the `cablePaths` variable.
+     *                                Each object should represent a cable path with relevant properties.
+     * 
+     * @returns {void} - This function does not return any value. It modifies the global `cablePaths` variable.
+     */
     function getAllCablePaths(paths) {
         cablePaths = paths;
     }
 
+    /**
+     * Initializes the map by loading and setting up various components.
+     * 
+     * This function performs multiple operations required to set up the map:
+     * 1. Retrieves and adds markers for SJC locations.
+     * 2. Retrieves and adds polylines for SJC data.
+     * 3. Initiates a search for cable systems.
+     * 4. Extracts notified cable data based on a search term.
+     * 5. Retrieves and sets all cable paths.
+     * 6. Transfers notification data to start and end dates.
+     * 
+     * It utilizes Google Apps Script functions to handle server-side operations
+     * and sets up success handlers to process the results of these operations.
+     * 
+     * @returns {void} - This function does not return any value. It performs multiple setup tasks for the map.
+     */
     function initializeMap() {
-        console.log('refreshing shenanigans');
+        // Retrieve and add markers for SJC locations, calling addMarkers on success
         google.script.run.withSuccessHandler(addMarkers).getSJCLocations();
+        // Retrieve and add polylines for SJC data, calling addPolylines on success
         google.script.run.withSuccessHandler(addPolylines).getSJCData();
+        // Initiate a search for cable systems
         searchCableSystem();
+        // Extract notified cable data based on the search term, calling getNotifiedCableData on success
         google.script.run.withSuccessHandler(getNotifiedCableData).extractDates(searchTerm);
+        // Retrieve and set all cable paths, calling getAllCablePaths on success
         google.script.run.withSuccessHandler(getAllCablePaths).getFullPaths();
-
+        // Transfer notification data to start and end dates, without a success handler
         google.script.run.withSuccessHandler().transferNotifToStartandEndDate();
     }
+
 
     // Call the initializeMap function when the page loads
     window.onload = initializeMap;
     window.onload = startAutoRefresh;
 
-
+    /**
+     * Starts automatic refreshing of the map at regular intervals.
+     * 
+     * This function initializes the map immediately upon loading and then sets up an
+     * interval to automatically refresh the map every minute. The `initializeMap` function
+     * is called to load and update the map data, ensuring that the map stays current with
+     * the latest information.
+     * 
+     * @returns {void} - This function does not return any value. It sets up an interval for map refresh.
+     */
     function startAutoRefresh() {
-        initializeMap(); // Call immediately on load
-        setInterval(initializeMap, 1 * 60 * 1000); // Repeat every 5 minutes
-    }
-    // Function to update map data every 30 seconds
-    function updateMapData() {
-        google.script.run.withSuccessHandler(addMarkers).getSJCLocations();
-        google.script.run.withSuccessHandler(addPolylines).getSJCData();
+        // Initialize the map immediately upon loading
+        initializeMap();
+        // Set an interval to call initializeMap every 1 minute (60,000 milliseconds)
+        setInterval(initializeMap, 1 * 60 * 1000);
     }
 
-    updateMapData();
-
-    // Function to search for a cable system and filter the cables accordingly
+    /**
+     * Searches and updates the map based on the selected cable system.
+     * 
+     * This function retrieves the search term from the input field, determines the cable system type
+     * based on the search term, and updates the map by adding or removing polylines accordingly. If
+     * the search term matches a specific cable system type, only the relevant polylines are shown. If
+     * the search term is "ALL", all polylines are displayed. It also normalizes the search term for
+     * further processing.
+     * 
+     * @returns {void} - This function does not return any value. It updates the map layers and normalizes the search term.
+     */
     function searchCableSystem() {
-        $('#spinnerModal').modal('show');
-        searchTerm = document.getElementById("search-input").value; // Convert search term to uppercase for case-insensitive comparison
+        // Get the search term from the input field
+        searchTerm = document.getElementById("search-input").value;
 
-        // Check if search term is not empty
-        if (searchTerm === "Show All Cable Systems") {
+        // Convert the search term to a cable system type
+        let type = convertSearchTerm(searchTerm);
 
-
-            google.script.run.withSuccessHandler(addMarkers).getSJCLocations();
-            google.script.run.withSuccessHandler(addPolylines).getSJCData();
-
-            // Set the opacity of all cables to 0.2
-            setAllCablesOpacity(1);
-            $('#spinnerModal').modal('hide');
-
-        } else if (searchTerm !== "") {
-            // Update map data based on the search term
-            google.script.run.withSuccessHandler(addMarkers).getSJCLocationsByCableSystem(searchTerm);
-            google.script.run.withSuccessHandler(addPolylines).getSJCDataByCableSystem(searchTerm);
-
-            // Set the opacity of all cables to 0.2
-            setAllCablesOpacity(0.01);
-            $('#spinnerModal').modal('hide');
-        }
-
-
-
-        // added new functionality for cable status forecasting
-
-        if (searchTerm === "Show All Cable Systems") searchTerm = "All";
-        else if (searchTerm === "SEA-US") searchTerm = "SEAUS";
-        else if (searchTerm === "SJC") searchTerm = "SJC";
-        else if (searchTerm === "EAC") searchTerm = "EAC";
-        else if (searchTerm === "C2C") searchTerm = "C2C";
-        else if (searchTerm === "TGN-IA/TGN-P") searchTerm = "TGN-IA/TGN-P";
-
-    }
-
-    // Function to set the opacity of all cables on the map
-    function setAllCablesOpacity(opacity) {
+        // Remove all existing polylines from the map
         map.eachLayer(function (layer) {
             if (layer instanceof L.Polyline) {
-                layer.setStyle({ opacity: opacity });
+                map.removeLayer(layer);
             }
         });
+        // Add polylines to the map based on the search term
+        if (type !== "ALL") {
+            // Add polylines for the specific cable system type
+            Object.values(polylines[type]).forEach(function (polyline) {
+                polyline.addTo(map);
+            });
+        } else {
+            // Add all polylines if the search term is "ALL"
+            Object.values(polylines).forEach(function (group) {
+                Object.values(group).forEach(function (polyline) {
+                    polyline.addTo(map);
+                });
+            });
+        }
+        // Normalize the search term for further processing
+        switch (searchTerm) {
+            case "Show All Cable Systems":
+                searchTerm = "All";
+                break;
+            case "SEA-US":
+                searchTerm = "SEAUS";
+                break;
+            case "SJC":
+                searchTerm = "SJC";
+                break;
+            case "EAC":
+                searchTerm = "EAC";
+                break;
+            case "C2C":
+                searchTerm = "C2C";
+                break;
+            case "TGN-IA/TGN-P":
+                searchTerm = "TGN-IA/TGN-P";
+                break;
+        }
     }
 
+    /**
+    * Converts a user-friendly search term into a standardized cable system type.
+    * 
+    * This function takes a user-provided search term and converts it into a standardized format
+    * used for internal processing. It maps specific user-friendly terms to their corresponding
+    * standardized values, ensuring consistency when handling cable system types.
+    * 
+    * @param {string} searchTerm - The user-friendly search term to be converted.
+    * 
+    * @returns {string} - The standardized cable system type based on the input search term.
+    */
+    function convertSearchTerm(searchTerm) {
+        if (searchTerm === "Show All Cable Systems") return "ALL";
+        else if (searchTerm === "TGN-IA/TGN-P") return "TGN";
+        else return searchTerm;
+    }
 
 </script>

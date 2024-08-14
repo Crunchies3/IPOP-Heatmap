@@ -262,7 +262,11 @@ function getDataForPieChart() {
 function updateRowMI(sheetName, key, updatedData) {
   var spreadsheetId = '1vW8zgcrQC02iRLkWJSOIjfnqN5_lRNMgNjV6IBZF__c';
   var sheet = SpreadsheetApp.openById(spreadsheetId).getSheetByName(sheetName);
+  var startSheet = SpreadsheetApp.openById(spreadsheetId).getSheetByName('Start Date');
+  var startData =startSheet.getDataRange().getValues();
   var data = sheet.getDataRange().getValues();
+
+
   for (var i = 0; i < data.length; i++) {
     if (data[i][0] == key) {
       // Update the row with the new data
@@ -271,9 +275,15 @@ function updateRowMI(sheetName, key, updatedData) {
         // Format the cell as plain text
         sheet.getRange(i + 1, k + 1).setNumberFormat('yyyy-mm-dd hh:mm');
       }
-
-      // Log success
-      console.log('Update successful');
+    }
+  }
+  for (var i = 0; i < startData.length; i++) {
+    if (startData[i][0] == key) {
+      // Update the row with the new data
+      for (var k = 0; k < updatedData.length; k++) {
+        startSheet.getRange(i + 1, k + 1).setValue(updatedData[k]);
+        startSheet.getRange(i + 1, k + 1).setNumberFormat('yyyy-mm-dd hh:mm');
+      }
       return 'success';
     }
   }
@@ -283,6 +293,8 @@ function updateRowMI(sheetName, key, updatedData) {
 function deleteRowMI(sheetName, col1) {
   var spreadsheetId = '1vW8zgcrQC02iRLkWJSOIjfnqN5_lRNMgNjV6IBZF__c';
   var sheet = SpreadsheetApp.openById(spreadsheetId).getSheetByName(sheetName);
+  var startSheet = SpreadsheetApp.openById(spreadsheetId).getSheetByName('Start Date');
+  var startData = startSheet.getDataRange().getValues();
   var data = sheet.getDataRange().getValues();
 
   // Find the row index based on the col1
@@ -293,10 +305,18 @@ function deleteRowMI(sheetName, col1) {
       break;
     }
   }
+  var rowIndexStart = -1;
+  for (var i = 0; i < startData.length; i++) {
+    if (startData[i][0] == col1) {
+      rowIndexStart = i + 1; // Adding 1 to convert from 0-based index to 1-based index
+      break;
+    }
+  }
 
   // If rowIndex is found, delete the row
   if (rowIndex !== -1) {
     sheet.deleteRow(rowIndex);
+    startSheet.deleteRow(rowIndexStart);
     return 'success';
   }
 }
@@ -633,6 +653,8 @@ function transferNotifToStartandEndDate() {
       sheet.getRange(rowNum, copiedStatusIndex + 1).setValue('Yes'); // Adding 1 to convert zero-based index to 1-based index
     });
 
+    addToActivityLog('SystemStart',rowsToCopy[0][0], "");
+
   } else {
     Logger.log('No rows to copy or date is already on the Start Date');
   }
@@ -641,6 +663,7 @@ function transferNotifToStartandEndDate() {
     endDateSheet.getRange(endDateSheet.getLastRow() + 1, 1, rowsToTransfer.length, rowsToTransfer[0].length).setValues(rowsToTransfer);
     Logger.log(`${rowsToTransfer.length} rows copied to End Date.`);
 
+    addToActivityLog('SystemEnd',rowsToTransfer[0][0], "");
     //Delete the rows from the notif and start sheet
     rowsToDelete.forEach(row => {
       const rowIndex = data.indexOf(row) + 3; // Adding 2 to account for the header row and zero-based index
@@ -759,4 +782,42 @@ function formatDates(dateString) {
 
 function getScriptUrl() {
   return ScriptApp.getService().getUrl();
+}
+
+function addToActivityLog(activityType, troubleTicket, incidentTypeAdd){
+  const ss = SpreadsheetApp.openById('1vW8zgcrQC02iRLkWJSOIjfnqN5_lRNMgNjV6IBZF__c');
+  var activitySheet = ss.getSheetByName('Activity History');
+
+  var currentDate = getCurrentDateTableFormat();
+  var notifToPush = "";
+  var personsEmail = Session.getActiveUser().getEmail();
+  if(activityType === 'Add'){
+    var notifToPush = personsEmail + ' has Added a New ' + incidentTypeAdd +' Ticket ( '+troubleTicket +" )";
+  }
+  else if(activityType === 'Delete'){
+    var notifToPush = personsEmail + ' has Deleted an Existing Ticket ( '+troubleTicket +' )';
+  }
+  else if(activityType === "Update"){
+    var notifToPush = personsEmail + ' has Updated the Ticket ( '+troubleTicket +' )';
+  }
+  else if(activityType === "toStartDate"){
+    var notifToPush = personsEmail + ' has Copied the Ticket to Start Date. ( '+troubleTicket +' )';
+  }
+  else if(activityType === "toEndDate"){
+    var notifToPush = personsEmail + ' has Sent the Ticket to End Date ( '+troubleTicket +' )';
+  }
+  else if(activityType === "SystemStart"){
+    var notifToPush = 'The system automatically copied the ticket to Start Date ( '+troubleTicket +' )';
+  }
+  else if(activityType === "SystemEnd"){
+    var notifToPush = 'The system automatically send the ticket to End Date ( '+troubleTicket +' )';
+  }
+
+  var rowData = [[notifToPush, currentDate]];
+
+  var lastRow = activitySheet.getLastRow();
+  var range = activitySheet.getRange(lastRow+ 1,1,1,2);
+  range.setValues(rowData);
+
+  activitySheet.getRange(lastRow + 1, 2).setNumberFormat('yyyy-mm-dd hh:mm');
 }

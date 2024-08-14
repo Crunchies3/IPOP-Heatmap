@@ -1,113 +1,71 @@
 <script>
 
-  var selectedEntries = {};
-  var unselectedEntries = {};
-
-  //---------------------------------------Button function for filters-------------------------------//
-  function redCables() {
-
-    var search = document.getElementById("search-input").value;
-    var searchTerm = convertSearchTerm(search);
-
-    var filteredEntries
-    var unfilteredEntries
-
-    console.log("++++++++++++++++");
-    console.log(polylinesData);
-
-    console.log(searchTerm);
-
-    if (searchTerm === "ALL") {
-
-      console.log("all nigana bako?????");
-      selectedEntries = polylinesData; // polylinesData can be found in script_js.html file
-      unselectedEntries = {};
-    } else {
-
-      console.log("lahi ni siya nigana bako?????");
-
-      filteredEntries = Object.entries(polylinesData).filter(([key, _]) => key.includes(searchTerm));
-
-      console.log(filteredEntries);
-
-      selectedEntries = Object.fromEntries(filteredEntries); // Convert the filtered entries back into an object
-
-      console.log("humana kog gana?????");
-
-      unfilteredEntries = Object.entries(polylinesData).filter(([key, _]) => !key.includes(searchTerm));
-      unselectedEntries = Object.fromEntries(unfilteredEntries); // Convert the filtered entries back into an object
-      console.log("===================");
-      console.log(unselectedEntries);
-    }
-
-    console.log("///////////////////////////");
-    console.log(selectedEntries);
-
-    unfilteredEntries = Object.entries(selectedEntries).filter(([key, value]) => value.options.color !== "red");
-    unfilteredEntries = Object.fromEntries(unfilteredEntries);
-
-
-    console.log("ssssssssssssssssssssssssssssssssssssss");
-    console.log(unfilteredEntries);
-
-    // Merge filteredUnselectedEntries into unselectedEntries
-    unselectedEntries = { ...unselectedEntries, ...unfilteredEntries };
-
-    console.log("===================");
-    console.log(unselectedEntries);
-
-
-    Object.keys(unselectedEntries).forEach(key => {
-      var element = unselectedEntries[key];
-      map.removeLayer(element);
+  /**
+   * Filters and displays polylines on the map based on the specified color.
+   * 
+   * This function removes all existing polylines from the map and then adds only those
+   * polylines whose color matches the specified filter color. It takes into account whether
+   * a specific cable system is selected or if all systems should be considered.
+   * 
+   * @param {string} color - The color to filter polylines by. Only polylines with this color
+   *                         will be added to the map.
+   * 
+   * @returns {void} - This function does not return any value. It updates the map to display
+   *                    only the polylines that match the specified color.
+   */
+  function filterByColor(color) {
+    // Clear the map of all existing polylines
+    map.eachLayer(function (layer) {
+      if (layer instanceof L.Polyline) {
+        map.removeLayer(layer);
+      }
     });
-    console.log("=======humana============");
+    // Get the current filter term from the input field
+    var filter = document.getElementById("search-input").value;
+    var cableSystem = convertSearchTerm(filter);
+    // Add polylines matching the specified color based on the cable system filter
+    if (cableSystem !== "ALL") {
+      // If a specific cable system is selected
+      Object.keys(polylines[cableSystem]).forEach(function (cableName) {
+        var item = polylines[cableSystem][cableName];
+        console.log("item:", item);
+        if (item["options"].color === color) {
+          item.addTo(map);
+        }
+      });
+    } else {
+      // If all cable systems are to be considered
+      Object.keys(polylines).forEach(function (type) {
+        Object.keys(polylines[type]).forEach(function (cableName) {
+          var item = polylines[type][cableName];
+          console.log("item:", item);
+          if (item["options"].color === color) {
+            item.addTo(map);
+          }
+        });
+      });
+    }
   }
 
-  // Function to search for a cable system and filter the cables accordingly
+
+  // Example usage:
+  function redCables() {
+    filterByColor("red");
+  }
+
   function yellowCables() {
-    var searchTerm = document.getElementById("search-input").value; // Convert search term to uppercase for case-insensitive comparison
-
-    // Check if search term is not empty
-    if (searchTerm === "Show All Cable Systems") {
-      // Hide all cables first
-      hideAllCables();
-      google.script.run.withSuccessHandler(addMarkers).getSJCLocations();
-      google.script.run.withSuccessHandler(yellowPolylines).getSJCData();
-
-    } else if (searchTerm !== "") {
-      // Hide all cables first
-      hideAllCables();
-    }
+    filterByColor("yellow");
   }
 
   function greenCables() {
-    var searchTerm = document.getElementById("search-input").value; // Convert search term to uppercase for case-insensitive comparison
-
-    // Check if search term is not empty
-    if (searchTerm === "Show All Cable Systems") {
-      // Hide all cables first
-      hideAllCables();
-      google.script.run.withSuccessHandler(addMarkers).getSJCLocations();
-      google.script.run.withSuccessHandler(greenPolylines).getSJCData();
-
-    } else if (searchTerm !== "") {
-      // Hide all cables first
-      hideAllCables();
-
-      // Update map data based on the search term
-      google.script.run.withSuccessHandler(addMarkers).getSJCLocationsByCableSystem(searchTerm);
-      google.script.run.withSuccessHandler(greenPolylines).getSJCDataByCableSystem(searchTerm);
-    }
+    filterByColor("green");
   }
 
 
   function convertSearchTerm(searchTerm) {
     if (searchTerm === "Show All Cable Systems") return "ALL";
-    else if (searchTerm === "SEA-US") return "SEAUS";
-    else if (searchTerm === "SJC") return "SJC";
-    else if (searchTerm === "EAC") return "EAC";
     else if (searchTerm === "TGN-IA/TGN-P") return "TGN";
+    else return searchTerm;
   }
 
 </script>

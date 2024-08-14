@@ -1,6 +1,6 @@
 <div class="row">
     <div class="col-2">
-        <input type="text" class="form-control w-100" id="calendar-input" onchange="changePolylineColorViaDatePicker(this.value)">
+        <input type="text" class="form-control w-100" id="calendar-input">
         <input hidden name="selectedDate" type="text" class="form-control w-100" id="selected_date">
     </div>
     <div class="col-9">
@@ -25,7 +25,8 @@
     </div>
     <div class="col-1">
         <div class="px-3">
-            <div class="align-items-center justify-content-center btn btn-primary w-100 " onclick="nextWeeks(); changePolylineColor(0);">
+            <div class="align-items-center justify-content-center btn btn-primary w-100 "
+                onclick="nextWeeks(); changePolylineColor(0);">
                 <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="currentColor"
                     class="bi bi-fast-forward-fill" viewBox="0 2 16 16">
                     <path
@@ -40,7 +41,28 @@
 
 <script>
 
-    $("#calendar-input").datepicker();
+    $("#calendar-input").datepicker({
+        onSelect: function (dateText, inst) {
+            // Remove href attributes after datepicker is rendered
+            $(".ui-datepicker-calendar a").removeAttr('href');
+
+            console.log("nigana ang onchange?");
+            document.getElementById("date_range").value = "0";
+            var currentDateOnCalendar = document.getElementById("calendar-input");
+            const dateString = currentDateOnCalendar.value;
+            const dateObject = moment(dateString, "MM/DD/YYYY").toDate();
+            dateformat = convertFullDatetoString(dateObject);
+            setDateToSliderBar(dateformat);
+            today = dateObject;
+            dateToSliderBar(today);
+
+            console.log("nigana ang value?: " + this.value);
+
+
+            changePolylineColorViaDatePicker(this.value);
+
+        }
+    });
 
     var today = new Date();
     var lastDayOfSlider;
@@ -49,63 +71,138 @@
     todayString = convertFullDatetoString(today);
     setDateToSliderBar(todayString);
 
-    $("#calendar-input").change(function () {
-        document.getElementById("date_range").value = "0";
-        var currentDateOnCalendar = document.getElementById("calendar-input");
-        const dateString = currentDateOnCalendar.value;
-        const dateObject = moment(dateString, "MM/DD/YYYY").toDate();
-        dateformat = convertFullDatetoString(dateObject);
-        setDateToSliderBar(dateformat);
-        today = dateObject;
-        dateToSliderBar(today);
-    });
-
     <!-- functions -->
 
+    /**
+     * Updates the slider bar and related elements with the given date.
+     * 
+     * This function sets the value of the date input element to the specified date and updates
+     * the slider bar and any other relevant elements to reflect this date. It ensures that the 
+     * current date is properly represented in the slider bar and other related UI components.
+     * 
+     * @param {string} stringDate - The date in MM/DD/YYYY format to set for the input element and slider bar.
+     * 
+     * @returns {void} - This function does not return any value. It updates the date input and slider bar.
+     */
     function setDateToSliderBar(stringDate) {
+        // Get the date input element by its ID
         var currentDate = document.getElementById('calendar-input');
+        // Set the value attribute and value of the date input element
         currentDate.setAttribute('value', stringDate);
         currentDate.value = stringDate;
+        // Update the slider bar to reflect the current date
         dateToSliderBar(today);
+        // Set the value attribute of the selected date element
         document.getElementById('selected_date').setAttribute('value', stringDate);
     }
 
+    /**
+     * Updates the slider bar with labels and values based on the given date.
+     * 
+     * This function iterates through slider elements and sets their labels and values based on
+     * the starting date provided. It calculates dates for a range starting from the given date,
+     * updates each slider element with the corresponding date, and records the last date of the slider range.
+     * 
+     * @param {Date} date - The starting date for updating the slider bar.
+     * 
+     * @returns {void} - This function does not return any value. It updates the labels and values of the slider elements.
+     */
     function dateToSliderBar(date) {
         for (let i = 1; i < 15; i++) {
+            // Calculate the new date for each slider element
             newDate = addDays(date, i - 1);
+            // Update the label, value attribute, and value property of the slider element with the corresponding ID
             document.getElementById(i).label = convertDayMonthToString(newDate);
             document.getElementById(i).setAttribute('value', convertFullDatetoString(newDate));
             document.getElementById(i).value = convertFullDatetoString(newDate);
         }
+        // Record the last date in the slider range
         lastDayOfSlider = newDate;
     }
 
+    /**
+     * Adds a specified number of days to a given date.
+     * 
+     * This function creates a new `Date` object by adding a given number of days to an existing date. 
+     * It does not modify the original date object but returns a new `Date` object reflecting the updated date.
+     * 
+     * @param {Date} date - The original date to which days will be added.
+     * @param {number} days - The number of days to add to the original date. Can be positive (to move forward in time) or negative (to move backward).
+     * 
+     * @returns {Date} - A new `Date` object representing the date after adding the specified number of days.
+     */
     function addDays(date, days) {
+        // Create a new Date object based on the original date
         const newDate = new Date(date);
+        // Add the specified number of days to the new date
         newDate.setDate(date.getDate() + days);
+        // Return the new date
         return newDate;
     }
 
+    /**
+     * Updates the slider bar to reflect the date range for the next week.
+     * 
+     * This function resets the date range input, calculates the new end date for the slider bar by 
+     * using the last day of the current slider range, and then updates the slider bar and related 
+     * UI components to display this new date range. The function essentially shifts the date range forward
+     * by one week.
+     * 
+     * @returns {void} - This function does not return any value. It updates the slider bar and date input elements.
+     */
     function nextWeeks() {
+        // Reset the date range input to "0"
         document.getElementById("date_range").value = "0";
+        // Convert the last day of the current slider range to a formatted date string
         dateformat = convertFullDatetoString(lastDayOfSlider);
+        // Update the date input and slider bar with the new end date
         setDateToSliderBar(dateformat);
+        // Update the 'today' variable to the last day of the current slider range
         today = lastDayOfSlider;
+        // Update the slider bar to reflect the new date range starting from the updated 'today' date
         dateToSliderBar(today);
     }
 
-
+    /**
+     * Converts a Date object into a string formatted as MM/DD/YYYY.
+     * 
+     * This function takes a JavaScript `Date` object and formats it into a string representation 
+     * in the MM/DD/YYYY format. This format is commonly used in various date-related UI elements
+     * and for display purposes.
+     * 
+     * @param {Date} date - The Date object to be converted into a string.
+     * 
+     * @returns {string} - A string representing the date in MM/DD/YYYY format.
+     */
     function convertFullDatetoString(date) {
+        // Get the day of the month and pad with leading zero if necessary
         let dd = String(date.getDate()).padStart(2, '0');
+        // Get the month (0-indexed, so add 1) and pad with leading zero if necessary
         let mm = String(date.getMonth() + 1).padStart(2, '0');
+        // Get the full year
         let yyyy = date.getFullYear();
+        // Return the formatted date string
         return mm + '/' + dd + '/' + yyyy;
     }
 
+    /**
+     * Converts a Date object into a string formatted as MM/DD.
+     * 
+     * This function takes a JavaScript `Date` object and formats it into a string representation 
+     * in the MM/DD format, which includes only the month and day. This format is useful for displaying 
+     * dates in a more compact form where the year is not required.
+     * 
+     * @param {Date} date - The Date object to be converted into a string.
+     * 
+     * @returns {string} - A string representing the date in MM/DD format.
+     */
     function convertDayMonthToString(date) {
+        // Get the day of the month and pad with leading zero if necessary
         let dd = String(date.getDate()).padStart(2, '0');
+        // Get the month (0-indexed, so add 1) and pad with leading zero if necessary
         let mm = String(date.getMonth() + 1).padStart(2, '0');
-        let yyyy = date.getFullYear();
+        // Return the formatted date string (MM/DD)
         return mm + '/' + dd;
     }
+
 </script>

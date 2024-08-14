@@ -1,10 +1,10 @@
-   <div id="alertContainer" class="position-fixed bottom-0 end-0 p-3" style="z-index: 11;">
-      <!-- Alert container goes here -->
-    </div>
+<div id="alertContainer" class="position-fixed bottom-0 end-0 p-3" style="z-index: 11;">
+  <!-- Alert container goes here -->
+</div>
 
-<div id="selectedRowContainerGreen" class="modal fade" tabindex="-1" role="dialog">
-  
-  <div class="modal-dialog custom-modal-width p-t-100" role="document" style="min-width: 1500px;">
+<div id="selectedRowContainerGreen" class="modal fade modal-xl" tabindex="-1" role="dialog">
+
+  <div class="modal-dialog custom-modal-width p-t-100" role="document">
     <div class="modal-content">
 
       <div class="modal-header">
@@ -13,125 +13,142 @@
       </div>
 
       <div class="modal-body">
-    <form id="geditForm">
-      <!-- Input fields for each column -->
+        <form id="geditForm">
+          <!-- Input fields for each column -->
 
-      <div class="row">
+          <div class="row">
 
-        <div class="col-md-6">
-          <label for="gedittroubleticket" class="form-label">Trouble Ticket</label>
-          <input type="text" class="form-control" id="gedittroubleticket" name="gedittroubleticket" placeholder="Add Category" readonly>
-        </div>
+            <div class="col-md-6">
+              <label for="gedittroubleticket" class="form-label">Trouble Ticket</label>
+              <input type="text" class="form-control" id="gedittroubleticket" name="gedittroubleticket"
+                placeholder="Add Category" readonly>
+            </div>
 
-        <div class="col-md-6">
-          <label for="geditcablesystem" class="form-label">Cable System</label>
-          <input type="text" class="form-control" id="geditcablesystem" name="geditcablesystem" placeholder="Enter Cable System" readonly>
-        </div>
+            <div class="col-md-6">
+              <label for="geditcablesystem" class="form-label">Cable System</label>
+              <input type="text" class="form-control" id="geditcablesystem" name="geditcablesystem"
+                placeholder="Enter Cable System" readonly>
+            </div>
 
-      </div>
+          </div>
 
-      <br>
+          <br>
 
-      <div class="row">
-        
-        <div class="col-md-4">
-          <label for="geditndt" class="form-label">Notification Date and Time</label>
-          <input type="datetime-local" class="form-control" id="geditndt" name="geditndt" placeholder="Enter Notification Date and Time" readonly>
-        </div>
+          <div class="row">
+            <hr>
+            <div class="col-md-4">
+              <label for="geditndt" class="form-label">Notification Date and Time</label>
+              <input type="datetime-local" class="form-control" id="geditndt" name="geditndt"
+                placeholder="Enter Notification Date and Time" readonly>
+            </div>
 
-        <div class="col-md-4">
-          <label for="geditsdt" class="form-label">Start Date and Time (UTC)</label>
-          <input type="datetime-local" class="form-control" id="geditsdt" name="geditsdt"placeholder="Enter Start Date and Time" readonly>
-        </div>
+            <div class="col-md-4">
+              <label for="geditsdt" class="form-label">Start Date and Time (UTC)</label>
+              <input type="datetime-local" class="form-control" id="geditsdt" name="geditsdt"
+                placeholder="Enter Start Date and Time" readonly>
+            </div>
 
-        <div class="col-md-4">
-          <label for="geditedt" class="form-label">End Date and Time (UTC)</label>
-          <input type="datetime-local" class="form-control" id="geditedt" name="geditedt" placeholder="Enter End Date and Time" readonly>
-        </div>
+            <div class="col-md-4">
+              <label for="geditedt" class="form-label">End Date and Time (UTC)</label>
+              <input type="datetime-local" class="form-control" id="geditedt" name="geditedt"
+                placeholder="Enter End Date and Time" readonly>
+            </div>
 
-      </div>  
+          </div>
+          <br>
+          <div class="row">
+            <hr>
+            <div class="col-md-4">
+              <label for="geditoutagedur" class="form-label">Outage Duration</label>
+              <input type="text" class="form-control" id="geditoutagedur" name="geditoutagedur"
+                placeholder="Enter Outage Duration" readonly>
+            </div>
 
-      <div class="row">
+            <div class="col-md-4">
+              <label for="geditimpact" class="form-label">Impact</label>
+              <input type="text" class="form-control" id="geditimpact" name="geditimpact" placeholder="Enter Impact"
+                readonly>
+            </div>
 
-        <div class="col-md-4">
-          <label for="geditoutagedur" class="form-label">Outage Duration</label>
-          <input type="text" class="form-control" id="geditoutagedur" name="geditoutagedur" placeholder="Enter Outage Duration" readonly>
-        </div>
-
-        <div class="col-md-4">
-          <label for="geditimpact" class="form-label">Impact</label>
-          <input type="text" class="form-control" id="geditimpact" name="geditimpact" placeholder="Enter Impact" readonly>
-        </div>
-
-        <div class="col-md-4">
-          <label for="geditlocation" class="form-label">Location</label>
-          <textarea type="text" class="form-control" id="geditlocation" name="geditlocation" placeholder="Enter Location" readonly></textarea>
-        </div>
-
-
-      </div>  
-
-      <div class="row">
-
-        <div class="col-md-4">
-          <label for="geditaid" class="form-label">Activity Impact Duration</label>
-          <input type="text" class="form-control" id="geditaid" name="geditaid" placeholder="Enter Activity Impact Duration" readonly>
-        </div>
-
-        <div class="col-md-4">
-          <label for="geditinctype" class="form-label">Incident Type</label>
-          <input type="text" class="form-control" id="geditinctype" name="geditinctype" placeholder="Enter Incident Type" readonly>
-        </div>
-
-        <div class="col-md-4">
-          <label for="geditas1" class="form-label">Affected Segment 1</label>
-          <input type="text" class="form-control" id="geditas1" name="geditas1" placeholder="Enter Affected Segment 1" readonly>
-        </div>
-
-      </div> 
-
-      <br>
-
-      <div class="row">
-
-        <div class="col-md-4">
-          <label for="geditas2" class="form-label">Affected Segment 2</label>
-          <input type="text" class="form-control" id="geditas2" name="geditas2" placeholder="Enter Affected Segment 2" readonly>
-        </div>
-
-        <div class="col-md-4">
-          <label for="geditas3" class="form-label">Affected Segment 3</label>
-          <input type="text" class="form-control" id="geditas3" name="geditas3" placeholder="Enter Affected Segment 3" readonly>
-        </div>
-
-        <div class="col-md-4">
-          <label for="geditrootchl" class="form-label">Root Cause (High Level)</label>
-          <textarea type="text" class="form-control" id="geditrootchl" name="geditrootchl" placeholder="Enter Root Cause (High Level)" readonly></textarea>
-        </div>
-            
-      </div> 
-
-      <div class="row">
-
-        <div class="col-md-4">
-          <label for="geditrootcsi" class="form-label">Root Cause (Specific - Internal)</label>
-          <textarea type="text" class="form-control" id="geditrootcsi" name="geditrootcsi" placeholder="Enter Root Cause (Specific - Internal)" readonly></textarea>
-        </div>
-
-        <div class="col-md-4">
-          <label for="geditaddrem" class="form-label">Additional Remarks (Internal)</label>
-          <textarea type="text" class="form-control" id="geditaddrem" name="geditaddrem" placeholder="Enter Additional Remarks (Internal)" readonly></textarea>
-        </div>
-
-        <div class="col-md-4">
-          <label for="geditmoyr" class="form-label">Month Year</label>
-          <input type="text" class="form-control" id="geditmoyr" name="geditmoyr" placeholder="Enter Month Year" readonly>
-        </div>
-            
-      </div> 
+            <div class="col-md-4">
+              <label for="geditlocation" class="form-label">Location</label>
+              <textarea type="text" class="form-control" id="geditlocation" name="geditlocation"
+                placeholder="Enter Location" readonly></textarea>
+            </div>
 
 
-      </form> 
+          </div>
+
+          <div class="row">
+
+            <div class="col-md-4">
+              <label for="geditaid" class="form-label">Activity Impact Duration</label>
+              <input type="text" class="form-control" id="geditaid" name="geditaid"
+                placeholder="Enter Activity Impact Duration" readonly>
+            </div>
+
+            <div class="col-md-4">
+              <label for="geditinctype" class="form-label">Incident Type</label>
+              <input type="text" class="form-control" id="geditinctype" name="geditinctype"
+                placeholder="Enter Incident Type" readonly>
+            </div>
+          </div>
+
+          <br>
+
+          <div class="row">
+            <hr>
+            <div class="col-md-4">
+              <label for="geditas1" class="form-label">Affected Segment 1</label>
+              <input type="text" class="form-control" id="geditas1" name="geditas1"
+                placeholder="Enter Affected Segment 1" readonly>
+            </div>
+
+            <div class="col-md-4">
+              <label for="geditas2" class="form-label">Affected Segment 2</label>
+              <input type="text" class="form-control" id="geditas2" name="geditas2"
+                placeholder="Enter Affected Segment 2" readonly>
+            </div>
+
+            <div class="col-md-4">
+              <label for="geditas3" class="form-label">Affected Segment 3</label>
+              <input type="text" class="form-control" id="geditas3" name="geditas3"
+                placeholder="Enter Affected Segment 3" readonly>
+            </div>
+
+          </div>
+          <br>
+          <div class="row">
+            <hr>
+            <div class="col-md-4">
+              <label for="geditrootchl" class="form-label">Root Cause (High Level)</label>
+              <textarea type="text" class="form-control" id="geditrootchl" name="geditrootchl"
+                placeholder="Enter Root Cause (High Level)" readonly></textarea>
+            </div>
+
+
+            <div class="col-md-4">
+              <label for="geditrootcsi" class="form-label">Root Cause (Specific - Internal)</label>
+              <textarea type="text" class="form-control" id="geditrootcsi" name="geditrootcsi"
+                placeholder="Enter Root Cause (Specific - Internal)" readonly></textarea>
+            </div>
+
+            <div class="col-md-4">
+              <label for="geditaddrem" class="form-label">Additional Remarks (Internal)</label>
+              <textarea type="text" class="form-control" id="geditaddrem" name="geditaddrem"
+                placeholder="Enter Additional Remarks (Internal)" readonly></textarea>
+            </div>
+
+            <div class="col-md-4">
+              <label for="geditmoyr" class="form-label">Month Year</label>
+              <input type="text" class="form-control" id="geditmoyr" name="geditmoyr" placeholder="Enter Month Year"
+                readonly>
+            </div>
+
+          </div>
+
+
+        </form>
       </div>
 
       <div class="modal-footer">

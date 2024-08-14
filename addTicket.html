@@ -1,0 +1,421 @@
+<div id="alertContainer" class="position-fixed bottom-0 end-0 p-3" style="z-index: 11;">
+    <!-- Alert container goes here -->
+</div>
+<!-- Modal -->
+<div class="modal fade" id="addTicketModal" data-bs-keyboard="false" tabindex="-1" aria-labelledby="addTicketModalLabel"
+    aria-hidden="true">
+    <div class="modal-dialog modal-xl">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h1 class="modal-title fs-5" id="addTicketModalLabel">Add New Ticket</h1>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <form>
+                    <div class="row mb-3">
+                        <div class="col-md-6">
+                            <label for="inputTroubleTicket" class="form-label">Trouble Ticket:</label>
+                            <input type="text" class="form-control" id="inputTroubleTicket" required>
+                            <div class="invalid-feedback">
+                                Please enter a trouble ticket.
+                            </div>
+                        </div>
+
+                        <div class="col-md-6">
+                            <label for="cableSystemSelect" class="form-label">Cable System:</label>
+                            <select class="form-select" id="cableSystemSelect" required>
+                                <option value="" disabled selected>Select Cable System</option>
+                                <option value="C2C">C2C</option>
+                                <option value="EAC">EAC</option>
+                                <option value="TGN">TGN-IA/TGN-P</option>
+                                <option value="SEAUS">SEA-US</option>
+                                <option value="SJC">SJC</option>
+                            </select>
+                            <div class="invalid-feedback">
+                                Please select a cable system.
+                            </div>
+                        </div>
+                    </div>
+                    <br>
+                    <div class="row mb-3">
+                        <hr>
+                        <div class="col-md-4">
+                            <label for="inputNotificationDateTime" class="form-label">Notification Date and
+                                Time:</label>
+                            <input type="datetime-local" class="form-control" id="inputNotificationDateTime" required>
+                            <div class="invalid-feedback">
+                                Please select date and time.
+                            </div>
+                        </div>
+
+                        <div class="col-md-4">
+                            <label for="inputStartDateTimeUTC" class="form-label">Start Date and Time (UTC):</label>
+                            <input type="datetime-local" class="form-control" id="inputStartDateTimeUTC" required>
+                            <div class="invalid-feedback">
+                                Please select start date and time.
+                            </div>
+                        </div>
+
+                        <div class="col-md-4">
+                            <label for="inputEndDateTimeUTC" class="form-label">End Date and Time (UTC):</label>
+                            <input type="datetime-local" class="form-control" id="inputEndDateTimeUTC" required>
+                            <div class="invalid-feedback">
+                                Please select end date and time.
+                            </div>
+                        </div>
+                    </div>
+                    <br>
+                    <div class="row mb-3">
+                        <hr>
+                        <div class="col-md-3 d-none" style="display: none;">
+                            <label for="inputOutageDuration">Outage Duration:</label>
+                            <input type="text" class="form-control" id="inputOutageDuration" readonly>
+                        </div>
+
+                        <div class="col-md-3 d-none" style="display: none;">
+                            <label for="inputActivityImpactDuration">Activity Impact Duration:</label>
+                            <input type="text" class="form-control" id="inputActivityImpactDuration" readonly>
+                        </div>
+                        <div class="col-md-6">
+                            <label for="inputImpact" class="form-label">Impact:</label>
+                            <select class="form-select" id="inputImpact" required>
+                                <option value="" disabled selected>Select Impact</option>
+                                <option value="2-5 Bearers">2-5 Bearers</option>
+                                <option value="6-10 Bearers">6-10 Bearers</option>
+                                <option value="11 and More">11 and More</option>
+                                <option value="All Bearers">All Bearers</option>
+                            </select>
+                            <div class="invalid-feedback">
+                                Please select an impact level.
+                            </div>
+                        </div>
+
+                        <div class="col-md-6">
+                            <label for="inputIncidentType" class="form-label">Incident Type:</label>
+                            <select class="form-select" id="inputIncidentType" required>
+                                <option value="" disabled selected>Select Incident Type</option>
+                                <option value="Outage">Outage</option>
+                                <option value="Planned Activity">Planned Activity</option>
+                            </select>
+                            <div class="invalid-feedback">
+                                Please select an incident type.
+                            </div>
+                        </div>
+                    </div>
+                    <br>
+                    <div class="row mb-3">
+                        <hr>
+                        <div class="col-md-4">
+                            <label for="inputAffectedSegment1" class="form-label">Affected Segment 1:</label>
+                            <select class="form-select" id="inputAffectedSegment1">
+                                <option value="">Select a Segment</option>
+                                <!-- Options will be populated dynamically -->
+                            </select>
+                            <div class="invalid-feedback">
+                                Please select at least 1 segment.
+                            </div>
+                        </div>
+
+                        <div class="col-md-4">
+                            <label for="inputAffectedSegment2" class="form-label">Affected Segment 2:</label>
+                            <select class="form-select" id="inputAffectedSegment2">
+                                <option value="">Select a Segment</option>
+                                <!-- Options will be populated dynamically -->
+                            </select>
+                        </div>
+
+                        <div class="col-md-4">
+                            <label for="inputAffectedSegment3" class="form-label">Affected Segment 3:</label>
+                            <select class="form-select" id="inputAffectedSegment3">
+                                <option value="">Select a Segment</option>
+                                <!-- Options will be populated dynamically -->
+                            </select>
+                        </div>
+                    </div>
+                    <br>
+                    <div class="row mb-3">
+                        <hr>
+                        <div class="col-md-4">
+                            <label for="inputLocation" class="form-label">Location:</label>
+                            <select class="form-select" id="inputLocation" required>
+                                <option value="" disabled selected>Select Location</option>
+                                <option value="Terrestial/Dry Segment">Terrestial/Dry Segment</option>
+                                <option value="Wet Segment">Wet Segment</option>
+                                <option value="Undetermined">Undetermined</option>
+                                <option value="Backhaul">Backhaul</option>
+                            </select>
+                            <div class="invalid-feedback">
+                                Please select a location.
+                            </div>
+                        </div>
+
+                        <div class="col-md-4">
+                            <label for="inputRootCauseH" class="form-label">Root Cause (High Level):</label>
+                            <select class="form-select" id="inputRootCauseH" required>
+                                <option value="" disabled selected>Select Root Cause</option>
+                                <option value="BMH Issue">BMH Issue</option>
+                                <option value="Cable Fault">Cable Fault</option>
+                                <option value="Card Failure">Card Failure</option>
+                                <option value="Configuration Issue">Configuration Issue</option>
+                                <option value="Fan Issue">Fan Issue</option>
+                                <option value="Force Majeure">Force Majeure</option>
+                                <option value="Government/Private Project">Government/Private Project</option>
+                                <option value="Human Error">Human Error</option>
+                                <option value="PFE Issue">PFE Issue</option>
+                                <option value="Physical Connection">Physical Connection</option>
+                                <option value="Planned Maintenance">Planned Maintenance</option>
+                                <option value="Shunt Fault">Shunt Fault</option>
+                                <option value="Subsea Equipment Fault">Subsea Equipment Fault</option>
+                                <option value="Unknown">Unknown</option>
+                            </select>
+                            <div class="invalid-feedback">
+                                Please select a root cause.
+                            </div>
+                        </div>
+
+                        <div class="col-md-4">
+                            <label for="inputRootCauseSpecificInternal" class="form-label">Root Cause
+                                (Specific-Internal):</label>
+                            <textarea class="form-control" id="inputRootCauseSpecificInternal"></textarea>
+                        </div>
+                    </div>
+
+                    <div class="row mb-3">
+                        <div class="col-md-6">
+                            <label for="inputAdditionalRemarks" class="form-label">Additional Remarks
+                                (Internal):</label>
+                            <textarea class="form-control" id="inputAdditionalRemarks"></textarea>
+                        </div>
+
+                        <div class="col-md-6">
+                            <label for="inputAdditionalRemarksExternal" class="form-label">Additional Remarks
+                                (External):</label>
+                            <textarea class="form-control" id="inputAdditionalRemarksExternal"></textarea>
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-primary" onclick="AddRow()"
+                            style="width:170px;">Add</button>
+                    </div>
+
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    function showGoogleScriptAlert(message, type) {
+        var alertColorClass;
+        switch (type) {
+            case 'success':
+                alertColorClass = 'alert-success';
+                break;
+            case 'error':
+                alertColorClass = 'alert-danger';
+                break;
+            default:
+                alertColorClass = 'alert-warning';
+        }
+
+        var alertHtml = `
+      <div class="alert ${alertColorClass} alert-dismissible fade show" role="alert">
+          ${message}
+          <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+      </div>
+    `;
+
+        $('#alertContainer').prepend(alertHtml);
+    }
+
+    function AddRow() {
+        var fields = [
+            "inputTroubleTicket",
+            "cableSystemSelect",
+            "inputNotificationDateTime",
+            "inputStartDateTimeUTC",
+            "inputEndDateTimeUTC",
+            "inputOutageDuration",
+            "inputAffectedSegment1",
+            "inputLocation",
+            "inputActivityImpactDuration",
+            "inputAffectedSegment2",
+            "inputRootCauseH",
+            "inputImpact",
+            "inputAffectedSegment3",
+            "inputIncidentType",
+            "inputRootCauseSpecificInternal",
+            "inputAdditionalRemarks",
+            "inputMonthYear"
+        ];
+
+        var values = {};
+        fields.forEach(function (id) {
+            var element = document.getElementById(id);
+            if (element) {
+                values[id] = element.value.trim();
+            } else {
+                console.error(`Element with id ${id} not found`);
+                values[id] = "";
+            }
+        });
+
+        // Clear previous invalid feedback
+        document.querySelectorAll('.is-invalid').forEach(function (el) {
+            el.classList.remove('is-invalid');
+        });
+
+        // Validate required fields
+        var hasError = false;
+
+        if (!values["inputTroubleTicket"]) {
+            document.getElementById("inputTroubleTicket").classList.add("is-invalid");
+            hasError = true;
+        }
+
+        if (!values["cableSystemSelect"]) {
+            document.getElementById("cableSystemSelect").classList.add("is-invalid");
+            hasError = true;
+        }
+
+        if (!values["inputNotificationDateTime"] && values["inputIncidentType"] !== "Outage") {
+            document.getElementById("inputNotificationDateTime").classList.add("is-invalid");
+            hasError = true;
+        }
+
+        if (!values["inputAffectedSegment1"]) {
+            document.getElementById("inputAffectedSegment1").classList.add("is-invalid");
+            hasError = true;
+        }
+
+        if (!values["inputLocation"]) {
+            document.getElementById("inputLocation").classList.add("is-invalid");
+            hasError = true;
+        }
+
+        // Check for other fields only if they are visible
+        if (document.getElementById("inputStartDateTimeUTC") && document.getElementById("inputStartDateTimeUTC").style.display !== 'none' && !values["inputStartDateTimeUTC"]) {
+            document.getElementById("inputStartDateTimeUTC").classList.add("is-invalid");
+            hasError = true;
+        }
+
+        if (document.getElementById("inputEndDateTimeUTC") && document.getElementById("inputEndDateTimeUTC").style.display !== 'none' && !values["inputEndDateTimeUTC"]) {
+            document.getElementById("inputEndDateTimeUTC").classList.add("is-invalid");
+            hasError = true;
+        }
+
+        if (hasError) {
+            return;
+        }
+
+        $('#spinnerModal').modal('show');
+
+        // Proceed if no errors
+        google.script.run.withSuccessHandler(function (ticketExists) {
+            if (ticketExists) {
+                $('#spinnerModal').modal('hide');
+                showGoogleScriptAlert('Trouble ticket already exists.', 'warning');
+            } else {
+                var majorIncidents = [
+                    values["inputTroubleTicket"], values["cableSystemSelect"], values["inputNotificationDateTime"],
+                    values["inputStartDateTimeUTC"], values["inputEndDateTimeUTC"], values["inputOutageDuration"],
+                    values["inputActivityImpactDuration"], values["inputImpact"], values["inputIncidentType"],
+                    values["inputAffectedSegment1"], values["inputAffectedSegment2"], values["inputAffectedSegment3"],
+                    values["inputLocation"], values["inputRootCauseH"], values["inputRootCauseSpecificInternal"],
+                    values["inputAdditionalRemarks"], values["inputMonthYear"]
+                ];
+
+                google.script.run.withSuccessHandler(function (response) {
+                    console.log('Data added to the sheet');
+                    Clear();
+                    $('#spinnerModal').modal('hide');
+                    showGoogleScriptAlert(values["inputTroubleTicket"] + ' added successfully. Refresh the page.', 'success');
+                }).addDataToSheetMI('MAJOR INCIDENTS', majorIncidents);
+
+                google.script.run.withSuccessHandler(function (response) {
+                    console.log('Data added to the sheet');
+                    Clear();
+                }).addDataToSheetNotif('Notifications', majorIncidents);
+
+                google.script.run.withSuccessHandler(function (url) {
+                    window.open(url, '_top');
+                }).getScriptUrl();
+            }
+        }).checkTroubleTicketExistence(values["inputTroubleTicket"]);
+    }
+
+    function Clear() {
+        document.querySelectorAll('input[type="text"]').forEach(el => el.value = '');
+        document.querySelectorAll('textarea').forEach(el => el.value = '');
+        document.querySelectorAll('select').forEach(el => el.value = '');
+    }
+</script>
+
+<script>
+    function populateNames(nameSelectId) {
+        var cableSystem = document.getElementById("cableSystemSelect").value;
+        var nameSelect = document.getElementById(nameSelectId);
+        if (nameSelect) {
+            nameSelect.innerHTML = '<option value="">Select Name</option>';
+            if (window.sampleData) {
+                window.sampleData.forEach(function (item) {
+                    if (item.cableSystem === cableSystem) {
+                        var option = document.createElement("option");
+                        option.value = item.value;
+                        option.textContent = item.name;
+                        nameSelect.appendChild(option);
+                    }
+                });
+            }
+        }
+    }
+
+    document.addEventListener("DOMContentLoaded", function () {
+        var cableSystemSelect = document.getElementById("cableSystemSelect");
+        if (cableSystemSelect) {
+            cableSystemSelect.addEventListener("change", function () {
+                populateNames("inputAffectedSegment1");
+                populateNames("inputAffectedSegment2");
+                populateNames("inputAffectedSegment3");
+            });
+
+            google.script.run.withSuccessHandler(function (data) {
+                window.sampleData = data;
+                populateNames("inputAffectedSegment1");
+                populateNames("inputAffectedSegment2");
+                populateNames("inputAffectedSegment3");
+            }).getSampleData();
+        }
+    });
+
+    document.addEventListener('DOMContentLoaded', function () {
+        var incidentType = document.getElementById('inputIncidentType');
+        var disabling = document.querySelectorAll('#inputNotificationDateTime, #inputStartDateTimeUTC');
+
+        if (incidentType) {
+            incidentType.addEventListener('change', function () {
+                if (this.value === "Outage") {
+                    disabling.forEach(input => {
+                        input.disabled = true;
+                        var dateTime = document.getElementById('inputStartDateTimeUTC');
+                        const now = new Date();
+                        const year = now.getFullYear();
+                        const month = String(now.getMonth() + 1).padStart(2, '0');
+                        const day = String(now.getDate()).padStart(2, '0');
+                        const hours = String(now.getHours()).padStart(2, '0');
+                        const minutes = String(now.getMinutes()).padStart(2, '0');
+
+                        const formattedDateTime = `${year}-${month}-${day}T${hours}:${minutes}`;
+                        if (dateTime) {
+                            dateTime.value = formattedDateTime;
+                        }
+                    });
+                } else {
+                    disabling.forEach(input => {
+                        input.disabled = false;
+                    });
+                }
+            });
+        }
+    });
+</script>

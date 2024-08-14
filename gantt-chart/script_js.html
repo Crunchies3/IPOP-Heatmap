@@ -1,17 +1,41 @@
 <script type="text/javascript">
-    //  gantt.config.scale_height = 75;
-    // Initialize Gantt
+
+    gantt.config.scale_height = 75;
+    gantt.config.min_column_width = 40
+
     gantt.config.scales = [
         { unit: "month", step: 1, format: "%F, %Y" },
         { unit: "day", step: 1, format: "%j" }
     ];
 
+    function addToChart(cableAndDates) {
+        var allCables = cableAndDates
+        console.log("============================");
+        console.log(allCables);
+    }
 
-    gantt.init("gantt_here"); // initialize ang chart always put design on top
-    gantt.parse({
-        data: [
-            { id: 1, text: "Task #1", start_date: "01-08-2024", duration: 5, progress: 0.6 },
-            { id: 2, text: "Task #2", start_date: "03-08-2024", duration: 7, progress: 0.8 }
-        ]
+
+    gantt.plugins({
+        fullscreen: true
     });
+
+    function test(test) {
+        console.log("================================");
+        console.log(test[0]);
+        console.log(typeof (test))
+    }
+    var data = {
+        tasks: [
+            { id: 1, text: "Project #1", start_date: "01-04-2020", duration: 0 },
+
+            // { id: 2, text: "Task #1", start_date: "02-04-2020", duration: 8, parent: 1 },
+            //{ id: 3, text: "Task #2", start_date: "11-04-2020", duration: 8, parent: 1 }
+        ]
+    };
+
+    google.script.run.withSuccessHandler(test).extractDates('All');
+    google.script.run.withSuccessHandler(addToChart).extractDates('All');
+    gantt.init("gantt_here");
+    gantt.parse(data)
+
 </script>

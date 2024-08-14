@@ -667,13 +667,13 @@ function transferNotifToStartandEndDate() {
     endDateSheet.getRange(endDateSheet.getLastRow() + 1, 1, rowsToTransfer.length, rowsToTransfer[0].length).setValues(rowsToTransfer);
     Logger.log(`${rowsToTransfer.length} rows copied to End Date.`);
 
-    addToActivityLog('SystemEnd', rowsToTransfer[0][0], "");
     //Delete the rows from the notif and start sheet
     rowsToDelete.forEach(row => {
       const rowIndex = data.indexOf(row) + 3; // Adding 2 to account for the header row and zero-based index
       sheet.deleteRow(rowIndex);
       startDateSheet.deleteRow(rowIndex);
     });
+    addToActivityLog('SystemEnd', rowsToTransfer[0][0], "");
   }
 
 }

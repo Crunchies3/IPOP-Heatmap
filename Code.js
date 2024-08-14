@@ -813,11 +813,11 @@ function addToActivityLog(activityType, troubleTicket, incidentTypeAdd){
     var notifToPush = 'The system automatically send the ticket to End Date ( '+troubleTicket +' )';
   }
 
-  var rowData = [[notifToPush, currentDate]];
+  var rowData = [[troubleTicket,notifToPush, currentDate]];
 
   var lastRow = activitySheet.getLastRow();
-  var range = activitySheet.getRange(lastRow+ 1,1,1,2);
+  var range = activitySheet.getRange(lastRow+ 1,1,1,3);
   range.setValues(rowData);
 
-  activitySheet.getRange(lastRow + 1, 2).setNumberFormat('yyyy-mm-dd hh:mm');
+  activitySheet.getRange(lastRow + 1, 3).setNumberFormat('yyyy-mm-dd hh:mm');
 }

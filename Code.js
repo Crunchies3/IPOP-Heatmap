@@ -606,7 +606,7 @@ function transferNotifToStartandEndDate() {
   var endDateSheet = ss.getSheetByName('End Date');
 
 
-  var currentDate = getCurrentDateTableFormat();
+  var currentDate = getCurrentDateTableFormat(new Date());
   console.log(currentDate);
   var formattedCurrentDate = formatDates(currentDate);
 
@@ -667,13 +667,13 @@ function transferNotifToStartandEndDate() {
     endDateSheet.getRange(endDateSheet.getLastRow() + 1, 1, rowsToTransfer.length, rowsToTransfer[0].length).setValues(rowsToTransfer);
     Logger.log(`${rowsToTransfer.length} rows copied to End Date.`);
 
-    addToActivityLog('SystemEnd', rowsToTransfer[0][0], "");
     //Delete the rows from the notif and start sheet
     rowsToDelete.forEach(row => {
       const rowIndex = data.indexOf(row) + 3; // Adding 2 to account for the header row and zero-based index
       sheet.deleteRow(rowIndex);
       startDateSheet.deleteRow(rowIndex);
     });
+    addToActivityLog('SystemEnd', rowsToTransfer[0][0], "");
   }
 
 }
@@ -792,7 +792,7 @@ function addToActivityLog(activityType, troubleTicket, incidentTypeAdd) {
   const ss = SpreadsheetApp.openById('1vW8zgcrQC02iRLkWJSOIjfnqN5_lRNMgNjV6IBZF__c');
   var activitySheet = ss.getSheetByName('Activity History');
 
-  var currentDate = getCurrentDateTableFormat();
+  var currentDate = getCurrentDateTableFormat(new Date());
   var notifToPush = "";
   var actions = "";
   var personsEmail = Session.getActiveUser().getEmail();

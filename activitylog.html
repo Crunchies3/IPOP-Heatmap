@@ -1,0 +1,112 @@
+<body>
+
+    <div class="offcanvas offcanvas-end" data-bs-scroll="true" tabindex="-1" id="offcanvasWithBothOptions"
+        aria-labelledby="offcanvasWithBothOptionsLabel">
+        <div class="offcanvas-header">
+            <h5 class="offcanvas-title" id="offcanvasWithBothOptionsLabel">ACTIVITY LOG</h5>
+            <button type="button" class="btn-close" data-bs-dismiss="offcanvas" aria-label="Close"></button>
+        </div>
+        <div class="offcanvas-body">
+            <div class="p-1">
+                <table id="acitivityLogTable" class="table table-striped table-bordered table-sm table-responsive">
+                    <thead>
+                        <tr>
+                            <th></th>
+                            <th>Date</th>
+                            <th>User</th>
+                            <th>Trouble Ticket</th>
+                            <th>Activity</th>
+                            <th>Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody id="activityLogTableBody">
+
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        $(document).ready(function () {
+            $('#acitivityLogTable').DataTable({
+                responsive: true,
+                columnDefs: [
+                    { targets: [0], className: 'column-center' } // Centering text in the first and second columns
+                ]
+            });
+        });
+
+        // JavaScript code for inserting data into the table 
+        var data = [
+            {
+                date: "2024-08-14",
+                user: "John Doe",
+                troubleTicket: "TT12345",
+                activity: "Logged in",
+                actions: "View"
+            },
+            {
+                date: "2024-08-13",
+                user: "Emma Smith",
+                troubleTicket: "TT12346",
+                activity: "Updated profile",
+                actions: "View"
+            },
+            {
+                date: "2024-08-12",
+                user: "Mike Johnson",
+                troubleTicket: "TT12347",
+                activity: "Created ticket",
+                actions: "View"
+            },
+            {
+                date: "2024-08-11",
+                user: "Sara Lee",
+                troubleTicket: "TT12348",
+                activity: "Resolved ticket",
+                actions: "View"
+            },
+            {
+                date: "2024-08-10",
+                user: "David Brown",
+                troubleTicket: "TT12349",
+                activity: "Logged out",
+                actions: "View"
+            }
+        ];
+
+
+        var tableBody = document.getElementById("activityLogTableBody");
+
+        data.forEach(function (item) {
+            var row = document.createElement("tr");
+
+            var iconCell = document.createElement("td");
+            iconCell.innerHTML = '<i class="bi bi-plus-circle-fill" style="color: #009D92;"></i>';
+            row.appendChild(iconCell);
+
+            var dateCell = document.createElement("td");
+            dateCell.textContent = item.date;
+            row.appendChild(dateCell);
+
+            var userCell = document.createElement("td");
+            userCell.textContent = item.user;
+            row.appendChild(userCell);
+
+            var troubleTicketCell = document.createElement("td");
+            troubleTicketCell.textContent = item.troubleTicket;
+            row.appendChild(troubleTicketCell);
+
+            var activityCell = document.createElement("td");
+            activityCell.textContent = item.activity;
+            row.appendChild(activityCell);
+
+            var actionsCell = document.createElement("td");
+            actionsCell.textContent = item.actions;
+            row.appendChild(actionsCell);
+
+            tableBody.appendChild(row);
+        });
+    </script>
+</body>

@@ -29,84 +29,64 @@
 
     <script>
         $(document).ready(function () {
+            google.script.run.withSuccessHandler(displayData).fetchActivityLogs();
+        });
+
+        function displayData(data) {
+            console.log("act data");
+            console.log(data);
+
+            var tableBody = document.getElementById("activityLogTableBody");
+            data.forEach(function (item) {
+                var row = document.createElement("tr");
+
+                var iconCell = document.createElement("td");
+
+                var icon;
+
+                if (item[4] === "Added") icon = '<i class="bi bi-plus-circle-fill" style="color: #009D92;"></i>';
+                else if (item[4] === "Deleted") icon = '<i class="bi bi-x-circle-fill" style="color: #DB423C;"></i>';
+                else if (item[4] === "Updated") icon = '<i class="bi bi-exclamation-circle-fill" style="color: #DCA21D;"></i>';
+                else if (item[4] === "System") icon = '<i class="bi bi-cpu-fill" style="color: grey;"></i>';
+                else icon = '<i class="bi bi-info-circle-fill" style="color: #5353e9;"></i>';
+
+                iconCell.innerHTML = icon;
+                row.appendChild(iconCell);
+
+                var dateCell = document.createElement("td");
+                dateCell.textContent = item[0];
+                row.appendChild(dateCell);
+
+                var userCell = document.createElement("td");
+                userCell.textContent = item[1];
+                row.appendChild(userCell);
+
+                var troubleTicketCell = document.createElement("td");
+                troubleTicketCell.textContent = item[2];
+                row.appendChild(troubleTicketCell);
+
+                var activityCell = document.createElement("td");
+                activityCell.textContent = item[3];
+                row.appendChild(activityCell);
+
+                var actionsCell = document.createElement("td");
+
+                actionsCell.innerHTML = item[4];
+                row.appendChild(actionsCell);
+
+                tableBody.appendChild(row);
+            });
+
             $('#acitivityLogTable').DataTable({
                 responsive: true,
+                pageLength: 20,
+                order: [[1, 'desc']],
                 columnDefs: [
-                    { targets: [0], className: 'column-center' } // Centering text in the first and second columns
+                    { targets: [0], className: 'column-center' }
                 ]
             });
-        });
-
-        // JavaScript code for inserting data into the table 
-        var data = [
-            {
-                date: "2024-08-14",
-                user: "John Doe",
-                troubleTicket: "TT12345",
-                activity: "Logged in",
-                actions: "View"
-            },
-            {
-                date: "2024-08-13",
-                user: "Emma Smith",
-                troubleTicket: "TT12346",
-                activity: "Updated profile",
-                actions: "View"
-            },
-            {
-                date: "2024-08-12",
-                user: "Mike Johnson",
-                troubleTicket: "TT12347",
-                activity: "Created ticket",
-                actions: "View"
-            },
-            {
-                date: "2024-08-11",
-                user: "Sara Lee",
-                troubleTicket: "TT12348",
-                activity: "Resolved ticket",
-                actions: "View"
-            },
-            {
-                date: "2024-08-10",
-                user: "David Brown",
-                troubleTicket: "TT12349",
-                activity: "Logged out",
-                actions: "View"
-            }
-        ];
+        }
 
 
-        var tableBody = document.getElementById("activityLogTableBody");
-
-        data.forEach(function (item) {
-            var row = document.createElement("tr");
-
-            var iconCell = document.createElement("td");
-            iconCell.innerHTML = '<i class="bi bi-plus-circle-fill" style="color: #009D92;"></i>';
-            row.appendChild(iconCell);
-
-            var dateCell = document.createElement("td");
-            dateCell.textContent = item.date;
-            row.appendChild(dateCell);
-
-            var userCell = document.createElement("td");
-            userCell.textContent = item.user;
-            row.appendChild(userCell);
-
-            var troubleTicketCell = document.createElement("td");
-            troubleTicketCell.textContent = item.troubleTicket;
-            row.appendChild(troubleTicketCell);
-
-            var activityCell = document.createElement("td");
-            activityCell.textContent = item.activity;
-            row.appendChild(activityCell);
-
-            var actionsCell = document.createElement("td");
-            actionsCell.textContent = item.actions;
-            row.appendChild(actionsCell);
-
-            tableBody.appendChild(row);
-        });
     </script>
 </body>

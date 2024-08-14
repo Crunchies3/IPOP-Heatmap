@@ -514,7 +514,7 @@ function getCurrentDateTableFormat(now) {
 }
 
 
-function copyToStartTableWithTheCurrentDate(sheetType , ticketNumber) {
+function copyToStartTableWithTheCurrentDate(sheetType, ticketNumber) {
   var ss = SpreadsheetApp.openById('1vW8zgcrQC02iRLkWJSOIjfnqN5_lRNMgNjV6IBZF__c');
   var sheet = ss.getSheetByName('Notifications');
   var lastRow = sheet.getLastRow();
@@ -606,7 +606,7 @@ function transferNotifToStartandEndDate() {
   var endDateSheet = ss.getSheetByName('End Date');
 
 
-  var currentDate = getCurrentDateTableFormat();
+  var currentDate = getCurrentDateTableFormat(new Date());
   console.log(currentDate);
   var formattedCurrentDate = formatDates(currentDate);
 
@@ -792,59 +792,59 @@ function addToActivityLog(activityType, troubleTicket, incidentTypeAdd) {
   const ss = SpreadsheetApp.openById('1vW8zgcrQC02iRLkWJSOIjfnqN5_lRNMgNjV6IBZF__c');
   var activitySheet = ss.getSheetByName('Activity History');
 
-  var currentDate = getCurrentDateTableFormat();
+  var currentDate = getCurrentDateTableFormat(new Date());
   var notifToPush = "";
   var actions = "";
   var personsEmail = Session.getActiveUser().getEmail();
-  if(activityType === 'Add'){
-    var notifToPush =  'Added a New ' + incidentTypeAdd +' Ticket ( '+troubleTicket +" )";
+  if (activityType === 'Add') {
+    var notifToPush = 'Added a New ' + incidentTypeAdd + ' Ticket ( ' + troubleTicket + " )";
     actions = 'Added';
   }
-  else if(activityType === 'Delete'){
-    var notifToPush =  'Deleted an Existing Ticket ( '+troubleTicket +' )';
+  else if (activityType === 'Delete') {
+    var notifToPush = 'Deleted an Existing Ticket ( ' + troubleTicket + ' )';
     actions = 'Deleted';
   }
-  else if(activityType === "Update"){
-    var notifToPush = ' Updated the Ticket ( '+troubleTicket +' )';
+  else if (activityType === "Update") {
+    var notifToPush = ' Updated the Ticket ( ' + troubleTicket + ' )';
     actions = 'Updated';
   }
-  else if(activityType === "toStartDate"){
-    var notifToPush = ' Copied the Ticket to Start Date. ( '+troubleTicket +' )';
+  else if (activityType === "toStartDate") {
+    var notifToPush = ' Copied the Ticket to Start Date. ( ' + troubleTicket + ' )';
     actions = 'Sent to start';
   }
-  else if(activityType === "toEndDate"){
-    var notifToPush = ' Sent the Ticket to End Date ( '+troubleTicket +' )';
+  else if (activityType === "toEndDate") {
+    var notifToPush = ' Sent the Ticket to End Date ( ' + troubleTicket + ' )';
     actions = 'Sent to end';
   }
-  else if(activityType === "SystemStart"){
-    var notifToPush = 'The system automatically copied the ticket to Start Date ( '+troubleTicket +' )';
+  else if (activityType === "SystemStart") {
+    var notifToPush = 'The system automatically copied the ticket to Start Date ( ' + troubleTicket + ' )';
     actions = 'System';
     personsEmail = 'System';
   }
-  else if(activityType === "SystemEnd"){
-    var notifToPush = 'The system automatically send the ticket to End Date ( '+troubleTicket +' )';
+  else if (activityType === "SystemEnd") {
+    var notifToPush = 'The system automatically send the ticket to End Date ( ' + troubleTicket + ' )';
     actions = 'System';
     personsEmail = 'System';
   }
 
-  var rowData = [[currentDate, personsEmail, troubleTicket,notifToPush, actions]];
+  var rowData = [[currentDate, personsEmail, troubleTicket, notifToPush, actions]];
 
   var lastRow = activitySheet.getLastRow();
-  
-  var range = activitySheet.getRange(lastRow+ 1,1,1,5);
+
+  var range = activitySheet.getRange(lastRow + 1, 1, 1, 5);
 
   range.setValues(rowData);
 
   activitySheet.getRange(1, 1, lastRow, 1).setNumberFormat('yyyy-mm-dd hh:mm');
 }
 
-function fetchActivityLogs(){
+function fetchActivityLogs() {
   const ss = SpreadsheetApp.openById('1vW8zgcrQC02iRLkWJSOIjfnqN5_lRNMgNjV6IBZF__c');
   var activitySheet = ss.getSheetByName('Activity History');
   var data = activitySheet.getDataRange().getValues().slice(1);
 
-  for(var i =0; i<data.length;i++){
-     data[i][0] = getCurrentDateTableFormat(data[i][0]);
+  for (var i = 0; i < data.length; i++) {
+    data[i][0] = getCurrentDateTableFormat(data[i][0]);
   }
   return data;
 }

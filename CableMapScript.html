@@ -84,6 +84,16 @@
     togglePanel('green');
   }
 
+  function openAddTicketModal() {
+    // Close any open panels
+    if (activeNotificationTab) {
+      document.getElementById(panels[activeNotificationTab]).classList.remove("active");
+      activeNotificationTab = null;
+    }
+
+    // Open the Add Ticket modal
+    $('#addTicketModal').modal('show');
+  }
 
   // if you read the CableMap it takes the currentURL and adds a parameter called gantt
   //when u call it to codegs it will check for parameters for 'page'

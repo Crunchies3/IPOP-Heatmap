@@ -415,7 +415,6 @@ function getCableNames() {
     }
 
 
-<<<<<<< HEAD
     let bool1 = processCableSegments(firstCable, startDate, endDate, notifiedDate, incidentType);
     let bool2 = processCableSegments(secondCable, startDate, endDate, notifiedDate, incidentType);
     let bool3 = processCableSegments(thirdCable, startDate, endDate, notifiedDate, incidentType);
@@ -427,46 +426,24 @@ function getCableNames() {
     }
 
     function addToCombinedCableNames(cableSystem, cableColumn, notifiedDate, startDate, endDate, incidentType) {
-      const combinedName = ${ cableSystem } ${ cableColumn };
-=======
-    let bool1 = processCableSegments(firstCable, startDate, endDate, notifiedDate ,incidentType);
-    let bool2 = processCableSegments(secondCable, startDate, endDate, notifiedDate ,incidentType);
-    let bool3 = processCableSegments(thirdCable, startDate, endDate, notifiedDate,incidentType);
-
-    if (!(bool1 || bool2 || bool3)) {
-      if (cableNameL !== "") addToCombinedCableNames(cableNameB, cableNameL, notifiedDate, startDate, endDate ,incidentType);
-      if (cableNameK !== "") addToCombinedCableNames(cableNameB, cableNameK, notifiedDate, startDate, endDate ,incidentType);
-      addToCombinedCableNames(cableNameB, cableNameJ, notifiedDate, startDate, endDate ,incidentType);
-    }
-
-    function addToCombinedCableNames(cableSystem, cableColumn, notifiedDate, startDate, endDate ,incidentType) {
       const combinedName = `${cableSystem} ${cableColumn}`;
->>>>>>> 946c1a9880a42fef8ebd26e1b24a1ac70888ea1a
       combinedCableNames.push({
         combinedName: combinedName,
         notifiedDate: notifiedDate,
         startDate: startDate,
         endDate: endDate,
-<<<<<<< HEAD
         incidentType: incidentType
-=======
-        incidentType : incidentType
->>>>>>> 946c1a9880a42fef8ebd26e1b24a1ac70888ea1a
       });
     }
 
 
-<<<<<<< HEAD
     function processCableSegments(cableSegments, startDate, endDate, notifiedDate, incidentType) {
-=======
-    function processCableSegments(cableSegments, startDate, endDate, notifiedDate ,incidentType) {
->>>>>>> 946c1a9880a42fef8ebd26e1b24a1ac70888ea1a
       if (cableSegments != undefined || cableSegments != null) {
         var objectLength = Object.keys(cableSegments).length;
       }
       if (objectLength > 0) {
         for (var i = 1; i < objectLength; i++) {
-          const pathKey = path${ i };
+          const pathKey = `path${i}`;
           if (cableSegments[pathKey] === "") {
             break;
           }
@@ -855,45 +832,6 @@ function addToActivityLog(activityType, troubleTicket, incidentTypeAdd) {
     personsEmail = 'System';
   }
 
-<<<<<<< HEAD
-  var rowData = [[troubleTicket, notifToPush, currentDate]];
-
-  var lastRow = activitySheet.getLastRow();
-
-  var range = activitySheet.getRange(lastRow + 1, 1, 1, 3);
-
-  range.setValues(rowData);
-
-  activitySheet.getRange(lastRow + 1, 3).setNumberFormat('yyyy-mm-dd hh:mm');
-}
-
-var day = new Date().getDay();
-var month = new Date().getMonth();
-var year = new Date().getFullYear();
-
-console.log(month)
-console.log(year)
-
-
-function setDate(setmonth, setyear) {
-  month = setmonth;
-  year = setyear;
-  const ss = SpreadsheetApp.openById('1vW8zgcrQC02iRLkWJSOIjfnqN5_lRNMgNjV6IBZF__c');
-  var segmentRows = ss.getSheetByName('Dashboard');
-  segmentRows.getRange('H29').setValue(getDate());
-}
-
-function setWeek(date1, date2) {
-  const ss = SpreadsheetApp.openById('1vW8zgcrQC02iRLkWJSOIjfnqN5_lRNMgNjV6IBZF__c');
-  var dateArray = [[date1, date2]]
-  var segmentRows = ss.getSheetByName('Dashboard');
-  segmentRows.getRange('J29:K29').setValues(dateArray)
-}
-
-console.log(getDate())
-function getDate() {
-  return new Date(year, month, day);
-=======
   var rowData = [[currentDate, personsEmail, troubleTicket, notifToPush, actions]];
 
   var lastRow = activitySheet.getLastRow();
@@ -914,5 +852,4 @@ function fetchActivityLogs() {
     data[i][0] = getCurrentDateTableFormat(data[i][0]);
   }
   return data;
->>>>>>> 946c1a9880a42fef8ebd26e1b24a1ac70888ea1a
 }

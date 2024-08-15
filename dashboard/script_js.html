@@ -2,6 +2,9 @@
   document.addEventListener('DOMContentLoaded', () => {
     const options = {
       settings: {
+        range: {
+          disableGaps: true,
+        },
         selection: {
           day: "multiple-ranged"
         },
@@ -10,14 +13,45 @@
         }
       },
       actions: {
+        clickYear(event, self) {
+          google.script.run.withSuccessHandler().setDate(self.selectedMonth, self.selectedYear)
+
+        },
+        clickMonth(event, self) {
+          google.script.run.withSuccessHandler().setDate(self.selectedMonth, self.selectedYear);
+        },
+        //for selecting date 1 up to date 2
+        // returns array
+
+
+        /*
+          Don't get confused if it says Day. this part is configured to be only in weeks
+        */
+        clickDay(event, self) {
+          if (self.selectedDates.length == 1) {
+            return null;
+          }
+          else if (self.selectedDates[0] === undefined && self.selectedDates[1] === undefined) {
+            return null;
+          }
+          else {
+            google.script.run.withSuccessHandler().setWeek(self.selectedDates[0], self.selectedDates[self.selectedDates.length - 1])
+          }
+
+
+        },
+        //for clicking the week number
         clickWeekNumber(event, number, days, year, self) {
           self.settings.selected.dates = days.map(day => day.dataset.calendarDay)
           self.update({ dates: true })
+          google.script.run.withSuccessHandler().setWeek(self.selectedDates[0], self.selectedDates[self.selectedDates.length - 1])
         }
-      }
+      },
     }
 
     const calendar = new VanillaCalendar("#calendar", options)
     calendar.init()
   });
+  console.log(datesHolder)
+
 </script>

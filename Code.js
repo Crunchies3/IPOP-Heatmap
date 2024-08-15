@@ -387,6 +387,8 @@ function getCableNames() {
     const cableNameK = row[9].trim(); //this extracts the Affected Segment2
     const cableNameL = row[10].trim();  //this extracts the Affected Segment3
 
+    var incidentType = row[7].trim();
+
     if (row[1] != "") {
       var notifiedDate = formatDates(row[1]);
     }
@@ -413,34 +415,35 @@ function getCableNames() {
     }
 
 
-    let bool1 = processCableSegments(firstCable, startDate, endDate, notifiedDate);
-    let bool2 = processCableSegments(secondCable, startDate, endDate, notifiedDate);
-    let bool3 = processCableSegments(thirdCable, startDate, endDate, notifiedDate);
+    let bool1 = processCableSegments(firstCable, startDate, endDate, notifiedDate, incidentType);
+    let bool2 = processCableSegments(secondCable, startDate, endDate, notifiedDate, incidentType);
+    let bool3 = processCableSegments(thirdCable, startDate, endDate, notifiedDate, incidentType);
 
     if (!(bool1 || bool2 || bool3)) {
-      if (cableNameL !== "") addToCombinedCableNames(cableNameB, cableNameL, notifiedDate, startDate, endDate);
-      if (cableNameK !== "") addToCombinedCableNames(cableNameB, cableNameK, notifiedDate, startDate, endDate);
-      addToCombinedCableNames(cableNameB, cableNameJ, notifiedDate, startDate, endDate);
+      if (cableNameL !== "") addToCombinedCableNames(cableNameB, cableNameL, notifiedDate, startDate, endDate, incidentType);
+      if (cableNameK !== "") addToCombinedCableNames(cableNameB, cableNameK, notifiedDate, startDate, endDate, incidentType);
+      addToCombinedCableNames(cableNameB, cableNameJ, notifiedDate, startDate, endDate, incidentType);
     }
 
-    function addToCombinedCableNames(cableSystem, cableColumn, notifiedDate, startDate, endDate) {
-      const combinedName = `${cableSystem} ${cableColumn}`;
+    function addToCombinedCableNames(cableSystem, cableColumn, notifiedDate, startDate, endDate, incidentType) {
+      const combinedName = ${ cableSystem } ${ cableColumn };
       combinedCableNames.push({
         combinedName: combinedName,
         notifiedDate: notifiedDate,
         startDate: startDate,
-        endDate: endDate
+        endDate: endDate,
+        incidentType: incidentType
       });
     }
 
 
-    function processCableSegments(cableSegments, startDate, endDate, notifiedDate) {
+    function processCableSegments(cableSegments, startDate, endDate, notifiedDate, incidentType) {
       if (cableSegments != undefined || cableSegments != null) {
         var objectLength = Object.keys(cableSegments).length;
       }
       if (objectLength > 0) {
         for (var i = 1; i < objectLength; i++) {
-          const pathKey = `path${i}`;
+          const pathKey = path${ i };
           if (cableSegments[pathKey] === "") {
             break;
           }
@@ -449,7 +452,8 @@ function getCableNames() {
               combinedName: cableSegments[pathKey],
               notifiedDate: notifiedDate,
               startDate: startDate,
-              endDate: endDate
+              endDate: endDate,
+              incidentType: incidentType
             });
           }
         }
@@ -495,6 +499,7 @@ function getCableNames() {
   //   combinedCableNamesStart.push(combinedNameStart);
   // });
   // Return combined cable names to the client-side JavaScript
+  console.log(combinedCableNames);
   return { combinedCableNames: combinedCableNames, combinedCableNamesStart: combinedCableNamesStart };
 }
 function getCurrentDateTableFormat() {
@@ -817,13 +822,41 @@ function addToActivityLog(activityType, troubleTicket, incidentTypeAdd) {
     var notifToPush = 'The system automatically send the ticket to End Date ( ' + troubleTicket + ' )';
   }
 
-  var rowData = [[troubleTicket,notifToPush, currentDate]];
+  var rowData = [[troubleTicket, notifToPush, currentDate]];
 
   var lastRow = activitySheet.getLastRow();
 
-  var range = activitySheet.getRange(lastRow+ 1,1,1,3);
-  
+  var range = activitySheet.getRange(lastRow + 1, 1, 1, 3);
+
   range.setValues(rowData);
 
   activitySheet.getRange(lastRow + 1, 3).setNumberFormat('yyyy-mm-dd hh:mm');
+}
+
+var day = new Date().getDay();
+var month = new Date().getMonth();
+var year = new Date().getFullYear();
+
+console.log(month)
+console.log(year)
+
+
+function setDate(setmonth, setyear) {
+  month = setmonth;
+  year = setyear;
+  const ss = SpreadsheetApp.openById('1vW8zgcrQC02iRLkWJSOIjfnqN5_lRNMgNjV6IBZF__c');
+  var segmentRows = ss.getSheetByName('Dashboard');
+  segmentRows.getRange('H29').setValue(getDate());
+}
+
+function setWeek(date1, date2) {
+  const ss = SpreadsheetApp.openById('1vW8zgcrQC02iRLkWJSOIjfnqN5_lRNMgNjV6IBZF__c');
+  var dateArray = [[date1, date2]]
+  var segmentRows = ss.getSheetByName('Dashboard');
+  segmentRows.getRange('J29:K29').setValues(dateArray)
+}
+
+console.log(getDate())
+function getDate() {
+  return new Date(year, month, day);
 }

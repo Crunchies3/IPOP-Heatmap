@@ -337,6 +337,8 @@
                     Clear();
                 }).addDataToSheetNotif('Notifications', majorIncidents);
 
+                google.script.run.withSuccessHandler().addToActivityLog('Add', values['inputTroubleTicket'], values['inputIncidentType']);
+
                 google.script.run.withSuccessHandler(function (url) {
                     window.open(url, '_top');
                 }).getScriptUrl();

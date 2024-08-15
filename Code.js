@@ -415,6 +415,7 @@ function getCableNames() {
     }
 
 
+<<<<<<< HEAD
     let bool1 = processCableSegments(firstCable, startDate, endDate, notifiedDate, incidentType);
     let bool2 = processCableSegments(secondCable, startDate, endDate, notifiedDate, incidentType);
     let bool3 = processCableSegments(thirdCable, startDate, endDate, notifiedDate, incidentType);
@@ -427,17 +428,39 @@ function getCableNames() {
 
     function addToCombinedCableNames(cableSystem, cableColumn, notifiedDate, startDate, endDate, incidentType) {
       const combinedName = ${ cableSystem } ${ cableColumn };
+=======
+    let bool1 = processCableSegments(firstCable, startDate, endDate, notifiedDate ,incidentType);
+    let bool2 = processCableSegments(secondCable, startDate, endDate, notifiedDate ,incidentType);
+    let bool3 = processCableSegments(thirdCable, startDate, endDate, notifiedDate,incidentType);
+
+    if (!(bool1 || bool2 || bool3)) {
+      if (cableNameL !== "") addToCombinedCableNames(cableNameB, cableNameL, notifiedDate, startDate, endDate ,incidentType);
+      if (cableNameK !== "") addToCombinedCableNames(cableNameB, cableNameK, notifiedDate, startDate, endDate ,incidentType);
+      addToCombinedCableNames(cableNameB, cableNameJ, notifiedDate, startDate, endDate ,incidentType);
+    }
+
+    function addToCombinedCableNames(cableSystem, cableColumn, notifiedDate, startDate, endDate ,incidentType) {
+      const combinedName = `${cableSystem} ${cableColumn}`;
+>>>>>>> 946c1a9880a42fef8ebd26e1b24a1ac70888ea1a
       combinedCableNames.push({
         combinedName: combinedName,
         notifiedDate: notifiedDate,
         startDate: startDate,
         endDate: endDate,
+<<<<<<< HEAD
         incidentType: incidentType
+=======
+        incidentType : incidentType
+>>>>>>> 946c1a9880a42fef8ebd26e1b24a1ac70888ea1a
       });
     }
 
 
+<<<<<<< HEAD
     function processCableSegments(cableSegments, startDate, endDate, notifiedDate, incidentType) {
+=======
+    function processCableSegments(cableSegments, startDate, endDate, notifiedDate ,incidentType) {
+>>>>>>> 946c1a9880a42fef8ebd26e1b24a1ac70888ea1a
       if (cableSegments != undefined || cableSegments != null) {
         var objectLength = Object.keys(cableSegments).length;
       }
@@ -502,8 +525,8 @@ function getCableNames() {
   console.log(combinedCableNames);
   return { combinedCableNames: combinedCableNames, combinedCableNamesStart: combinedCableNamesStart };
 }
-function getCurrentDateTableFormat() {
-  const now = new Date();
+function getCurrentDateTableFormat(now) {
+
 
   // Get the components of the date
   const year = now.getFullYear();
@@ -537,7 +560,7 @@ function copyToStartTableWithTheCurrentDate(sheetType, ticketNumber) {
 
 
 
-  var currentDate = getCurrentDateTableFormat();
+  var currentDate = getCurrentDateTableFormat(new Date());
   console.log(currentDate);
 
   var rowToCopy = null;
@@ -611,7 +634,7 @@ function transferNotifToStartandEndDate() {
   var endDateSheet = ss.getSheetByName('End Date');
 
 
-  var currentDate = getCurrentDateTableFormat();
+  var currentDate = getCurrentDateTableFormat(new Date());
   console.log(currentDate);
   var formattedCurrentDate = formatDates(currentDate);
 
@@ -672,13 +695,13 @@ function transferNotifToStartandEndDate() {
     endDateSheet.getRange(endDateSheet.getLastRow() + 1, 1, rowsToTransfer.length, rowsToTransfer[0].length).setValues(rowsToTransfer);
     Logger.log(`${rowsToTransfer.length} rows copied to End Date.`);
 
-    addToActivityLog('SystemEnd', rowsToTransfer[0][0], "");
     //Delete the rows from the notif and start sheet
     rowsToDelete.forEach(row => {
       const rowIndex = data.indexOf(row) + 3; // Adding 2 to account for the header row and zero-based index
       sheet.deleteRow(rowIndex);
       startDateSheet.deleteRow(rowIndex);
     });
+    addToActivityLog('SystemEnd', rowsToTransfer[0][0], "");
   }
 
 }
@@ -797,31 +820,42 @@ function addToActivityLog(activityType, troubleTicket, incidentTypeAdd) {
   const ss = SpreadsheetApp.openById('1vW8zgcrQC02iRLkWJSOIjfnqN5_lRNMgNjV6IBZF__c');
   var activitySheet = ss.getSheetByName('Activity History');
 
-  var currentDate = getCurrentDateTableFormat();
+  var currentDate = getCurrentDateTableFormat(new Date());
   var notifToPush = "";
+  var actions = "";
   var personsEmail = Session.getActiveUser().getEmail();
   if (activityType === 'Add') {
-    var notifToPush = personsEmail + ' has Added a New ' + incidentTypeAdd + ' Ticket ( ' + troubleTicket + " )";
+    var notifToPush = 'Added a New ' + incidentTypeAdd + ' Ticket ( ' + troubleTicket + " )";
+    actions = 'Added';
   }
   else if (activityType === 'Delete') {
-    var notifToPush = personsEmail + ' has Deleted an Existing Ticket ( ' + troubleTicket + ' )';
+    var notifToPush = 'Deleted an Existing Ticket ( ' + troubleTicket + ' )';
+    actions = 'Deleted';
   }
   else if (activityType === "Update") {
-    var notifToPush = personsEmail + ' has Updated the Ticket ( ' + troubleTicket + ' )';
+    var notifToPush = ' Updated the Ticket ( ' + troubleTicket + ' )';
+    actions = 'Updated';
   }
   else if (activityType === "toStartDate") {
-    var notifToPush = personsEmail + ' has Copied the Ticket to Start Date. ( ' + troubleTicket + ' )';
+    var notifToPush = ' Copied the Ticket to Start Date. ( ' + troubleTicket + ' )';
+    actions = 'Sent to start';
   }
   else if (activityType === "toEndDate") {
-    var notifToPush = personsEmail + ' has Sent the Ticket to End Date ( ' + troubleTicket + ' )';
+    var notifToPush = ' Sent the Ticket to End Date ( ' + troubleTicket + ' )';
+    actions = 'Sent to end';
   }
   else if (activityType === "SystemStart") {
     var notifToPush = 'The system automatically copied the ticket to Start Date ( ' + troubleTicket + ' )';
+    actions = 'System';
+    personsEmail = 'System';
   }
   else if (activityType === "SystemEnd") {
     var notifToPush = 'The system automatically send the ticket to End Date ( ' + troubleTicket + ' )';
+    actions = 'System';
+    personsEmail = 'System';
   }
 
+<<<<<<< HEAD
   var rowData = [[troubleTicket, notifToPush, currentDate]];
 
   var lastRow = activitySheet.getLastRow();
@@ -859,4 +893,26 @@ function setWeek(date1, date2) {
 console.log(getDate())
 function getDate() {
   return new Date(year, month, day);
+=======
+  var rowData = [[currentDate, personsEmail, troubleTicket, notifToPush, actions]];
+
+  var lastRow = activitySheet.getLastRow();
+
+  var range = activitySheet.getRange(lastRow + 1, 1, 1, 5);
+
+  range.setValues(rowData);
+
+  activitySheet.getRange(1, 1, lastRow, 1).setNumberFormat('yyyy-mm-dd hh:mm');
+}
+
+function fetchActivityLogs() {
+  const ss = SpreadsheetApp.openById('1vW8zgcrQC02iRLkWJSOIjfnqN5_lRNMgNjV6IBZF__c');
+  var activitySheet = ss.getSheetByName('Activity History');
+  var data = activitySheet.getDataRange().getValues().slice(1);
+
+  for (var i = 0; i < data.length; i++) {
+    data[i][0] = getCurrentDateTableFormat(data[i][0]);
+  }
+  return data;
+>>>>>>> 946c1a9880a42fef8ebd26e1b24a1ac70888ea1a
 }

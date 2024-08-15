@@ -1,4 +1,9 @@
 <style>
+    .updColorHeaderTitle {
+        background-color: cornflowerblue !important;
+        color: #fff;
+    }
+
     .gantt_grid_data .gantt_row.gantt_selected,
     .gantt_grid_data .gantt_row.odd.gantt_selected,
     .gantt_task_row.gantt_selected {
@@ -10,7 +15,7 @@
         font-weight: bold;
     }
 
-    /* .gantt_task .gantt_task_scale .gantt_scale_cell {
+    .gantt_task .gantt_task_scale .gantt_scale_cell {
         color: #000;
         font-weight: bold;
         font-size: 15px;
@@ -18,5 +23,10 @@
 
     .gantt_scale_line.day_scale {
         background-color: #efefef;
-    } */
+    }
+
+    .gantt_task_line .gantt_bar_task .gantt_dependent_task .gantt_selected .gantt_task_inline_color {
+        height: 0% !important;
+        width: 0% !important;
+    }
 </style>

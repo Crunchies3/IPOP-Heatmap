@@ -1,5 +1,14 @@
 <style>
     /* NOTE! Original theme sa previous versions since sa docs murag dili na maintained ang cdn theme nila */
+    .gantt_task_line {
+        border-radius: 50px;
+        position: absolute;
+        box-sizing: border-box;
+        -webkit-user-select: none;
+        -moz-user-select: none;
+        -moz-user-select: -moz-none
+    }
+
     .buttonBg {
         background: #fff
     }
@@ -300,7 +309,6 @@
     .gantt_task_content {
         text-overflow: ellipsis;
         box-sizing: border-box;
-        padding: 0 17px
     }
 
     div.gantt_cal_light {
@@ -1318,16 +1326,6 @@
         overflow: hidden
     }
 
-    .gantt_task_line {
-        border-radius: 50px;
-        position: absolute;
-        box-sizing: border-box;
-        background-color: #448aff;
-        border: 1px solid #448aff;
-        -webkit-user-select: none;
-        -moz-user-select: none;
-        -moz-user-select: -moz-none
-    }
 
     .gantt_task_line.gantt_drag_move div {
         cursor: move

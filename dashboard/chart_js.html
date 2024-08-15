@@ -1,0 +1,367 @@
+<script>
+    // pie chart incident type
+    document.addEventListener('DOMContentLoaded', () => {
+        var myChart = echarts.init(document.getElementById('pie-chart'));
+        var option;
+        option = {
+            color: [
+                '#ff5858',
+                '#A6C5F7',
+                '#D2DDEC',
+            ],
+            tooltip: {
+                trigger: 'item'
+            },
+            legend: {
+                bottom: '8%',
+                left: 'center'
+            },
+            series: [
+                {
+                    // name: 'Access From',
+                    type: 'pie',
+                    radius: ['40%', '55%'],
+                    avoidLabelOverlap: false,
+                    label: {
+                        show: false,
+                        position: 'center'
+                    },
+                    labelLine: {
+                        show: false
+                    },
+                    data: [
+                        { value: 1048, name: 'Outage' },
+                        { value: 735, name: 'Planned Activity' },
+                    ]
+                }
+            ]
+        };
+        option && myChart.setOption(option);
+    });
+
+    // bar chart segment fault
+    document.addEventListener('DOMContentLoaded', () => {
+        var myChart = echarts.init(document.getElementById('segment-bar-chart'));
+        var option;
+
+        option = {
+            color: [
+                '#155ebf',
+                '#2C7BE5',
+                '#A6C5F7',
+                '#D2DDEC',
+            ],
+            tooltip: {
+                trigger: 'axis',
+                axisPointer: {
+                    type: 'shadow'
+                }
+            },
+            legend: {},
+            grid: {
+                left: '3%',
+                right: '4%',
+                bottom: '3%',
+                containLabel: true
+            },
+            xAxis: {
+                data: ['SEA-US', 'SJC', 'C2C', 'EAC', 'TGN-IA/P']
+            },
+            yAxis: {},
+            series: [
+                {
+                    data: [10, 22, 28, 43, 49],
+                    type: 'bar',
+                    stack: 'x'
+                },
+                {
+                    data: [5, 4, 3, 5, 10],
+                    type: 'bar',
+                    stack: 'x'
+                }
+            ],
+            series: [
+                {
+                    name: 'Dry Segment',
+                    type: 'bar',
+                    stack: 'total',
+                    label: {
+                        show: true
+                    },
+                    emphasis: {
+                        focus: 'series'
+                    },
+                    data: [320, 302, 301, 334, 390]
+                },
+                {
+                    name: 'Wet Segment',
+                    type: 'bar',
+                    stack: 'total',
+                    label: {
+                        show: true
+                    },
+                    emphasis: {
+                        focus: 'series'
+                    },
+                    data: [120, 132, 101, 134, 90]
+                },
+                {
+                    name: 'Undetermined',
+                    type: 'bar',
+                    stack: 'total',
+                    label: {
+                        show: true
+                    },
+                    emphasis: {
+                        focus: 'series'
+                    },
+                    data: [220, 182, 191, 234, 290]
+                },
+                {
+                    name: 'Backhaul',
+                    type: 'bar',
+                    stack: 'total',
+                    label: {
+                        show: true
+                    },
+                    emphasis: {
+                        focus: 'series'
+                    },
+                    data: [150, 212, 201, 154, 190]
+                }
+            ]
+        };
+        option && myChart.setOption(option);
+    });
+
+    // incident bar chart
+    document.addEventListener('DOMContentLoaded', () => {
+        var myChart = echarts.init(document.getElementById('incident-bar-chart'));
+        var option;
+
+        option = {
+            color: [
+                '#ff5858',
+                '#A6C5F7',
+            ],
+            tooltip: {
+                trigger: 'axis',
+                axisPointer: {
+                    type: 'shadow'
+                }
+            },
+            legend: {},
+            grid: {
+                left: '3%',
+                right: '4%',
+                bottom: '3%',
+                containLabel: true
+            },
+            xAxis: {
+                data: ['SEA-US', 'SJC', 'C2C', 'EAC', 'TGN-IA/P']
+            },
+            yAxis: {},
+            series: [
+                {
+                    data: [10, 22, 28, 43, 49],
+                    type: 'bar',
+                    stack: 'x'
+                },
+                {
+                    data: [5, 4, 3, 5, 10],
+                    type: 'bar',
+                    stack: 'x'
+                }
+            ],
+            series: [
+                {
+                    name: 'Outage',
+                    type: 'bar',
+                    stack: 'total',
+                    label: {
+                        show: true
+                    },
+                    emphasis: {
+                        focus: 'series'
+                    },
+                    data: [120, 132, 101, 134, 90]
+                },
+                {
+                    name: 'Planned Activity',
+                    type: 'bar',
+                    stack: 'total',
+                    label: {
+                        show: true
+                    },
+                    emphasis: {
+                        focus: 'series'
+                    },
+                    data: [320, 302, 301, 334, 390]
+                }
+            ]
+        };
+        option && myChart.setOption(option);
+    });
+
+    //yearly tickets line chart
+    document.addEventListener('DOMContentLoaded', () => {
+        var myChart = echarts.init(document.getElementById('yearly-line-graph'));
+        var option;
+
+        option = {
+            tooltip: {
+                trigger: 'axis'
+            },
+            legend: {
+                data: ['SEA-US', 'SJC', 'C2C', 'EAC', 'TGN-IA/P']
+            },
+            grid: {
+                left: '3%',
+                right: '4%',
+                bottom: '3%',
+                containLabel: true
+            },
+            toolbox: {
+                feature: {
+                    saveAsImage: {}
+                }
+            },
+            xAxis: {
+                type: 'category',
+                boundaryGap: false,
+                data: ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec']
+            },
+            yAxis: {
+                type: 'value'
+            },
+            series: [
+                {
+                    name: 'SEA-US',
+                    type: 'line',
+                    data: [78, 162, 94, 140, 55, 187, 123, 82, 149, 71, 198, 108],
+                    emphasis: { focus: 'series' }
+                },
+                {
+                    name: 'SJC',
+                    type: 'line',
+                    data: [134, 76, 189, 63, 95, 144, 182, 112, 153, 67, 125, 192],
+                    emphasis: { focus: 'series' }
+                },
+                {
+                    name: 'C2C',
+                    type: 'line',
+                    data: [158, 72, 142, 99, 186, 54, 135, 178, 81, 147, 162, 105],
+                    emphasis: { focus: 'series' }
+                },
+                {
+                    name: 'EAC',
+                    type: 'line',
+                    data: [90, 177, 68, 121, 159, 50, 130, 84, 196, 73, 141, 111],
+                    emphasis: { focus: 'series' }
+                },
+                {
+                    name: 'TGN-IA/P',
+                    type: 'line',
+                    data: [118, 67, 159, 84, 142, 93, 177, 53, 135, 101, 168, 190],
+                    emphasis: { focus: 'series' }
+                }
+            ]
+        };
+        option && myChart.setOption(option);
+    });
+
+    //Root cause
+    document.addEventListener('DOMContentLoaded', () => {
+        var myChart = echarts.init(document.getElementById('root-cause-bar'));
+        var option;
+
+        option = {
+            color: [
+                '#155ebf',
+                '#2C7BE5',
+                '#A6C5F7',
+                '#D2DDEC',
+            ],
+            tooltip: {
+                trigger: 'axis',
+                axisPointer: {
+                    type: 'shadow'
+                }
+            },
+            legend: {},
+            grid: {
+                left: '3%',
+                right: '4%',
+                bottom: '3%',
+                containLabel: true
+            },
+            xAxis: {
+                data: ['BMH Issue', 'Cable Fault', 'Card Failure', 'Configuration Issue', 'Force Majeure', 'Planned Maintenance', 'Shunt Fault', 'Subsea Equipment Fault', 'Unknown']
+            },
+            yAxis: {},
+            series: [
+                {
+                    data: [10, 22, 28, 43, 49, 10, 29, 10, 20],
+                    type: 'bar',
+                    stack: 'x'
+                },
+                {
+                    data: [10, 22, 28, 43, 49, 10, 29, 10, 20],
+                    type: 'bar',
+                    stack: 'x'
+                }
+            ],
+            series: [
+                {
+                    name: 'Dry Segment',
+                    type: 'bar',
+                    stack: 'total',
+                    label: {
+                        show: true
+                    },
+                    emphasis: {
+                        focus: 'series'
+                    },
+                    data: [10, 22, 28, 43, 49, 10, 29, 10, 20]
+                },
+                {
+                    name: 'Wet Segment',
+                    type: 'bar',
+                    stack: 'total',
+                    label: {
+                        show: true
+                    },
+                    emphasis: {
+                        focus: 'series'
+                    },
+                    data: [10, 22, 28, 43, 49, 10, 29, 10, 20]
+                },
+                {
+                    name: 'Undetermined',
+                    type: 'bar',
+                    stack: 'total',
+                    label: {
+                        show: true
+                    },
+                    emphasis: {
+                        focus: 'series'
+                    },
+                    data: [10, 22, 28, 43, 49, 10, 29, 10, 20]
+                },
+                {
+                    name: 'Backhaul',
+                    type: 'bar',
+                    stack: 'total',
+                    label: {
+                        show: true
+                    },
+                    emphasis: {
+                        focus: 'series'
+                    },
+                    data: [10, 22, 28, 43, 49, 10, 29, 10, 20]
+                }
+            ]
+        };
+        option && myChart.setOption(option);
+    });
+</script>

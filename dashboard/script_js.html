@@ -14,11 +14,11 @@
       },
       actions: {
         clickYear(event, self) {
-          google.script.run.withSuccessHandler().setDate(self.selectedMonth, self.selectedYear)
+          google.script.run.withSuccessHandler(getMonthReport).getCableNames()
 
         },
         clickMonth(event, self) {
-          google.script.run.withSuccessHandler().setDate(self.selectedMonth, self.selectedYear);
+          google.script.run.withSuccessHandler(getMonthReport).getCableNames()
         },
         //for selecting date 1 up to date 2
         // returns array
@@ -35,7 +35,6 @@
             return null;
           }
           else {
-            google.script.run.withSuccessHandler().setWeek(self.selectedDates[0], self.selectedDates[self.selectedDates.length - 1])
           }
 
 
@@ -44,7 +43,8 @@
         clickWeekNumber(event, number, days, year, self) {
           self.settings.selected.dates = days.map(day => day.dataset.calendarDay)
           self.update({ dates: true })
-          google.script.run.withSuccessHandler().setWeek(self.selectedDates[0], self.selectedDates[self.selectedDates.length - 1])
+          setArrayOfDates(self.selectedDates)
+
         }
       },
     }
@@ -52,6 +52,25 @@
     const calendar = new VanillaCalendar("#calendar", options)
     calendar.init()
   });
-  console.log(datesHolder)
 
+  var globalSelectedDates;
+  var globalSelectedYear = new Date().getFullYear();
+  var globalSelectedMonth = new Date().getMonth();
+
+  function getMonthReport(cables) {
+    cables.combinedCableNames.forEach(element => {
+      if (cables) {
+
+      }
+    });
+  }
+
+  function setMonthOrYear(month, year) {
+    globalSelectedMonth = month;
+    globalSelectedYear = year;
+  }
+
+  function setArrayOfDates(selectedDates) {
+    globalSelectedDates = selectedDates;
+  }
 </script>

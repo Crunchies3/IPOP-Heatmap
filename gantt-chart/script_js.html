@@ -1,4 +1,10 @@
 <script type="text/javascript">
+    //disabling user interaction in ganttchart
+    gantt.config.drag_resize = false;
+    gantt.config.drag_progress = false;
+    gantt.config.drag_links = false;
+    gantt.config.readonly = true;
+
 
     gantt.config.scale_height = 75;
     gantt.config.min_column_width = 40
@@ -8,36 +14,94 @@
         { unit: "day", step: 1, format: "%j" }
     ];
 
-    function addToChart(cableAndDates) {
-        var allCables = cableAndDates
-        console.log("============================");
-        console.log(allCables);
-    }
+    gantt.config.columns = [
+        { name: "text", label: "Cable Systems", tree: true, width: "*" },
+        { name: "notif_date", hide: true },
+        { name: "end_date", hide: true },
 
-
+    ];
     gantt.plugins({
         fullscreen: true
     });
 
-    function test(test) {
-        console.log("================================");
-        console.log(test[0]);
-        console.log(typeof (test))
+    gantt.templates.grid_header_class = function (columnName, column) {
+        if (columnName == "text") {
+            return "updColorHeaderTitle";
+        }
+    };
+
+
+    //fetching datas
+    function addToChart(affectedCables) {
+        console.log(affectedCables.combinedCableNames);
+        var dataLength = Object.keys(data.tasks).length;
+        affectedCables.combinedCableNames.forEach(cables => {
+            dataLength++;
+            var startD;
+            var notifD;
+            var parentId;
+            var color;
+
+            if (cables.notifiedDate != null) {
+                startD = cables.notifiedDate;
+                notifD = "";
+            } else {
+                startD = cables.startDate;
+                notifD = cables.notifiedDate;
+            }
+
+            var splitted = cables.combinedName.trim().split(" ");
+            var cableType = splitted[0];;
+            if (cableType === 'SJC') {
+                parentId = 1;
+                color = "#522258";
+            } else if (cableType === 'SEAUS') {
+                parentId = 2;
+                color = "#FF204E";
+            } else if (cableType === 'TGN') {
+                parentId = 3;
+                color = "#F97300";
+            } else {
+                parentId = 4;
+                color = "#116D6E";
+            }
+
+            data.tasks.push({
+                id: dataLength,
+                text: cables.combinedName.trim(),
+                notif_date: formatDate(new Date(notifD)),
+                start_date: formatDate(new Date(startD)),
+                end_date: formatDate(new Date(cables.endDate)),
+                parent: parentId,
+                color: color
+            });
+        });
+        gantt.parse(data);
+
     }
+
+    function formatDate(date) {
+        const day = date.getDate().toString().padStart(2, '0');
+        const month = (date.getMonth() + 1).toString().padStart(2, '0'); // Months are 0-based
+        const year = date.getFullYear();
+
+        return `${day}-${month}-${year}`;
+    }
+
+
+    //date format DD-MM-YYYY
     var data = {
         tasks: [
-            { id: 1, text: "SJC", start_date: "01-04-2020", duration: 0 },
-            { id: 2, text: "SEAUS", start_date: "03-04-2020", duration: 0 },
-            { id: 2, text: "TGN", start_date: "03-04-2020", duration: 0 },
-            { id: 2, text: "C2C/EAC", start_date: "03-04-2020", duration: 0 },
-
-        ],
+            { id: 1, text: "SJC", duration: 0, color: "#522258" },
+            { id: 2, text: "SEAUS", duration: 0, color: "#FF204E" },
+            { id: 3, text: "TGN", duration: 0, color: "#F97300" },
+            { id: 4, text: "C2C/EAC", duration: 0, color: "#116D6E" }
+        ]
 
     };
 
-    google.script.run.withSuccessHandler(test).extractDates('All');
-    google.script.run.withSuccessHandler(addToChart).extractDates('All');
+
+    google.script.run.withSuccessHandler(addToChart).getCableNames();
     gantt.init("gantt_here");
-    gantt.parse(data)
 
 </script>

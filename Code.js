@@ -387,6 +387,8 @@ function getCableNames() {
     const cableNameK = row[9].trim(); //this extracts the Affected Segment2
     const cableNameL = row[10].trim();  //this extracts the Affected Segment3
 
+    var incidentType = row[7].trim();
+
     if (row[1] != "") {
       var notifiedDate = formatDates(row[1]);
     }
@@ -413,28 +415,29 @@ function getCableNames() {
     }
 
 
-    let bool1 = processCableSegments(firstCable, startDate, endDate, notifiedDate);
-    let bool2 = processCableSegments(secondCable, startDate, endDate, notifiedDate);
-    let bool3 = processCableSegments(thirdCable, startDate, endDate, notifiedDate);
+    let bool1 = processCableSegments(firstCable, startDate, endDate, notifiedDate ,incidentType);
+    let bool2 = processCableSegments(secondCable, startDate, endDate, notifiedDate ,incidentType);
+    let bool3 = processCableSegments(thirdCable, startDate, endDate, notifiedDate,incidentType);
 
     if (!(bool1 || bool2 || bool3)) {
-      if (cableNameL !== "") addToCombinedCableNames(cableNameB, cableNameL, notifiedDate, startDate, endDate);
-      if (cableNameK !== "") addToCombinedCableNames(cableNameB, cableNameK, notifiedDate, startDate, endDate);
-      addToCombinedCableNames(cableNameB, cableNameJ, notifiedDate, startDate, endDate);
+      if (cableNameL !== "") addToCombinedCableNames(cableNameB, cableNameL, notifiedDate, startDate, endDate ,incidentType);
+      if (cableNameK !== "") addToCombinedCableNames(cableNameB, cableNameK, notifiedDate, startDate, endDate ,incidentType);
+      addToCombinedCableNames(cableNameB, cableNameJ, notifiedDate, startDate, endDate ,incidentType);
     }
 
-    function addToCombinedCableNames(cableSystem, cableColumn, notifiedDate, startDate, endDate) {
+    function addToCombinedCableNames(cableSystem, cableColumn, notifiedDate, startDate, endDate ,incidentType) {
       const combinedName = `${cableSystem} ${cableColumn}`;
       combinedCableNames.push({
         combinedName: combinedName,
         notifiedDate: notifiedDate,
         startDate: startDate,
-        endDate: endDate
+        endDate: endDate,
+        incidentType : incidentType
       });
     }
 
 
-    function processCableSegments(cableSegments, startDate, endDate, notifiedDate) {
+    function processCableSegments(cableSegments, startDate, endDate, notifiedDate ,incidentType) {
       if (cableSegments != undefined || cableSegments != null) {
         var objectLength = Object.keys(cableSegments).length;
       }
@@ -449,7 +452,8 @@ function getCableNames() {
               combinedName: cableSegments[pathKey],
               notifiedDate: notifiedDate,
               startDate: startDate,
-              endDate: endDate
+              endDate: endDate,
+              incidentType: incidentType
             });
           }
         }
@@ -495,6 +499,7 @@ function getCableNames() {
   //   combinedCableNamesStart.push(combinedNameStart);
   // });
   // Return combined cable names to the client-side JavaScript
+  console.log(combinedCableNames);
   return { combinedCableNames: combinedCableNames, combinedCableNamesStart: combinedCableNamesStart };
 }
 function getCurrentDateTableFormat(now) {

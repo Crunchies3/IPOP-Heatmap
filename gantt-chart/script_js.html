@@ -18,6 +18,7 @@
         { name: "text", label: "Cable Systems", tree: true, width: "*" },
         { name: "notif_date", hide: true },
         { name: "end_date", hide: true },
+        { name: "incidentType", hide: true }
 
     ];
     gantt.plugins({
@@ -30,6 +31,11 @@
         }
     };
 
+    gantt.templates.task_text = function (start, end, task) {
+        return task.incidentType;
+    };
+
+
 
     //fetching datas
     function addToChart(affectedCables) {
@@ -39,8 +45,15 @@
             dataLength++;
             var startD;
             var notifD;
+            var currentDate = new Date();
+            var endDate = cables.endDate;
             var parentId;
-            var color;
+            var splitted = cables.combinedName.trim().split(" ");
+            var cableType = splitted[0];
+            var colored;
+            var incidentType = cables.incidentType;
+            var progressed;
+
 
             if (cables.notifiedDate != null) {
                 startD = cables.notifiedDate;
@@ -50,30 +63,62 @@
                 notifD = cables.notifiedDate;
             }
 
-            var splitted = cables.combinedName.trim().split(" ");
-            var cableType = splitted[0];;
             if (cableType === 'SJC') {
                 parentId = 1;
-                color = "#522258";
             } else if (cableType === 'SEAUS') {
                 parentId = 2;
-                color = "#FF204E";
             } else if (cableType === 'TGN') {
                 parentId = 3;
-                color = "#F97300";
             } else {
                 parentId = 4;
-                color = "#116D6E";
             }
+
+            if (incidentType === "Planned Activity") {
+                colored = "#FFDE4D";
+            } else {
+                colored = "#FF0000"
+            }
+
+            //parsing dates for progress bar automation to work (yyyy-mm-dd)
+            notifD = new Date(notifD);
+            startD = new Date(startD);
+            endDate = new Date(endDate);
+
+            console.log(currentDate);
+            console.log(endDate);
+            //automating the progress-bar (dark)
+            if (currentDate < startD) {
+                console.log("hello")
+                progressed = 0;
+            } else if (currentDate >= endDate) {
+                console.log("bay")
+                progressed = 1;
+            } else {
+                console.log("ako ni")
+                var totalDuration = endDate - startD;
+                console.log(totalDuration);
+                var elapsedDuration = currentDate - startD;
+                console.log(elapsedDuration);
+                progressed = Math.min(1, elapsedDuration / totalDuration);
+                console.log(progressed);
+            }
+
+            //parsing dates for the gantt chart to work (dd-mm-yyyy)
+            currentDate = formatDate(currentDate);
+            notifD = formatDate(new Date(notifD));
+            startD = formatDate(new Date(startD));
+            endDate = formatDate(new Date(endDate));
 
             data.tasks.push({
                 id: dataLength,
                 text: cables.combinedName.trim(),
-                notif_date: formatDate(new Date(notifD)),
-                start_date: formatDate(new Date(startD)),
-                end_date: formatDate(new Date(cables.endDate)),
+                notif_date: notifD,
+                start_date: startD,
+                end_date: endDate,
                 parent: parentId,
-                color: color
+                color: colored,
+                incidentType: cables.incidentType,
+                progress: progressed
             });
         });
         gantt.parse(data);
@@ -92,10 +137,10 @@
     //date format DD-MM-YYYY
     var data = {
         tasks: [
-            { id: 1, text: "SJC", duration: 0, color: "#522258" },
-            { id: 2, text: "SEAUS", duration: 0, color: "#FF204E" },
-            { id: 3, text: "TGN", duration: 0, color: "#F97300" },
-            { id: 4, text: "C2C/EAC", duration: 0, color: "#116D6E" }
+            { id: 1, text: "SJC", duration: 0, color: "#522258", incidentType: "=========SJC=========" },
+            { id: 2, text: "SEAUS", duration: 0, color: "#1A4D2E", incidentType: "=========SEAUS=========" },
+            { id: 3, text: "TGN", duration: 0, color: "#8B322C", incidentType: "=========TGN=========" },
+            { id: 4, text: "C2C/EAC", duration: 0, color: "#A0153E", incidentType: "=========C2C/EAC=========" }
         ]
 
     };

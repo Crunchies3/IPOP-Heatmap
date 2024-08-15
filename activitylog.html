@@ -1,0 +1,92 @@
+<body>
+
+    <div class="offcanvas offcanvas-end" data-bs-scroll="true" tabindex="-1" id="offcanvasWithBothOptions"
+        aria-labelledby="offcanvasWithBothOptionsLabel">
+        <div class="offcanvas-header">
+            <h5 class="offcanvas-title" id="offcanvasWithBothOptionsLabel">ACTIVITY LOG</h5>
+            <button type="button" class="btn-close" data-bs-dismiss="offcanvas" aria-label="Close"></button>
+        </div>
+        <div class="offcanvas-body">
+            <div class="p-1">
+                <table id="acitivityLogTable" class="table table-striped table-bordered table-sm table-responsive">
+                    <thead>
+                        <tr>
+                            <th></th>
+                            <th>Date</th>
+                            <th>User</th>
+                            <th>Trouble Ticket</th>
+                            <th>Activity</th>
+                            <th>Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody id="activityLogTableBody">
+
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        $(document).ready(function () {
+            google.script.run.withSuccessHandler(displayData).fetchActivityLogs();
+        });
+
+        function displayData(data) {
+            console.log("act data");
+            console.log(data);
+
+            var tableBody = document.getElementById("activityLogTableBody");
+            data.forEach(function (item) {
+                var row = document.createElement("tr");
+
+                var iconCell = document.createElement("td");
+
+                var icon;
+
+                if (item[4] === "Added") icon = '<i class="bi bi-plus-circle-fill" style="color: #009D92;"></i>';
+                else if (item[4] === "Deleted") icon = '<i class="bi bi-x-circle-fill" style="color: #DB423C;"></i>';
+                else if (item[4] === "Updated") icon = '<i class="bi bi-exclamation-circle-fill" style="color: #DCA21D;"></i>';
+                else if (item[4] === "System") icon = '<i class="bi bi-cpu-fill" style="color: grey;"></i>';
+                else icon = '<i class="bi bi-info-circle-fill" style="color: #5353e9;"></i>';
+
+                iconCell.innerHTML = icon;
+                row.appendChild(iconCell);
+
+                var dateCell = document.createElement("td");
+                dateCell.textContent = item[0];
+                row.appendChild(dateCell);
+
+                var userCell = document.createElement("td");
+                userCell.textContent = item[1];
+                row.appendChild(userCell);
+
+                var troubleTicketCell = document.createElement("td");
+                troubleTicketCell.textContent = item[2];
+                row.appendChild(troubleTicketCell);
+
+                var activityCell = document.createElement("td");
+                activityCell.textContent = item[3];
+                row.appendChild(activityCell);
+
+                var actionsCell = document.createElement("td");
+
+                actionsCell.innerHTML = item[4];
+                row.appendChild(actionsCell);
+
+                tableBody.appendChild(row);
+            });
+
+            $('#acitivityLogTable').DataTable({
+                responsive: true,
+                pageLength: 20,
+                order: [[1, 'desc']],
+                columnDefs: [
+                    { targets: [0], className: 'column-center' }
+                ]
+            });
+        }
+
+
+    </script>
+</body>

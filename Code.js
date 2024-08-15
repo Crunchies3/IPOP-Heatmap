@@ -8,7 +8,7 @@ function doGet(e) {
     return htmloutput;
   }
   else if (e.parameter['page'] == 'stats') {
-    var htmloutput = HtmlService.createTemplateFromFile('dashboard' + '/' + 'index').evaluate().setTitle('Statistics View');
+    var htmloutput = HtmlService.createTemplateFromFile('dashboard' + '/' + 'dashboard').evaluate().setTitle('Statistics View');
     return htmloutput;
   }
 

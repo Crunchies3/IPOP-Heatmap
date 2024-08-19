@@ -360,12 +360,15 @@ function addDataToSheetNotif(sheetName, majorIncidents) {
 
   return 'success';
 }
+function fetch() {
+  console.log(getCableNames().combinedCableNames);
+}
 
 function getCableNames() {
   var ss = SpreadsheetApp.openById('1vW8zgcrQC02iRLkWJSOIjfnqN5_lRNMgNjV6IBZF__c');
   var sheet = ss.getSheetByName('Notifications');
   var lastRow = sheet.getLastRow();
-  var cableNamesRange = sheet.getRange('B2:L' + lastRow);
+  var cableNamesRange = sheet.getRange('A2:N' + lastRow);
   var data = cableNamesRange.getValues(); //getting the notif rows of affected segment
 
 
@@ -382,18 +385,21 @@ function getCableNames() {
 
   //processing the notif values
   data.forEach(function (row) {
-    const cableNameB = row[0].trim(); //this extracts the cable System
-    const cableNameJ = row[8].trim(); //this extracts the Affected Segment1
-    const cableNameK = row[9].trim(); //this extracts the Affected Segment2
-    const cableNameL = row[10].trim();  //this extracts the Affected Segment3
+    const cableNameB = row[1].trim(); //this extracts the cable System
+    const cableNameJ = row[9].trim(); //this extracts the Affected Segment1
+    const cableNameK = row[10].trim(); //this extracts the Affected Segment2
+    const cableNameL = row[11].trim();  //this extracts the Affected Segment3
 
-    var incidentType = row[7].trim();
+    var incidentType = row[8].trim();
+    var ticketName = row[0];
+    var location = row[12];
+    var rootCauseHigh = row[13];
 
     if (row[1] != "") {
-      var notifiedDate = formatDates(row[1]);
+      var notifiedDate = formatDates(row[2]);
     }
-    const startDate = formatDates(row[2]);
-    const endDate = formatDates(row[3]);
+    const startDate = formatDates(row[3]);
+    const endDate = formatDates(row[4]);
 
     if (cableNameB != "" && cableNameJ != "") {
       var index = fullPaths.findIndex(({ value }) => value === cableNameB + " " + cableNameJ);
@@ -415,29 +421,32 @@ function getCableNames() {
     }
 
 
-    let bool1 = processCableSegments(firstCable, startDate, endDate, notifiedDate ,incidentType);
-    let bool2 = processCableSegments(secondCable, startDate, endDate, notifiedDate ,incidentType);
-    let bool3 = processCableSegments(thirdCable, startDate, endDate, notifiedDate,incidentType);
+    let bool1 = processCableSegments(firstCable, startDate, endDate, notifiedDate, incidentType, ticketName, location, rootCauseHigh);
+    let bool2 = processCableSegments(secondCable, startDate, endDate, notifiedDate, incidentType, ticketName, location, rootCauseHigh);
+    let bool3 = processCableSegments(thirdCable, startDate, endDate, notifiedDate, incidentType, ticketName, location, rootCauseHigh);
 
     if (!(bool1 || bool2 || bool3)) {
-      if (cableNameL !== "") addToCombinedCableNames(cableNameB, cableNameL, notifiedDate, startDate, endDate ,incidentType);
-      if (cableNameK !== "") addToCombinedCableNames(cableNameB, cableNameK, notifiedDate, startDate, endDate ,incidentType);
-      addToCombinedCableNames(cableNameB, cableNameJ, notifiedDate, startDate, endDate ,incidentType);
+      if (cableNameL !== "") addToCombinedCableNames(cableNameB, cableNameL, notifiedDate, startDate, endDate, incidentType, ticketName, location, rootCauseHigh);
+      if (cableNameK !== "") addToCombinedCableNames(cableNameB, cableNameK, notifiedDate, startDate, endDate, incidentType, ticketName, location, rootCauseHigh);
+      addToCombinedCableNames(cableNameB, cableNameJ, notifiedDate, startDate, endDate, incidentType, ticketName, location, rootCauseHigh);
     }
 
-    function addToCombinedCableNames(cableSystem, cableColumn, notifiedDate, startDate, endDate ,incidentType) {
+    function addToCombinedCableNames(cableSystem, cableColumn, notifiedDate, startDate, endDate, incidentType, ticketName, location, rootCauseHigh) {
       const combinedName = `${cableSystem} ${cableColumn}`;
       combinedCableNames.push({
         combinedName: combinedName,
         notifiedDate: notifiedDate,
         startDate: startDate,
         endDate: endDate,
-        incidentType : incidentType
+        incidentType: incidentType,
+        ticketName: ticketName,
+        location: location,
+        rootCauseHigh: rootCauseHigh
       });
     }
 
 
-    function processCableSegments(cableSegments, startDate, endDate, notifiedDate ,incidentType) {
+    function processCableSegments(cableSegments, startDate, endDate, notifiedDate, incidentType, ticketName, location, rootCauseHigh) {
       if (cableSegments != undefined || cableSegments != null) {
         var objectLength = Object.keys(cableSegments).length;
       }
@@ -453,7 +462,10 @@ function getCableNames() {
               notifiedDate: notifiedDate,
               startDate: startDate,
               endDate: endDate,
-              incidentType: incidentType
+              incidentType: incidentType,
+              ticketName: ticketName,
+              location: location,
+              rootCauseHigh: rootCauseHigh
             });
           }
         }

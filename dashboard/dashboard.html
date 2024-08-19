@@ -178,35 +178,9 @@
 
 </html>
 
-<!-- calendar -->
-
-<script>
-    document.addEventListener('DOMContentLoaded', () => {
-        const options = {
-            settings: {
-                selection: {
-                    day: "multiple-ranged"
-                },
-                visibility: {
-                    weekNumbers: true,
-                    theme: 'light'
-                }
-            },
-            actions: {
-                clickWeekNumber(event, number, days, year, self) {
-                    self.settings.selected.dates = days.map(day => day.dataset.calendarDay)
-                    self.update({ dates: true })
-                }
-            }
-        }
-
-        const calendar = new VanillaCalendar("#calendar", options)
-        calendar.init()
-    });
-</script>
 
 <!-- vanilla calendar -->
-<!-- <?!= HtmlService.createHtmlOutputFromFile('dashboard/script_js.html').getContent(); ?> -->
+<?!= HtmlService.createHtmlOutputFromFile('dashboard/script_js.html').getContent(); ?>
 
 <!-- echart -->
 <?!= HtmlService.createHtmlOutputFromFile('dashboard/chart_js.html').getContent(); ?>

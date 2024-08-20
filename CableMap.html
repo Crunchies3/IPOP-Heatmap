@@ -44,6 +44,12 @@
 <body>
   <?!= HtmlService.createHtmlOutputFromFile('spinnerModal.html').getContent(); ?>
 
+  <button class="btn btn-sm" rel="noreferrer"
+    style="position:fixed;z-index: 1000;width:150px;height:32px;bottom:50%;right:-60px;background-color:#0404a0;color:#FFF;text-align:center;transform:rotate(-90deg);"
+    data-bs-toggle="offcanvas" data-bs-target="#offcanvasWithBothOptions"
+    aria-controls="offcanvasWithBothOptions">ACTIVITY
+    LOG</button>
+
   <?!= HtmlService.createHtmlOutputFromFile('activitylog.html').getContent(); ?>
   <div id="buttonsForbottom">
     <button class="btn btn-light" onclick="openBottomPanel()" data-tooltip="View details"><i

@@ -55,6 +55,7 @@
         </div>
     </nav>
     <div class="container-fluid">
+        <?!= HtmlService.createHtmlOutputFromFile('spinnerModal').getContent(); ?>
         <div class="row mt-3 mb-3">
             <div class="col-9">
                 <div class="shadow-sm container-fluid p-4 mb-3 tickets-created-area">
@@ -174,6 +175,29 @@
             </div>
         </div>
     </div>
+
+
+    <script>
+        // Function to show the spinner
+        function showSpinner() {
+            document.getElementById('spinnerModal').style.display = 'block';
+        }
+
+        // Function to hide the spinner
+        function hideSpinner() {
+            document.getElementById('spinnerModal').style.display = 'none';
+        }
+
+        // Example of showing spinner while loading data
+        document.addEventListener('DOMContentLoaded', () => {
+            showSpinner();
+            // Simulate data loading
+            setTimeout(() => {
+                hideSpinner();
+                // Actual data loading and rendering logic here
+            }, 2000); // Adjust time as needed
+        });
+    </script>
 </body>
 
 </html>

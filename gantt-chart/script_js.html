@@ -7,33 +7,53 @@
 
 
     gantt.config.scale_height = 75;
-    gantt.config.min_column_width = 40
+    gantt.config.min_column_width = 40;
 
+    gantt.config.start_on_monday = false;
     gantt.config.scales = [
-        { unit: "month", step: 1, format: "%F, %Y" },
-        { unit: "day", step: 1, format: "%j" }
+        { unit: "week", step: 1, format: "%j %F %Y" },
+        { unit: "day", step: 1, format: "%j" },
+        {
+            unit: "day",
+            step: 1,
+            format: function (date) {
+                const dayAbbreviations = ["S", "M", "T", "W", "T", "F", "S"];
+                return dayAbbreviations[date.getDay()];
+            }
+        }
     ];
 
     gantt.config.columns = [
-        { name: "text", label: "Cable Systems", tree: true, width: "*" },
-        { name: "notif_date", hide: true },
-        { name: "end_date", hide: true },
+        { name: "text", label: "CABLE SYSTEMS", width: "125", tree: true },
+        { name: "start_date", label: "START", width: "100" },
+        { name: "duration", label: "DAYS", width: "100" },
+        { name: "end_date", label: "END", width: "100" },
         { name: "incidentType", hide: true }
 
     ];
     gantt.plugins({
         fullscreen: true
     });
-
+    //modifying header styles
     gantt.templates.grid_header_class = function (columnName, column) {
-        if (columnName == "text") {
-            return "updColorHeaderTitle";
-        }
+        return "updColorHeaderTitle";
+
     };
 
     gantt.templates.task_text = function (start, end, task) {
         return task.incidentType;
     };
+    gantt.eachTask(function (task) {
+        // Check if the task is a parent (has children)
+        if (gantt.hasChild(task.id)) {
+            task.unscheduled = false;
+        } else {
+            task.unscheduled = true;
+        }
+        gantt.render();
+
+    });
+
 
 
 
@@ -43,9 +63,8 @@
         var dataLength = Object.keys(data.tasks).length;
         affectedCables.combinedCableNames.forEach(cables => {
             dataLength++;
-            var startD;
-            var notifD;
             var currentDate = new Date();
+            var startD;
             var endDate = cables.endDate;
             var parentId;
             var splitted = cables.combinedName.trim().split(" ");
@@ -55,13 +74,6 @@
             var progressed;
 
 
-            if (cables.notifiedDate != null) {
-                startD = cables.notifiedDate;
-                notifD = "";
-            } else {
-                startD = cables.startDate;
-                notifD = cables.notifiedDate;
-            }
 
             if (cableType === 'SJC') {
                 parentId = 1;
@@ -80,12 +92,9 @@
             }
 
             //parsing dates for progress bar automation to work (yyyy-mm-dd)
-            notifD = new Date(notifD);
-            startD = new Date(startD);
+            startD = new Date(cables.startDate);
             endDate = new Date(endDate);
 
-            console.log(currentDate);
-            console.log(endDate);
             //automating the progress-bar (dark)
             if (currentDate < startD) {
                 console.log("hello")
@@ -103,16 +112,14 @@
                 console.log(progressed);
             }
 
+
             //parsing dates for the gantt chart to work (dd-mm-yyyy)
-            currentDate = formatDate(currentDate);
-            notifD = formatDate(new Date(notifD));
             startD = formatDate(new Date(startD));
             endDate = formatDate(new Date(endDate));
 
             data.tasks.push({
                 id: dataLength,
                 text: cables.combinedName.trim(),
-                notif_date: notifD,
                 start_date: startD,
                 end_date: endDate,
                 parent: parentId,
@@ -120,7 +127,9 @@
                 incidentType: cables.incidentType,
                 progress: progressed
             });
+
         });
+
         gantt.parse(data);
 
     }
@@ -137,14 +146,13 @@
     //date format DD-MM-YYYY
     var data = {
         tasks: [
-            { id: 1, text: "SJC", duration: 0, color: "#522258", incidentType: "=========SJC=========" },
-            { id: 2, text: "SEAUS", duration: 0, color: "#1A4D2E", incidentType: "=========SEAUS=========" },
-            { id: 3, text: "TGN", duration: 0, color: "#8B322C", incidentType: "=========TGN=========" },
-            { id: 4, text: "C2C/EAC", duration: 0, color: "#A0153E", incidentType: "=========C2C/EAC=========" }
+            { id: 1, text: "SJC", color: "#522258", incidentType: "SJC" },
+            { id: 2, text: "SEAUS", color: "#1A4D2E", incidentType: "SEAUS" },
+            { id: 3, text: "TGN", color: "#8B322C", incidentType: "TGN" },
+            { id: 4, text: "C2C/EAC", color: "#A0153E", incidentType: "C2C/EAC" }
         ]
 
     };
-
 
     google.script.run.withSuccessHandler(addToChart).getCableNames();
     gantt.init("gantt_here");

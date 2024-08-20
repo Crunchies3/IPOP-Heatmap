@@ -403,6 +403,7 @@
                     disabling.forEach(input => {
                         input.disabled = true;
                         var dateTime = document.getElementById('inputStartDateTimeUTC');
+                        var notifTime = document.getElementById('inputNotificationDateTime');
                         const now = new Date();
                         const year = now.getFullYear();
                         const month = String(now.getMonth() + 1).padStart(2, '0');
@@ -413,6 +414,7 @@
                         const formattedDateTime = `${year}-${month}-${day}T${hours}:${minutes}`;
                         if (dateTime) {
                             dateTime.value = formattedDateTime;
+                            notifTime.value = formattedDateTime;
                         }
                     });
                 } else {

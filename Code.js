@@ -395,9 +395,8 @@ function getCableNames() {
     var location = row[12];
     var rootCauseHigh = row[13];
 
-    if (row[1] != "") {
-      var notifiedDate = formatDates(row[2]);
-    }
+
+    const notifiedDate = formatDates(row[2]);
     const startDate = formatDates(row[3]);
     const endDate = formatDates(row[4]);
 

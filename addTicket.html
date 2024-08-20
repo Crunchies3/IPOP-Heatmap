@@ -4,7 +4,7 @@
 <!-- Modal -->
 <div class="modal fade" id="addTicketModal" data-bs-keyboard="false" tabindex="-1" aria-labelledby="addTicketModalLabel"
     aria-hidden="true">
-    <div class="modal-dialog modal-xl">
+    <div class="modal-dialog modal-xl custom-modal-width p-t-100    ">
         <div class="modal-content">
             <div class="modal-header">
                 <h1 class="modal-title fs-5" id="addTicketModalLabel">Add New Ticket</h1>
@@ -12,7 +12,7 @@
             </div>
             <div class="modal-body">
                 <form>
-                    <div class="row mb-3">
+                    <div class="row">
                         <div class="col-md-6">
                             <label for="inputTroubleTicket" class="form-label">Trouble Ticket:</label>
                             <input type="text" class="form-control" id="inputTroubleTicket" required>
@@ -37,7 +37,7 @@
                         </div>
                     </div>
                     <br>
-                    <div class="row mb-3">
+                    <div class="row ">
                         <hr>
                         <div class="col-md-4">
                             <label for="inputNotificationDateTime" class="form-label">Notification Date and
@@ -65,7 +65,7 @@
                         </div>
                     </div>
                     <br>
-                    <div class="row mb-3">
+                    <div class="row">
                         <hr>
                         <div class="col-md-3 d-none" style="display: none;">
                             <label for="inputOutageDuration">Outage Duration:</label>
@@ -103,7 +103,7 @@
                         </div>
                     </div>
                     <br>
-                    <div class="row mb-3">
+                    <div class="row">
                         <hr>
                         <div class="col-md-4">
                             <label for="inputAffectedSegment1" class="form-label">Affected Segment 1:</label>
@@ -133,7 +133,7 @@
                         </div>
                     </div>
                     <br>
-                    <div class="row mb-3">
+                    <div class="row">
                         <hr>
                         <div class="col-md-4">
                             <label for="inputLocation" class="form-label">Location:</label>
@@ -180,7 +180,7 @@
                         </div>
                     </div>
 
-                    <div class="row mb-3">
+                    <div class="row">
                         <div class="col-md-6">
                             <label for="inputAdditionalRemarks" class="form-label">Additional Remarks
                                 (Internal):</label>
@@ -277,9 +277,12 @@
             document.getElementById("cableSystemSelect").classList.add("is-invalid");
             hasError = true;
         }
-
+        if (!values["inputImpact"]) {
+            document.getElementById("inputImpact").classList.add("is-invalid");
+            hasError = true;
+        }
         if (!values["inputNotificationDateTime"] && values["inputIncidentType"] !== "Outage") {
-            document.getElementById("inputNotificationDateTime").classList.add("is-invalid");
+            document.getElementById("inputNotificationDateTime" && "inputIncidentType").classList.add("is-invalid");
             hasError = true;
         }
 

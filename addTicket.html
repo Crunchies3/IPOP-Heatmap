@@ -96,6 +96,7 @@
                                 <option value="" disabled selected>Select Incident Type</option>
                                 <option value="Outage">Outage</option>
                                 <option value="Planned Activity">Planned Activity</option>
+                                <option value="Partial Outage">Partial Outage</option>
                             </select>
                             <div class="invalid-feedback">
                                 Please select an incident type.
@@ -399,7 +400,7 @@
 
         if (incidentType) {
             incidentType.addEventListener('change', function () {
-                if (this.value === "Outage") {
+                if (this.value === "Outage" || this.value === "Partial Outage") {
                     disabling.forEach(input => {
                         input.disabled = true;
                         var dateTime = document.getElementById('inputStartDateTimeUTC');

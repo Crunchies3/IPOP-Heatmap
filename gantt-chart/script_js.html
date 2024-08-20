@@ -32,8 +32,26 @@
 
     ];
     gantt.plugins({
-        fullscreen: true
+        fullscreen: true,
+        tooltip: true,
+        marker: true
     });
+
+    // Adding current date marker
+    function addCurrentDateMarker() {
+        var today = new Date();
+        gantt.addMarker({
+            start_date: today, // the current date
+            css: "today-marker", // a CSS class applied to the marker
+            text: "Today", // the label text
+        });
+    }
+
+    // Call the function to add the current date marker
+    addCurrentDateMarker();
+
+
+
     //modifying header styles
     gantt.templates.grid_header_class = function (columnName, column) {
         return "updColorHeaderTitle";
@@ -43,23 +61,13 @@
     gantt.templates.task_text = function (start, end, task) {
         return task.incidentType;
     };
-    gantt.eachTask(function (task) {
-        // Check if the task is a parent (has children)
-        if (gantt.hasChild(task.id)) {
-            task.unscheduled = false;
-        } else {
-            task.unscheduled = true;
-        }
-        gantt.render();
 
-    });
 
 
 
 
     //fetching datas
     function addToChart(affectedCables) {
-        console.log(affectedCables.combinedCableNames);
         var dataLength = Object.keys(data.tasks).length;
         affectedCables.combinedCableNames.forEach(cables => {
             dataLength++;
@@ -86,9 +94,12 @@
             }
 
             if (incidentType === "Planned Activity") {
-                colored = "#FFDE4D";
-            } else {
-                colored = "#FF0000"
+                colored = "#ef6c00";
+            } else if (incidentType === "Partial Outage") {
+                colored = "#37474f";
+            }
+            else {
+                colored = "#FF0000";
             }
 
             //parsing dates for progress bar automation to work (yyyy-mm-dd)
@@ -97,19 +108,13 @@
 
             //automating the progress-bar (dark)
             if (currentDate < startD) {
-                console.log("hello")
                 progressed = 0;
             } else if (currentDate >= endDate) {
-                console.log("bay")
                 progressed = 1;
             } else {
-                console.log("ako ni")
                 var totalDuration = endDate - startD;
-                console.log(totalDuration);
                 var elapsedDuration = currentDate - startD;
-                console.log(elapsedDuration);
                 progressed = Math.min(1, elapsedDuration / totalDuration);
-                console.log(progressed);
             }
 
 
@@ -146,10 +151,10 @@
     //date format DD-MM-YYYY
     var data = {
         tasks: [
-            { id: 1, text: "SJC", color: "#522258", incidentType: "SJC" },
-            { id: 2, text: "SEAUS", color: "#1A4D2E", incidentType: "SEAUS" },
-            { id: 3, text: "TGN", color: "#8B322C", incidentType: "TGN" },
-            { id: 4, text: "C2C/EAC", color: "#A0153E", incidentType: "C2C/EAC" }
+            { id: 1, text: "SJC", color: "#522258", incidentType: "SJC", unscheduled: true, open: true },
+            { id: 2, text: "SEAUS", color: "#1A4D2E", incidentType: "SEAUS", unscheduled: true, open: true },
+            { id: 3, text: "TGN", color: "#8B322C", incidentType: "TGN", unscheduled: true, open: true },
+            { id: 4, text: "C2C/EAC", color: "#A0153E", incidentType: "C2C/EAC", unscheduled: true, open: true }
         ]
 
     };

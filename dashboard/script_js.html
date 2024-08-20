@@ -140,6 +140,100 @@
     globalSelectedDates = [];
   }
 
+  function collectAllTicketsForEachCable(collections) {
+    const allTickets = {};
+
+    collections.forEach((collection) => {
+      const cableName = collection.cableName;
+      const tickets = [];
+
+      // Loop through incident types (Outage, Other) and collect tickets
+      collection.incidentType.forEach((incidentArray) => {
+        incidentArray.forEach((incidentType) => {
+          // Collect tickets from each category (dry, wet, under, back)
+          tickets.push(...incidentType.dry);
+          tickets.push(...incidentType.wet);
+          tickets.push(...incidentType.under);
+          tickets.push(...incidentType.back);
+        });
+      });
+
+      // Assign the collected tickets to the corresponding cableName
+      allTickets[cableName] = tickets;
+    });
+
+    return allTickets;
+  }
+
+  function generateTotalReportedSegments(collections) {
+    const totalSegments = {};
+
+    collections.forEach((collection) => {
+      const cableName = collection.cableName;
+
+      // Initialize the count object for each cable system
+      totalSegments[cableName] = {
+        dry: 0,
+        wet: 0,
+        under: 0,
+        back: 0
+      };
+
+      // Loop through incident types (Outage, Other) and aggregate counts
+      collection.incidentType.forEach((incidentArray) => {
+        incidentArray.forEach((incidentType) => {
+          totalSegments[cableName].dry += incidentType.dry.length;
+          totalSegments[cableName].wet += incidentType.wet.length;
+          totalSegments[cableName].under += incidentType.under.length;
+          totalSegments[cableName].back += incidentType.back.length;
+        });
+      });
+    });
+
+    return totalSegments;
+  }
+
+  function incidentType(collections) {
+    const totalIncident = {};
+
+    collections.forEach((collection) => {
+      const cableName = collection.cableName;
+
+      // Initialize the count object for each cable system
+      totalIncident[cableName] = {
+        Outage: 0,
+        Planned: 0
+      };
+
+      // Loop through incident types and count Outage and Planned incidents
+      collection.incidentType.forEach((incidentArray) => {
+        incidentArray.forEach((incidentType, index) => {
+          if (index === 0) {
+            // Index 0 corresponds to 'Outage'
+            totalIncident[cableName].Outage += incidentType.dry.length;
+            totalIncident[cableName].Outage += incidentType.wet.length;
+            totalIncident[cableName].Outage += incidentType.under.length;
+            totalIncident[cableName].Outage += incidentType.back.length;
+          } else if (index === 1) {
+            // Index 1 corresponds to 'Planned'
+            totalIncident[cableName].Planned += incidentType.dry.length;
+            totalIncident[cableName].Planned += incidentType.wet.length;
+            totalIncident[cableName].Planned += incidentType.under.length;
+            totalIncident[cableName].Planned += incidentType.back.length;
+          }
+        });
+      });
+    });
+
+    return totalIncident;
+  }
+
+
+
+  function totalReportedSegments(collections) {
+
+  }
+
   document.addEventListener('DOMContentLoaded', () => {
     const options = {
       settings: {

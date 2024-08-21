@@ -24,7 +24,7 @@
     ];
 
     gantt.config.columns = [
-        { name: "text", label: "CABLE SYSTEMS", width: "125", tree: true },
+        { name: "text", label: "CABLE SYSTEMS", width: "140", tree: true },
         { name: "start_date", label: "START", width: "100" },
         { name: "duration", label: "DAYS", width: "100" },
         { name: "end_date", label: "END", width: "100" },
@@ -50,16 +50,21 @@
     // Call the function to add the current date marker
     addCurrentDateMarker();
 
-
-
-    //modifying header styles
-    gantt.templates.grid_header_class = function (columnName, column) {
-        return "updColorHeaderTitle";
-
-    };
-
     gantt.templates.task_text = function (start, end, task) {
         return task.incidentType;
+    };
+
+    gantt.templates.scale_row_class = function (scale) {
+        if (scale.unit === "week") {
+            return "week_scale";
+        }
+    }
+    gantt.templates.task_row_class = function (start, end, task) {
+        if (gantt.getGlobalTaskIndex(task.id) % 2 === 0) {
+            return "gantt_even_row";
+        } else {
+            return "gantt_odd_row";
+        }
     };
 
 
@@ -96,10 +101,10 @@
             if (incidentType === "Planned Activity") {
                 colored = "#ef6c00";
             } else if (incidentType === "Partial Outage") {
-                colored = "#37474f";
+                colored = "#616161";
             }
             else {
-                colored = "#FF0000";
+                colored = "#f44336";
             }
 
             //parsing dates for progress bar automation to work (yyyy-mm-dd)
@@ -151,10 +156,10 @@
     //date format DD-MM-YYYY
     var data = {
         tasks: [
-            { id: 1, text: "SJC", color: "#522258", incidentType: "SJC", unscheduled: true, open: true },
-            { id: 2, text: "SEAUS", color: "#1A4D2E", incidentType: "SEAUS", unscheduled: true, open: true },
-            { id: 3, text: "TGN", color: "#8B322C", incidentType: "TGN", unscheduled: true, open: true },
-            { id: 4, text: "C2C/EAC", color: "#A0153E", incidentType: "C2C/EAC", unscheduled: true, open: true }
+            { id: 1, text: "SJC", color: "#522258", incidentType: "SJC", unscheduled: true, open: true, type: "project" },
+            { id: 2, text: "SEAUS", color: "#1A4D2E", incidentType: "SEAUS", unscheduled: true, open: true, type: "project" },
+            { id: 3, text: "TGN", color: "#8B322C", incidentType: "TGN", unscheduled: true, open: true, type: "project" },
+            { id: 4, text: "C2C/EAC", color: "#A0153E", incidentType: "C2C/EAC", unscheduled: true, open: true, type: "project" }
         ]
 
     };

@@ -142,7 +142,7 @@
                     clearCollections(collections);
                     setMonthOrYear(self.selectedMonth, self.selectedYear);
                     getReport(cleanReport);
-                    incidentType();
+                    loadChart();
                 },
                 clickMonth(event, self) {
                     self.settings.selected.dates = [];
@@ -158,6 +158,7 @@
                     clearCollections(collections);
                     setMonthOrYear(self.selectedMonth, self.selectedYear);
                     getReport(cleanReport);
+                    loadChart();
                 },
                 /*
                 Don't get confused if it says Day. this part is configured to be only in weeks
@@ -174,6 +175,7 @@
                         clearCollections(collections);
                         setArrayOfDates(self.selectedDates);
                         getReport(cleanReport);
+                        loadChart();
                     }
                 },
                 //for clicking the week number
@@ -183,7 +185,7 @@
                     self.update({ dates: true })
                     setArrayOfDates(self.selectedDates);
                     getReport(cleanReport);
-
+                    loadChart();
                 }
             },
         }

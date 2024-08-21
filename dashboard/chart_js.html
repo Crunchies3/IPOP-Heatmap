@@ -2,8 +2,22 @@
 <script>
     window.onload = (event) => {
         //load every data to a array
-        google.script.run.withSuccessHandler(startUpLoadData).getCableNames()
+        showSpinner();
+        google.script.run.withSuccessHandler(startUpLoadData).getAllCableNames();
+
     }
+
+    // Function to show the spinner
+    function showSpinner() {
+        document.getElementById('spinnerModal').style.display = 'block';
+    }
+
+    // Function to hide the spinner
+    function hideSpinner() {
+        document.getElementById('spinnerModal').style.display = 'none';
+    }
+
+    // Example of showing spinner while loading data
     function ticketsCreatedDisplay() {
         document.getElementById('sea-us').innerText = collectAllTicketsForEachCable()['SEAUS'].length;
         document.getElementById('sjc').innerText = collectAllTicketsForEachCable()['SJC'].length;
@@ -139,26 +153,33 @@
                 clickYear(event, self) {
                     self.settings.selected.dates = [];
                     self.update({ dates: true });
-                    clearCollections(collections);
-                    setMonthOrYear(self.selectedMonth, self.selectedYear);
+                    clearCollections();
+                    isYear = true;
+                    setYear(self.selectedYear);
+                    //setMonthOrYear(self.selectedMonth, self.selectedYear);
                     getReport(cleanReport);
                     loadChart();
+                    document.getElementById('reportType').innerText = 'Yearly'
                 },
                 clickMonth(event, self) {
                     self.settings.selected.dates = [];
                     self.update({ dates: true });
-                    clearCollections(collections);
+                    clearCollections();
                     setMonthOrYear(self.selectedMonth, self.selectedYear);
+                    isYear = false;
                     getReport(cleanReport);
                     loadChart();
+                    document.getElementById('reportType').innerText = 'Monthly'
                 },
                 clickArrow(event, self) {
                     self.settings.selected.dates = [];
                     self.update({ dates: true });
-                    clearCollections(collections);
+                    clearCollections();
                     setMonthOrYear(self.selectedMonth, self.selectedYear);
+                    isYear = false;
                     getReport(cleanReport);
                     loadChart();
+                    document.getElementById('reportType').innerText = 'Monthly'
                 },
                 /*
                 Don't get confused if it says Day. this part is configured to be only in weeks
@@ -166,26 +187,40 @@
                 */
                 clickDay(event, self) {
                     if (self.selectedDates.length == 1) {
-                        return null;
-                    }
-                    else if (self.selectedDates[0] === undefined && self.selectedDates[1] === undefined) {
-                        return null;
-                    }
-                    else {
-                        clearCollections(collections);
-                        setArrayOfDates(self.selectedDates);
+                        clearCollections();
+                        setMonthOrYear(self.selectedMonth, self.selectedYear);
+                        isYear = false;
                         getReport(cleanReport);
                         loadChart();
+                        document.getElementById('reportType').innerText = 'Monthly'
+                    }
+                    else if (self.selectedDates[0] === undefined && self.selectedDates[1] === undefined) {
+                        clearCollections();
+                        setMonthOrYear(self.selectedMonth, self.selectedYear);
+                        isYear = false;
+                        getReport(cleanReport);
+                        loadChart();
+                        document.getElementById('reportType').innerText = 'Monthly'
+                    }
+                    else {
+                        clearCollections();
+                        setArrayOfDates(self.selectedDates);
+                        isYear = false;
+                        getReport(cleanReport);
+                        loadChart();
+                        document.getElementById('reportType').innerText = 'Custom Range'
                     }
                 },
                 //for clicking the week number
                 clickWeekNumber(event, number, days, year, self) {
-                    clearCollections(collections);
+                    clearCollections();
                     self.settings.selected.dates = days.map(day => day.dataset.calendarDay)
                     self.update({ dates: true })
                     setArrayOfDates(self.selectedDates);
+                    isYear = false;
                     getReport(cleanReport);
                     loadChart();
+                    document.getElementById('reportType').innerText = 'Weekly'
                 }
             },
         }
@@ -198,6 +233,7 @@
     var globalSelectedDates = [];
     var globalSelectedYear = new Date().getFullYear();
     var globalSelectedMonth = new Date().getMonth();
+    var isYear = true;
     //TODO Make a Collection --- sa papel ani ang flow--- OBJECT - ARRAY - OBJECT - ARRAY
     var collections = [{
         cableName: 'SEAUS',
@@ -228,6 +264,7 @@
 
 
     function getReport(cables) {
+        var a = 0;
         var box_of_cables = []
         if (globalSelectedDates.length > 1) {
             for (let i = 0; i < cables.length; i++) {
@@ -238,6 +275,17 @@
             incidentTypeChecker(box_of_cables)
             console.log(collections);
         }
+
+        else if (isYear == true) {
+            for (let i = 0; i < cables.length; i++) {
+                if (new Date(cables[i].startDate).getFullYear() == globalSelectedYear && new Date(cables[i].startDate).getFullYear() != isNaN()) {
+                    box_of_cables.push(cables[i]);
+                }
+            }
+            incidentTypeChecker(box_of_cables);
+            console.log(collections);
+        }
+
         else {
             cables.forEach(element => {
                 if (new Date(element.startDate).getMonth() == globalSelectedMonth && new Date(element.startDate).getFullYear() == globalSelectedYear) { // added one cuz 1st month starts at 0
@@ -252,7 +300,7 @@
 
     function startUpLoadData(cables) {
         var dirtyReportHandler = cables;
-
+        console.log(dirtyReportHandler);
         const cleanReportHandler = (cables) => {
             const uniqueTicketNames = new Set();
             const filteredCombinedCableNames = [];
@@ -268,14 +316,21 @@
 
         cleanReport = cleanReportHandler(dirtyReportHandler);
         getReport(cleanReport);
+        console.log(cleanReport);
         loadChart();
-        generateTotalRootCause("dry");
+        hideSpinner();
+        document.getElementById('reportType').innerText = 'Monthly'
+        // Actual data loading and rendering logic here
 
     }
 
     function setMonthOrYear(month, year) {
         globalSelectedMonth = month;
         globalSelectedYear = year;
+    }
+
+    function setYear(year) {
+        globalSelectedYear = year
     }
 
     function setArrayOfDates(selectedDates) {
@@ -322,7 +377,7 @@
             }
         }
     }
-    function clearCollections(collections) {
+    function clearCollections() {
         collections.forEach((collection) => {
             collection.incidentType.forEach((incidentArray) => {
                 incidentArray.forEach((incidentType) => {
@@ -434,13 +489,14 @@
                 configuration_issue: 0,
                 fan_issue: 0,
                 force_majeure: 0,
-                pub_or_priv_project: 0,
+                government_private_project: 0,
+
                 human_error: 0,
                 pfe_issue: 0,
                 physical_connection: 0,
                 planned_maintenance: 0,
                 shunt_fault: 0,
-                subsea_equip: 0,
+                subsea_equipment_fault: 0,
                 unknown: 0
             },
             wet: {
@@ -450,13 +506,14 @@
                 configuration_issue: 0,
                 fan_issue: 0,
                 force_majeure: 0,
-                pub_or_priv_project: 0,
+                government_private_project: 0,
+
                 human_error: 0,
                 pfe_issue: 0,
                 physical_connection: 0,
                 planned_maintenance: 0,
                 shunt_fault: 0,
-                subsea_equip: 0,
+                subsea_equipment_fault: 0,
                 unknown: 0
             },
             under: {
@@ -466,13 +523,14 @@
                 configuration_issue: 0,
                 fan_issue: 0,
                 force_majeure: 0,
-                pub_or_priv_project: 0,
+                government_private_project: 0,
+
                 human_error: 0,
                 pfe_issue: 0,
                 physical_connection: 0,
                 planned_maintenance: 0,
                 shunt_fault: 0,
-                subsea_equip: 0,
+                subsea_equipment_fault: 0,
                 unknown: 0
             },
             back: {
@@ -482,13 +540,13 @@
                 configuration_issue: 0,
                 fan_issue: 0,
                 force_majeure: 0,
-                pub_or_priv_project: 0,
+                government_private_project: 0,
                 human_error: 0,
                 pfe_issue: 0,
                 physical_connection: 0,
                 planned_maintenance: 0,
                 shunt_fault: 0,
-                subsea_equip: 0,
+                subsea_equipment_fault: 0,
                 unknown: 0
             }
         };
@@ -499,6 +557,8 @@
                     ['dry', 'wet', 'under', 'back'].forEach((segment) => {
                         incidentType[segment].forEach((incident) => {
                             let rootCause = incident.rootCauseHigh.toLowerCase().replace(/ /g, '_');
+                            rootCause = rootCause.replace('/', '_');
+
                             if (totalRootCause[segment][rootCause] !== undefined) {
                                 totalRootCause[segment][rootCause] += 1;
                             } else {

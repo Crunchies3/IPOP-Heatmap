@@ -1,6 +1,16 @@
 <!-- for charts -->
 <script>
-    document.addEventListener('DOMContentLoaded', () => {
+    var ass;
+    // src = "//ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js" >
+
+
+    window.onload = (event) => {
+        //load every data to a array
+        google.script.run.withSuccessHandler(startUpLoadData).getCableNames()
+    }
+
+    function loadChart() {
+
         // Pie chart incident type
         var pieChart = echarts.init(document.getElementById('pie-chart'));
         pieChart.setOption({
@@ -14,8 +24,8 @@
                 label: { show: false, position: 'center' },
                 labelLine: { show: false },
                 data: [
-                    { value: 1048, name: 'Outage' },
-                    { value: 735, name: 'Planned Activity' }
+                    { value: incidentType()['SEAUS'].Outage + incidentType()['C2C'].Outage, name: 'Outage' },
+                    { value: 10, name: 'Planned Activity' }
                 ]
             }]
         });
@@ -101,11 +111,8 @@
                 { name: 'Backhaul', type: 'bar', stack: 'total', label: { show: true }, emphasis: { focus: 'series' }, data: [10, 22, 28, 43, 49, 10, 29, 10, 20] }
             ]
         });
-    });
-</script>
+    }
 
-<!-- for calendar -->
-<script>
     document.addEventListener('DOMContentLoaded', () => {
         const options = {
             settings: {
@@ -127,6 +134,7 @@
                     clearCollections(collections);
                     setMonthOrYear(self.selectedMonth, self.selectedYear);
                     getReport(cleanReport);
+                    incidentType();
                 },
                 clickMonth(event, self) {
                     self.settings.selected.dates = [];
@@ -174,14 +182,6 @@
         const calendar = new VanillaCalendar("#calendar", options)
         calendar.init()
     });
-</script>
-
-<!-- for functions -->
-<script>
-    window.onload = (event) => {
-        //load every data to a array
-        google.script.run.withSuccessHandler(startUpLoadData).getCableNames()
-    }
 
     var cleanReport;
     var globalSelectedDates = [];
@@ -256,8 +256,8 @@
         };
 
         cleanReport = cleanReportHandler(dirtyReportHandler);
-
         getReport(cleanReport);
+        loadChart();
 
     }
 
@@ -273,6 +273,7 @@
 
 
     // Checker para dili sakit sa mata once mag debug
+    // FIX LATER
     function incidentTypeChecker(cable) {
         for (var i = 0; i < cable.length; i++) {
             if (cable[i].incidentType.toString() == "Outage") locationChecker(cable[i], 0);
@@ -348,7 +349,7 @@
         return allTickets;
     }
 
-    function generateTotalReportedSegments(collections) {
+    function generateTotalReportedSegments(collections) { // hard
         const totalSegments = {};
 
         collections.forEach((collection) => {
@@ -385,9 +386,8 @@
         };
     }
 
-    function incidentType(collections) {
+    function incidentType() {
         const totalIncident = {};
-
         collections.forEach((collection) => {
             const cableName = collection.cableName;
 
@@ -399,24 +399,27 @@
 
             // Loop through incident types and count Outage and Planned incidents
             collection.incidentType.forEach((incidentArray) => {
-                incidentArray.forEach((incidentType, index) => {
-                    if (index === 0) {
-                        // Index 0 corresponds to 'Outage'
-                        totalIncident[cableName].Outage += incidentType.dry.length;
-                        totalIncident[cableName].Outage += incidentType.wet.length;
-                        totalIncident[cableName].Outage += incidentType.under.length;
-                        totalIncident[cableName].Outage += incidentType.back.length;
-                    } else if (index === 1) {
-                        // Index 1 corresponds to 'Planned'
-                        totalIncident[cableName].Planned += incidentType.dry.length;
-                        totalIncident[cableName].Planned += incidentType.wet.length;
-                        totalIncident[cableName].Planned += incidentType.under.length;
-                        totalIncident[cableName].Planned += incidentType.back.length;
-                    }
-                });
+                console.log(incidentArray[0][0]);
+
+                // incidentArray.forEach((incidentType, index) => {
+
+                //     if (index === 0) {
+                //         // Index 0 corresponds to 'Outage'
+                //         console.log(incidentType);
+                //         totalIncident[cableName].Outage += incidentType.dry.length;
+                //         totalIncident[cableName].Outage += incidentType.wet.length;
+                //         totalIncident[cableName].Outage += incidentType.under.length;
+                //         totalIncident[cableName].Outage += incidentType.back.length;
+                //     } else if (index === 1) {
+                //         // Index 1 corresponds to 'Planned'
+                //         totalIncident[cableName].Planned += incidentType.dry.length;
+                //         totalIncident[cableName].Planned += incidentType.wet.length;
+                //         totalIncident[cableName].Planned += incidentType.under.length;
+                //         totalIncident[cableName].Planned += incidentType.back.length;
+                //     }
+                // });
             });
         });
-
         return totalIncident;
     }
 

@@ -1,16 +1,21 @@
 <!-- for charts -->
 <script>
-    var ass;
-    // src = "//ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js" >
-
-
     window.onload = (event) => {
         //load every data to a array
         google.script.run.withSuccessHandler(startUpLoadData).getCableNames()
     }
+    function ticketsCreatedDisplay() {
+        document.getElementById('sea-us').innerText = collectAllTicketsForEachCable()['SEAUS'].length;
+        document.getElementById('sjc').innerText = collectAllTicketsForEachCable()['SJC'].length;
+        document.getElementById('c2c').innerText = collectAllTicketsForEachCable()['C2C'].length;
+        document.getElementById('eac').innerText = collectAllTicketsForEachCable()['EAC'].length;
+        document.getElementById('tgn').innerText = collectAllTicketsForEachCable()['TGN'].length;
+        document.getElementById('totalticketDOM').innerText = collectAllTicketsForEachCable()['SEAUS'].length + collectAllTicketsForEachCable()['SJC'].length +
+            collectAllTicketsForEachCable()['C2C'].length + collectAllTicketsForEachCable()['EAC'].length + collectAllTicketsForEachCable()['TGN'].length
+    }
 
     function loadChart() {
-
+        ticketsCreatedDisplay();
         // Pie chart incident type
         var pieChart = echarts.init(document.getElementById('pie-chart'));
         pieChart.setOption({
@@ -24,8 +29,8 @@
                 label: { show: false, position: 'center' },
                 labelLine: { show: false },
                 data: [
-                    { value: incidentType()['SEAUS'].Outage + incidentType()['C2C'].Outage, name: 'Outage' },
-                    { value: 10, name: 'Planned Activity' }
+                    { value: incidentType()['SEAUS'].Outage + incidentType()['C2C'].Outage + incidentType()['TGN'].Outage + incidentType()['SJC'].Outage + incidentType()['EAC'].Outage, name: 'Outage' },
+                    { value: incidentType()['SEAUS'].Planned + incidentType()['C2C'].Planned + incidentType()['TGN'].Planned + incidentType()['SJC'].Planned + incidentType()['EAC'].Planned, name: 'Planned Activity' }
                 ]
             }]
         });
@@ -43,10 +48,10 @@
             xAxis: { data: ['SEA-US', 'SJC', 'C2C', 'EAC', 'TGN-IA/P'] },
             yAxis: {},
             series: [
-                { name: 'Dry Segment', type: 'bar', stack: 'total', label: { show: true }, emphasis: { focus: 'series' }, data: [320, 302, 301, 334, 390] },
-                { name: 'Wet Segment', type: 'bar', stack: 'total', label: { show: true }, emphasis: { focus: 'series' }, data: [120, 132, 101, 134, 90] },
-                { name: 'Undetermined', type: 'bar', stack: 'total', label: { show: true }, emphasis: { focus: 'series' }, data: [220, 182, 191, 234, 290] },
-                { name: 'Backhaul', type: 'bar', stack: 'total', label: { show: true }, emphasis: { focus: 'series' }, data: [150, 212, 201, 154, 190] }
+                { name: 'Dry Segment', type: 'bar', stack: 'total', label: { show: true }, emphasis: { focus: 'series' }, data: [generateTotalReportedSegments()['SEAUS'].dry, generateTotalReportedSegments()['SJC'].dry, generateTotalReportedSegments()['C2C'].dry, generateTotalReportedSegments()['EAC'].dry, generateTotalReportedSegments()['TGN'].dry] },
+                { name: 'Wet Segment', type: 'bar', stack: 'total', label: { show: true }, emphasis: { focus: 'series' }, data: [generateTotalReportedSegments()['SEAUS'].wet, generateTotalReportedSegments()['SJC'].wet, generateTotalReportedSegments()['C2C'].wet, generateTotalReportedSegments()['EAC'].wet, generateTotalReportedSegments()['TGN'].wet] },
+                { name: 'Undetermined', type: 'bar', stack: 'total', label: { show: true }, emphasis: { focus: 'series' }, data: [generateTotalReportedSegments()['SEAUS'].under, generateTotalReportedSegments()['SJC'].under, generateTotalReportedSegments()['C2C'].under, generateTotalReportedSegments()['EAC'].under, generateTotalReportedSegments()['TGN'].under] },
+                { name: 'Backhaul', type: 'bar', stack: 'total', label: { show: true }, emphasis: { focus: 'series' }, data: [generateTotalReportedSegments()['SEAUS'].back, generateTotalReportedSegments()['SJC'].back, generateTotalReportedSegments()['C2C'].back, generateTotalReportedSegments()['EAC'].back, generateTotalReportedSegments()['TGN'].back] }
             ]
         });
 
@@ -63,8 +68,8 @@
             xAxis: { data: ['SEA-US', 'SJC', 'C2C', 'EAC', 'TGN-IA/P'] },
             yAxis: {},
             series: [
-                { name: 'Outage', type: 'bar', stack: 'total', label: { show: true }, emphasis: { focus: 'series' }, data: [120, 132, 101, 134, 90] },
-                { name: 'Planned Activity', type: 'bar', stack: 'total', label: { show: true }, emphasis: { focus: 'series' }, data: [320, 302, 301, 334, 390] }
+                { name: 'Outage', type: 'bar', stack: 'total', label: { show: true }, emphasis: { focus: 'series' }, data: [incidentType()['SEAUS'].Outage, incidentType()['C2C'].Outage, incidentType()['TGN'].Outage, incidentType()['SJC'].Outage, incidentType()['EAC'].Outage] },
+                { name: 'Planned Activity', type: 'bar', stack: 'total', label: { show: true }, emphasis: { focus: 'series' }, data: [incidentType()['SEAUS'].Planned, incidentType()['C2C'].Planned, incidentType()['TGN'].Planned, incidentType()['SJC'].Planned, incidentType()['EAC'].Planned] }
             ]
         });
 
@@ -101,14 +106,17 @@
             legend: {},
             grid: { left: '3%', right: '4%', bottom: '3%', containLabel: true },
             xAxis: {
-                data: ['BMH Issue', 'Cable Fault', 'Card Failure', 'Configuration Issue', 'Force Majeure', 'Planned Maintenance', 'Shunt Fault', 'Subsea Equipment Fault', 'Unknown']
+                data: ['BMH Issue', 'Cable Fault', 'Card Failure', 'Configuration Issue',
+                    'Fan Issue', 'Force Majeure', 'Government/Private Project', 'Human Error',
+                    'PFE Issue', 'Physical Connection', 'Planned Maintenance', 'Shunt Fault',
+                    'Subsea Equipment Fault', 'Unknown']
             },
             yAxis: {},
             series: [
-                { name: 'Dry Segment', type: 'bar', stack: 'total', label: { show: true }, emphasis: { focus: 'series' }, data: [10, 22, 28, 43, 49, 10, 29, 10, 20] },
-                { name: 'Wet Segment', type: 'bar', stack: 'total', label: { show: true }, emphasis: { focus: 'series' }, data: [10, 22, 28, 43, 49, 10, 29, 10, 20] },
-                { name: 'Undetermined', type: 'bar', stack: 'total', label: { show: true }, emphasis: { focus: 'series' }, data: [10, 22, 28, 43, 49, 10, 29, 10, 20] },
-                { name: 'Backhaul', type: 'bar', stack: 'total', label: { show: true }, emphasis: { focus: 'series' }, data: [10, 22, 28, 43, 49, 10, 29, 10, 20] }
+                { name: 'Dry Segment', type: 'bar', stack: 'total', label: { show: true }, emphasis: { focus: 'series' }, data: generateTotalRootCause('dry') },
+                { name: 'Wet Segment', type: 'bar', stack: 'total', label: { show: true }, emphasis: { focus: 'series' }, data: generateTotalRootCause('wet') },
+                { name: 'Undetermined', type: 'bar', stack: 'total', label: { show: true }, emphasis: { focus: 'series' }, data: generateTotalRootCause('under') },
+                { name: 'Backhaul', type: 'bar', stack: 'total', label: { show: true }, emphasis: { focus: 'series' }, data: generateTotalRootCause('back') }
             ]
         });
     }
@@ -142,6 +150,7 @@
                     clearCollections(collections);
                     setMonthOrYear(self.selectedMonth, self.selectedYear);
                     getReport(cleanReport);
+                    loadChart();
                 },
                 clickArrow(event, self) {
                     self.settings.selected.dates = [];
@@ -258,6 +267,7 @@
         cleanReport = cleanReportHandler(dirtyReportHandler);
         getReport(cleanReport);
         loadChart();
+        generateTotalRootCause("dry");
 
     }
 
@@ -292,14 +302,14 @@
                 if (cable.location.toLowerCase().includes('dry')) {
                     collections[collectionIndex].incidentType[index][0].dry.push(cable)
                 }
-                if (cable.location.toLowerCase().includes('wet')) {
-                    collections[collectionIndex].incidentType[index][0].dry.push(cable)
+                else if (cable.location.toLowerCase().includes('wet')) {
+                    collections[collectionIndex].incidentType[index][0].wet.push(cable)
                 }
-                if (cable.location.toLowerCase().includes('undetermined')) {
-                    collections[collectionIndex].incidentType[index][0].dry.push(cable)
+                else if (cable.location.toLowerCase().includes('undetermined')) {
+                    collections[collectionIndex].incidentType[index][0].under.push(cable)
                 }
-                if (cable.location.toLowerCase().includes('backhaul')) {
-                    collections[collectionIndex].incidentType[index][0].dry.push(cable)
+                else if (cable.location.toLowerCase().includes('backhaul')) {
+                    collections[collectionIndex].incidentType[index][0].back.push(cable)
                 }
                 collectionIndex = 0;
                 break;
@@ -324,7 +334,7 @@
         globalSelectedDates = [];
     }
 
-    function collectAllTicketsForEachCable(collections) {
+    function collectAllTicketsForEachCable() {
         const allTickets = {};
 
         collections.forEach((collection) => {
@@ -345,11 +355,10 @@
             // Assign the collected tickets to the corresponding cableName
             allTickets[cableName] = tickets;
         });
-
         return allTickets;
     }
 
-    function generateTotalReportedSegments(collections) { // hard
+    function generateTotalReportedSegments() { // hard
         const totalSegments = {};
 
         collections.forEach((collection) => {
@@ -364,7 +373,7 @@
             };
 
             // Loop through incident types (Outage, Other) and aggregate counts
-            collection.incidentType.forEach((incidentArray) => {
+            collection.incidentType.forEach((incidentArray, inex) => {
                 incidentArray.forEach((incidentType) => {
                     totalSegments[cableName].dry += incidentType.dry.length;
                     totalSegments[cableName].wet += incidentType.wet.length;
@@ -373,17 +382,7 @@
                 });
             });
         });
-
-        // Transform data into the format expected by ECharts
-        return {
-            xAxisData: Object.keys(totalSegments),
-            seriesData: [
-                { name: 'Dry Segment', data: Object.values(totalSegments).map(segment => segment.dry) },
-                { name: 'Wet Segment', data: Object.values(totalSegments).map(segment => segment.wet) },
-                { name: 'Undetermined', data: Object.values(totalSegments).map(segment => segment.under) },
-                { name: 'Backhaul', data: Object.values(totalSegments).map(segment => segment.back) }
-            ]
-        };
+        return totalSegments;
     }
 
     function incidentType() {
@@ -397,30 +396,119 @@
                 Planned: 0
             };
 
-            // Loop through incident types and count Outage and Planned incidents
-            collection.incidentType.forEach((incidentArray) => {
-                console.log(incidentArray[0][0]);
+            // Loop through incident types and count Outage and Planned incident
+            collection.incidentType.forEach((incidentArray, index) => {
+                incidentArray.forEach((incidentType) => {
 
-                // incidentArray.forEach((incidentType, index) => {
-
-                //     if (index === 0) {
-                //         // Index 0 corresponds to 'Outage'
-                //         console.log(incidentType);
-                //         totalIncident[cableName].Outage += incidentType.dry.length;
-                //         totalIncident[cableName].Outage += incidentType.wet.length;
-                //         totalIncident[cableName].Outage += incidentType.under.length;
-                //         totalIncident[cableName].Outage += incidentType.back.length;
-                //     } else if (index === 1) {
-                //         // Index 1 corresponds to 'Planned'
-                //         totalIncident[cableName].Planned += incidentType.dry.length;
-                //         totalIncident[cableName].Planned += incidentType.wet.length;
-                //         totalIncident[cableName].Planned += incidentType.under.length;
-                //         totalIncident[cableName].Planned += incidentType.back.length;
-                //     }
-                // });
+                    if (index === 0) {
+                        // Index 0 corresponds to 'Outage'
+                        totalIncident[cableName].Outage += incidentType.dry.length;
+                        totalIncident[cableName].Outage += incidentType.wet.length;
+                        totalIncident[cableName].Outage += incidentType.under.length;
+                        totalIncident[cableName].Outage += incidentType.back.length;
+                    } else if (index === 1) {
+                        // Index 1 corresponds to 'Planned'
+                        totalIncident[cableName].Planned += incidentType.dry.length;
+                        totalIncident[cableName].Planned += incidentType.wet.length;
+                        totalIncident[cableName].Planned += incidentType.under.length;
+                        totalIncident[cableName].Planned += incidentType.back.length;
+                    }
+                });
             });
         });
         return totalIncident;
+    }
+    function generateTotalRootCause(location_cause) {
+        let totalRootCause = {};
+
+
+
+        // Initialize root cause object for each cable system
+        totalRootCause = {
+            dry: {
+                bmh_issue: 0,
+                cable_fault: 0,
+                card_failure: 0,
+                configuration_issue: 0,
+                fan_issue: 0,
+                force_majeure: 0,
+                pub_or_priv_project: 0,
+                human_error: 0,
+                pfe_issue: 0,
+                physical_connection: 0,
+                planned_maintenance: 0,
+                shunt_fault: 0,
+                subsea_equip: 0,
+                unknown: 0
+            },
+            wet: {
+                bmh_issue: 0,
+                cable_fault: 0,
+                card_failure: 0,
+                configuration_issue: 0,
+                fan_issue: 0,
+                force_majeure: 0,
+                pub_or_priv_project: 0,
+                human_error: 0,
+                pfe_issue: 0,
+                physical_connection: 0,
+                planned_maintenance: 0,
+                shunt_fault: 0,
+                subsea_equip: 0,
+                unknown: 0
+            },
+            under: {
+                bmh_issue: 0,
+                cable_fault: 0,
+                card_failure: 0,
+                configuration_issue: 0,
+                fan_issue: 0,
+                force_majeure: 0,
+                pub_or_priv_project: 0,
+                human_error: 0,
+                pfe_issue: 0,
+                physical_connection: 0,
+                planned_maintenance: 0,
+                shunt_fault: 0,
+                subsea_equip: 0,
+                unknown: 0
+            },
+            back: {
+                bmh_issue: 0,
+                cable_fault: 0,
+                card_failure: 0,
+                configuration_issue: 0,
+                fan_issue: 0,
+                force_majeure: 0,
+                pub_or_priv_project: 0,
+                human_error: 0,
+                pfe_issue: 0,
+                physical_connection: 0,
+                planned_maintenance: 0,
+                shunt_fault: 0,
+                subsea_equip: 0,
+                unknown: 0
+            }
+        };
+        collections.forEach((collection) => {
+            // Loop through incident types and aggregate root causes
+            collection.incidentType.forEach((incidentArray) => {
+                incidentArray.forEach((incidentType) => {
+                    ['dry', 'wet', 'under', 'back'].forEach((segment) => {
+                        incidentType[segment].forEach((incident) => {
+                            let rootCause = incident.rootCauseHigh.toLowerCase().replace(/ /g, '_');
+                            if (totalRootCause[segment][rootCause] !== undefined) {
+                                totalRootCause[segment][rootCause] += 1;
+                            } else {
+                                totalRootCause[segment].unknown += 1;
+                            }
+                        });
+                    });
+                });
+            });
+        });
+
+        return Object.values(totalRootCause[location_cause]);
     }
 
 </script>

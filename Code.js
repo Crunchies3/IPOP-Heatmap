@@ -515,107 +515,65 @@ function getCableNames() {
   console.log(combinedCableNames);
   return { combinedCableNames: combinedCableNames, combinedCableNamesStart: combinedCableNamesStart };
 }
-
+function print(){
+  console.log(fetchPast3monthsAndCurrDate());
+}
 function fetchPast3monthsAndCurrDate() {
   var ss = SpreadsheetApp.openById('1vW8zgcrQC02iRLkWJSOIjfnqN5_lRNMgNjV6IBZF__c');
-  var sheet = ss.getSheetByName('End Date');
-  var lastRow = sheet.getLastRow();
-  var lastColumn = sheet.getLastColumn();
-
+  var sheet1 = ss.getSheetByName('End Date');
   var sheet2 = ss.getSheetByName('Notifications');
-  var lastRow2 = sheet2.getLastRow();
-  var cableNamesRange = sheet2.getRange('A2:N' + lastRow2);
-  var data2 = cableNamesRange.getValues();
 
+  var data1 = getSheetData(sheet1);
+  var data2 = getSheetData(sheet2);
 
-  var range = sheet.getRange(2, 1, lastRow - 1, lastColumn);
-  var data = range.getValues();
-
-  var today = new Date();
-  var threeMonthsAgo = new Date(today);
-  threeMonthsAgo.setMonth(today.getMonth() - 3);
+  var threeMonthsAgo = new Date();
+  threeMonthsAgo.setMonth(threeMonthsAgo.getMonth() - 3);
 
   var ganttChartDatas = [];
 
-  for (var i = 0; i < data.length; i++) {
-    var endDate = new Date(data[i][4]);
+  ganttChartDatas = ganttChartDatas.concat(processData(data1, threeMonthsAgo));
+  ganttChartDatas = ganttChartDatas.concat(processData(data2, threeMonthsAgo));
+
+  return ganttChartDatas;
+}
+
+function getSheetData(sheet) {
+  var lastRow = sheet.getLastRow();
+  var lastColumn = sheet.getLastColumn();
+  return sheet.getRange(2, 1, lastRow - 1, lastColumn).getValues();
+}
+
+function processData(data, threeMonthsAgo) {
+  var ganttChartDatas = [];
+
+  data.forEach(function(row) {
+    var endDate = new Date(row[4]);
     if (endDate == "Invalid Date" || endDate < threeMonthsAgo) {
-      continue;
-    }
-    var referenceNo = data[i][0];
-    var cableSystem = data[i][1];
-    var startDate = data[i][3];
-    var incidentType = data[i][8];
-    var location = data[i][12];
-    var rootCause = data[i][13];
-
-    var segments = [];
-    if (data[i][9] != "") {
-      segments[0] = cableSystem + " " + data[i][9];
-    } else if (data[i][10] != "") {
-      segments[1] = cableSystem + " " + data[i][9];
-    } else if (data[i][11] != "") {
-      segments[2] = cableSystem + " " + data[i][11];
+      return;
     }
 
-    for (var j = 0; j < 3; j++) {
-      var affectedSegment;
-      if (segments[j] != undefined) {
-        affectedSegment = segments[j];
+    var segments = [
+      row[9] ? row[1] + " " + row[9] : undefined,
+      row[10] ? row[1] + " " + row[10] : undefined,
+      row[11] ? row[1] + " " + row[11] : undefined
+    ];
+
+    segments.forEach(function(affectedSegment) {
+      if (affectedSegment) {
         ganttChartDatas.push({
-          referenceNo: referenceNo,
-          cableSystem: cableSystem,
+          referenceNo: row[0],
+          cableSystem: row[1],
           affectedSegment: affectedSegment,
-          startDate: startDate.toString(),
+          startDate: row[3].toString(),
           endDate: endDate.toString(),
-          incidentType: incidentType,
-          location: location,
-          rootCause: rootCause
+          incidentType: row[8],
+          location: row[12],
+          rootCause: row[13]
         });
-
       }
+    });
+  });
 
-
-    }
-  }
-
-    for (var i = 0; i < data2.length; i++) {
-    var endDate = new Date(data2[i][4]);
-    var referenceNo = data2[i][0];
-    var cableSystem = data2[i][1];
-    var startDate = data2[i][3];
-    var incidentType = data2[i][8];
-    var location = data2[i][12];
-    var rootCause = data2[i][13];
-
-    var segments = [];
-    if (data2[i][9] != "") {
-      segments[0] = cableSystem + " " + data2[i][9];
-    } else if (data2[i][10] != "") {
-      segments[1] = cableSystem + " " + data2[i][9];
-    } else if (data2[i][11] != "") {
-      segments[2] = cableSystem + " " + data2[i][11];
-    }
-
-    for (var j = 0; j < 3; j++) {
-      var affectedSegment;
-      if (segments[j] != undefined) {
-        affectedSegment = segments[j];
-        ganttChartDatas.push({
-          referenceNo: referenceNo,
-          cableSystem: cableSystem,
-          affectedSegment: affectedSegment,
-          startDate: startDate.toString(),
-          endDate: endDate.toString(),
-          incidentType: incidentType,
-          location: location,
-          rootCause: rootCause
-        });
-
-      }
-
-    }
-  }
   return ganttChartDatas;
 }
 

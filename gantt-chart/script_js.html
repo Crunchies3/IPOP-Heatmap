@@ -9,7 +9,7 @@
     function initializeGantt() {
         console.log("refreshing gantt chart");
         addCurrentDateMarker();
-        google.script.run.withSuccessHandler(addToChart).getCableNames();
+        google.script.run.withSuccessHandler(addToChart).fetchPast3monthsAndCurrDate();
     }
     function startAutoRefresh() {
         // Initialize the map immediately upon loading
@@ -55,8 +55,11 @@
         { name: "start_date", label: "START", width: "100" },
         { name: "duration", label: "DAYS", width: "100" },
         { name: "end_date", label: "END", width: "100" },
-        { name: "incidentType", hide: true }
-
+        { name: "incidentType", hide: true },
+        { name: "location", hide: true },
+        { name: "rootCause", hide: true },
+        { name: "referenceNo", hide: true },
+        { name: "status", hide: true }
     ];
     gantt.plugins({
         fullscreen: true,
@@ -92,9 +95,10 @@
     };
 
     gantt.templates.tooltip_text = function (start, end, task) {
-        return "<b>Cable:</b> " + task.text + "<br/><b>Start date:</b> " +
-            gantt.templates.tooltip_date_format(start) +
-            "<br/><b>End date:</b> " + gantt.templates.tooltip_date_format(end);
+        return "<b>Reference No.:</b> " + task.referenceNo + "<br/><b>Location:</b> " +
+            task.location +
+            "<br/><b>Root Cause:</b> " + task.rootCause + "<br/><b>Status:</b> " +
+            task.status;
     };
 
 
@@ -113,17 +117,17 @@
 
         };
         var dataLength = Object.keys(data.tasks).length;
-        affectedCables.combinedCableNames.forEach(cables => {
+        affectedCables.forEach(cables => {
             dataLength++;
             var currentDate = new Date();
             var startD;
             var endDate = cables.endDate;
             var parentId;
-            var splitted = cables.combinedName.trim().split(" ");
-            var cableType = splitted[0];
+            var cableType = cables.cableSystem;
             var colored;
             var incidentType = cables.incidentType;
             var progressed;
+            var status;
 
 
 
@@ -160,6 +164,13 @@
                 var elapsedDuration = currentDate - startD;
                 progressed = Math.min(1, elapsedDuration / totalDuration);
             }
+            if (progressed == 0) {
+                status = "Upcoming";
+            } else if (progressed == 1) {
+                status = "Completed";
+            } else {
+                status = "Ongoing";
+            }
 
 
             //parsing dates for the gantt chart to work (dd-mm-yyyy)
@@ -168,19 +179,24 @@
 
             data.tasks.push({
                 id: dataLength,
-                text: cables.combinedName.trim(),
+                text: cables.affectedSegment,
                 start_date: startD,
                 end_date: endDate,
                 parent: parentId,
                 color: colored,
                 incidentType: cables.incidentType,
-                progress: progressed
+                progress: progressed,
+                location: cables.location,
+                rootCause: cables.rootCause,
+                status: status,
+                referenceNo: cables.referenceNo
             });
 
         });
 
         gantt.parse(data);
         hideSpinner();
+        gantt.showDate(new Date());
     }
 
     function formatDate(date) {

@@ -156,10 +156,8 @@
                     clearCollections();
                     isYear = true;
                     setYear(self.selectedYear);
-                    //setMonthOrYear(self.selectedMonth, self.selectedYear);
                     getReport(cleanReport);
                     loadChart();
-                    aggregateTicketsByYear();
                     document.getElementById('reportType').innerText = 'Yearly'
                 },
                 clickMonth(event, self) {
@@ -234,7 +232,7 @@
     var globalSelectedDates = [];
     var globalSelectedYear = new Date().getFullYear();
     var globalSelectedMonth = new Date().getMonth();
-    var isYear = true;
+    var isYear = false;
     //TODO Make a Collection --- sa papel ani ang flow--- OBJECT - ARRAY - OBJECT - ARRAY
     var collections = [{
         cableName: 'SEAUS',

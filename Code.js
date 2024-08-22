@@ -8,7 +8,7 @@ function doGet(e) {
     return htmloutput;
   }
   else if (e.parameter['page'] == 'stats') {
-    var htmloutput = HtmlService.createTemplateFromFile('dashboard' + '/' + 'dashboard').evaluate().setTitle('Statistics View');
+    var htmloutput = HtmlService.createTemplateFromFile('dashboard' + '/' + 'dashboard').evaluate().setTitle('Dashboard View');
     return htmloutput;
   }
 
@@ -359,9 +359,6 @@ function addDataToSheetNotif(sheetName, majorIncidents) {
 
 
   return 'success';
-}
-function fetch() {
-  console.log(getCableNames().combinedCableNames);
 }
 
 function getCableNames() {

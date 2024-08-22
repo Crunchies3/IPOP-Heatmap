@@ -37,34 +37,6 @@
                         </div>
                     </div>
                     <br>
-                    <div class="row ">
-                        <hr>
-                        <div class="col-md-4">
-                            <label for="inputNotificationDateTime" class="form-label">Notification Date and
-                                Time:</label>
-                            <input type="datetime-local" class="form-control" id="inputNotificationDateTime" required>
-                            <div class="invalid-feedback">
-                                Please select date and time.
-                            </div>
-                        </div>
-
-                        <div class="col-md-4">
-                            <label for="inputStartDateTimeUTC" class="form-label">Start Date and Time (UTC):</label>
-                            <input type="datetime-local" class="form-control" id="inputStartDateTimeUTC" required>
-                            <div class="invalid-feedback">
-                                Please select start date and time.
-                            </div>
-                        </div>
-
-                        <div class="col-md-4">
-                            <label for="inputEndDateTimeUTC" class="form-label">End Date and Time (UTC):</label>
-                            <input type="datetime-local" class="form-control" id="inputEndDateTimeUTC" required>
-                            <div class="invalid-feedback">
-                                Please select end date and time.
-                            </div>
-                        </div>
-                    </div>
-                    <br>
                     <div class="row">
                         <hr>
                         <div class="col-md-3 d-none" style="display: none;">
@@ -91,15 +63,43 @@
                         </div>
 
                         <div class="col-md-6">
-                            <label for="inputIncidentType" class="form-label">Incident Type:</label>
+                            <label for="inputIncidentType" class="form-label">Event Type:</label>
                             <select class="form-select" id="inputIncidentType" required>
-                                <option value="" disabled selected>Select Incident Type</option>
+                                <option value="" disabled selected>Select Event Type</option>
                                 <option value="Outage">Outage</option>
                                 <option value="Planned Activity">Planned Activity</option>
                                 <option value="Partial Outage">Partial Outage</option>
                             </select>
                             <div class="invalid-feedback">
-                                Please select an incident type.
+                                Please select an event type.
+                            </div>
+                        </div>
+                    </div>
+                    <br>
+                    <div class="row ">
+                        <hr>
+                        <div class="col-md-4">
+                            <label for="inputNotificationDateTime" class="form-label">Notification Date and
+                                Time:</label>
+                            <input type="datetime-local" class="form-control" id="inputNotificationDateTime" required>
+                            <div class="invalid-feedback">
+                                Please select date and time.
+                            </div>
+                        </div>
+
+                        <div class="col-md-4">
+                            <label for="inputStartDateTimeUTC" class="form-label">Start Date and Time (UTC):</label>
+                            <input type="datetime-local" class="form-control" id="inputStartDateTimeUTC" required>
+                            <div class="invalid-feedback">
+                                Please select start date and time.
+                            </div>
+                        </div>
+
+                        <div class="col-md-4">
+                            <label for="inputEndDateTimeUTC" class="form-label">End Date and Time (UTC):</label>
+                            <input type="datetime-local" class="form-control" id="inputEndDateTimeUTC" required>
+                            <div class="invalid-feedback">
+                                Please select end date and time.
                             </div>
                         </div>
                     </div>

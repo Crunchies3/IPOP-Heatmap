@@ -1,29 +1,10 @@
 <script type="text/javascript">
+
     window.onload = (event) => {
         //load every data to a array
         showSpinner();
         startAutoRefresh();
         gantt.init("gantt_here");
-    }
-
-    function initializeGantt() {
-        console.log("refreshing gantt chart");
-        addCurrentDateMarker();
-        google.script.run.withSuccessHandler(addToChart).fetchPast3monthsAndCurrDate();
-    }
-    function startAutoRefresh() {
-        // Initialize the map immediately upon loading
-        initializeGantt();
-        // Set an interval to call initializeMap every 5 minute
-        setInterval(initializeGantt, 1 * 60 * 1000);
-    }
-    function showSpinner() {
-        document.getElementById('spinnerModal').style.display = 'block';
-    }
-
-    // Function to hide the spinner
-    function hideSpinner() {
-        document.getElementById('spinnerModal').style.display = 'none';
     }
 
     //disabling user interaction in ganttchart
@@ -67,15 +48,7 @@
         marker: true
     });
 
-    // Adding current date marker
-    function addCurrentDateMarker() {
-        var today = new Date();
-        gantt.addMarker({
-            start_date: today, // the current date
-            css: "today-marker", // a CSS class applied to the marker
-            text: "Today", // the label text
-        });
-    }
+    
 
     gantt.templates.task_text = function (start, end, task) {
         return task.incidentType;
@@ -103,9 +76,37 @@
 
 
 
+    function initializeGantt() {
+        console.log("refreshing gantt chart");
+        addCurrentDateMarker();
+        google.script.run.withSuccessHandler(addToChart).getCableNames();
+    }
+    function startAutoRefresh() {
+        // Initialize the map immediately upon loading
+        initializeGantt();
+        // Set an interval to call initializeMap every 5 minute
+        setInterval(initializeGantt, 1 * 60 * 1000);
+    }
+    function showSpinner() {
+        document.getElementById('spinnerModal').style.display = 'block';
+    }
 
+    // Function to hide the spinner
+    function hideSpinner() {
+        document.getElementById('spinnerModal').style.display = 'none';
+    }
 
-    //fetching datas
+    // Adding current date marker
+    function addCurrentDateMarker() {
+        var today = new Date();
+        gantt.addMarker({
+            start_date: today, // the current date
+            css: "today-marker", // a CSS class applied to the marker
+            text: "Today", // the label text
+        });
+    }
+
+    //fetching data
     function addToChart(affectedCables) {
         var data = {
             tasks: [
@@ -195,8 +196,11 @@
         });
 
         gantt.parse(data);
+        
         hideSpinner();
+
         gantt.showDate(new Date());
+
     }
 
     function formatDate(date) {
@@ -206,6 +210,4 @@
 
         return `${day}-${month}-${year}`;
     }
-
-
 </script>

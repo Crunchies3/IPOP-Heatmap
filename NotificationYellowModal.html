@@ -34,19 +34,16 @@
 <script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.29.1/moment.min.js"></script>
 <link href="https://cdn.datatables.net/v/bs5/dt-2.1.3/r-3.0.2/datatables.min.css" rel="stylesheet">
 
-
 <script>
 
   window.onload = startAutoRefresh();
-
 
   function startAutoRefresh() {
     fetchDataFromNotifTable(); // Call immediately on load
     setInterval(fetchDataFromNotifTable, 1 * 60 * 1000); // Repeat every 5 minutes
   }
-  // Function to show the selected row data in a modal
+
   function showSelectedRowDataYellow(rowData, rowIndex) {
-    // Set the values of input boxes based on the selected row data
     $('#yedittroubleticket').val(rowData[0]);
     $('#yeditcablesystem').val(rowData[1]);
     $('#yeditndt').val(rowData[2]);
@@ -65,9 +62,7 @@
     $('#yeditaddrem').val(rowData[15]);
     $('#yeditmoyr').val(rowData[16]);
 
-
     $('#ysendtoStartDateBtn').off().on('click', function () {
-
       var troubleTicket = document.getElementById("yedittroubleticket").value;
       var cableSystem = document.getElementById("yeditcablesystem").value;
       var notificationDateTime = document.getElementById("yeditndt").value;
@@ -93,27 +88,22 @@
       $('#spinnerModal').modal('show');
 
       google.script.run.withSuccessHandler(function () {
-        // Close the spinner modal
         $('#spinnerModal').modal('hide');
-        // Show success alert
         showGoogleScriptAlert('Record added successfully. Refresh the page.', 'success');
-
-        // Close the modal
         $('#selectedRowContainerYellow').modal('hide');
-
       }).copyToStartTableWithTheCurrentDate('Start Date', troubleTicket);
-      console.log('Sending to start date==================================')
+
+      console.log('Sending to start date==================================');
       google.script.run.withSuccessHandler().addToActivityLog('toStartDate', troubleTicket, "");
 
       google.script.run.withSuccessHandler(function (url) {
         window.open(url, '_top');
       }).getScriptUrl();
-
     });
 
     // Add click event to "Save Changes" button
     $('#ysaveChangesBtn').off().on('click', function () {
-      // Get updated values from input boxes
+      $('#spinnerModal').modal('show'); // Show spinner
 
       var updatedData = [
         $('#yedittroubleticket').val(),
@@ -135,34 +125,26 @@
         $('#yeditmoyr').val()
       ];
 
-      console.log(updatedData);
-
-      // Call the server-side function to update data in the sheet
       google.script.run.withSuccessHandler(function (result) {
+        $('#spinnerModal').modal('hide'); // Hide spinner
         if (result === 'success') {
-          // Data updated successfully    
           console.log('Data updated in the sheet:', result);
-
           $('#selectedRowContainerYellow').modal('hide');
 
-          // Update the DataTable with the edited data
           var table = $('#notiftableYellow').DataTable();
           var rowNode = table.row(rowIndex).node();
           for (var k = 0; k < updatedData.length; k++) {
             table.cell(rowNode, k).data(updatedData[k]);
           }
-          console.log('Updating==================================')
-          google.script.run.withSuccessHandler().addToActivityLog('Update', $('#yedittroubleticket').val(), "");
 
-          // Show success alert
+          google.script.run.withSuccessHandler().addToActivityLog('Update', $('#yedittroubleticket').val(), "");
           showGoogleScriptAlert('Record updated successfully. Refresh the page.', 'success');
+
           google.script.run.withSuccessHandler(function (url) {
             window.open(url, '_top');
           }).getScriptUrl();
         } else {
-          // Data update failed
           console.error('Error updating data:', result);
-          $('#spinnerModal').modal('hide');
           showGoogleScriptAlert('Failed to update record. Please try again.', 'error');
         }
       }).updateRowMI('Notifications', rowData[0], updatedData);
@@ -170,31 +152,24 @@
 
     // Add click event to "Delete" button
     $('#ydeleteRowBtn').off().on('click', function () {
-      // Call the server-side function to delete data from the sheet
+      $('#spinnerModal').modal('show'); // Show spinner
+
       google.script.run.withSuccessHandler(function (result) {
+        $('#spinnerModal').modal('hide'); // Hide spinner
         if (result === 'success') {
-          // Data deleted successfully
-          // Show success alert
           showGoogleScriptAlert('Record deleted successfully. Refresh the page.', 'success');
           console.log('Data deleted from the sheet:', result);
-
           // Remove the DataTable row for the deleted data
           table.row(rowIndex).remove().draw();
 
-          console.log('Deleting==================================')
           google.script.run.withSuccessHandler().addToActivityLog('Delete', $('#yedittroubleticket').val(), "");
-
-          // Close the modal
           $('#selectedRowContainerYellow').modal('hide');
+
           google.script.run.withSuccessHandler(function (url) {
             window.open(url, '_top');
           }).getScriptUrl();
-
         } else {
-          // Data deletion failed
           console.error('Error deleting data:', result);
-
-          // Show error alert
           showGoogleScriptAlert('Failed to delete record. Please try again.', 'error');
         }
       }).deleteRowMI('Notifications', rowData[0]);
@@ -204,13 +179,13 @@
   }
 
   fetchDataFromNotifTable();
+
   function fetchDataFromNotifTable() {
     console.log('refreshing the notif table');
-
     // Execute the Google Script function to load DataTables after the page has fully loaded
-    google.script.run.withSuccessHandler(function (data) {
-      console.log('Notif Data received:', data); // Log the data to the console for debugging
 
+    google.script.run.withSuccessHandler(function (data) {
+      console.log('Notif Data received:', data);
       // Destroy existing DataTable instance if it exists
       if ($.fn.DataTable.isDataTable('#notiftableYellow')) {
         $('#notiftableYellow').DataTable().destroy();
@@ -255,7 +230,4 @@
       }
     }).getMIForDataTable('Notifications');
   }
-
-
-
 </script>

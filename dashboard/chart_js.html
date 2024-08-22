@@ -82,8 +82,8 @@
             xAxis: { data: ['SEA-US', 'SJC', 'C2C', 'EAC', 'TGN-IA/P'] },
             yAxis: {},
             series: [
-                { name: 'Outage', type: 'bar', stack: 'total', label: { show: true }, emphasis: { focus: 'series' }, data: [incidentType()['SEAUS'].Outage, incidentType()['C2C'].Outage, incidentType()['TGN'].Outage, incidentType()['SJC'].Outage, incidentType()['EAC'].Outage] },
-                { name: 'Planned Activity', type: 'bar', stack: 'total', label: { show: true }, emphasis: { focus: 'series' }, data: [incidentType()['SEAUS'].Planned, incidentType()['C2C'].Planned, incidentType()['TGN'].Planned, incidentType()['SJC'].Planned, incidentType()['EAC'].Planned] }
+                { name: 'Outage', type: 'bar', stack: 'total', label: { show: true }, emphasis: { focus: 'series' }, data: [incidentType()['SEAUS'].Outage, incidentType()['SJC'].Outage, incidentType()['C2C'].Outage, incidentType()['EAC'].Outage, incidentType()['TGN'].Outage] },
+                { name: 'Planned Activity', type: 'bar', stack: 'total', label: { show: true }, emphasis: { focus: 'series' }, data: [incidentType()['SEAUS'].Planned, incidentType()['SJC'].Planned, incidentType()['C2C'].Planned, incidentType()['EAC'].Planned, incidentType()['TGN'].Planned] }
             ]
         });
 
@@ -301,7 +301,6 @@
 
     function startUpLoadData(cables) {
         var dirtyReportHandler = cables;
-        console.log(dirtyReportHandler);
         const cleanReportHandler = (cables) => {
             const uniqueTicketNames = new Set();
             const filteredCombinedCableNames = [];
@@ -317,7 +316,6 @@
 
         cleanReport = cleanReportHandler(dirtyReportHandler);
         getReport(cleanReport);
-        console.log(cleanReport);
         loadChart();
         hideSpinner();
         document.getElementById('reportType').innerText = 'Monthly'
@@ -458,13 +456,13 @@
             // Loop through incident types and count Outage and Planned incident
             collection.incidentType.forEach((incidentArray, index) => {
                 incidentArray.forEach((incidentType) => {
-
                     if (index === 0) {
                         // Index 0 corresponds to 'Outage'
                         totalIncident[cableName].Outage += incidentType.dry.length;
                         totalIncident[cableName].Outage += incidentType.wet.length;
                         totalIncident[cableName].Outage += incidentType.under.length;
                         totalIncident[cableName].Outage += incidentType.back.length;
+
                     } else if (index === 1) {
                         // Index 1 corresponds to 'Planned'
                         totalIncident[cableName].Planned += incidentType.dry.length;
@@ -475,6 +473,7 @@
                 });
             });
         });
+        console.log(totalIncident);
         return totalIncident;
     }
     function generateTotalRootCause(location_cause) {

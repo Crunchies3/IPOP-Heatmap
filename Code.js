@@ -270,6 +270,7 @@ function updateRowMI(sheetName, key, updatedData) {
   var startData = startSheet.getDataRange().getValues();
   var data = sheet.getDataRange().getValues();
 
+  var status;
 
   for (var i = 0; i < data.length; i++) {
     if (data[i][0] == key) {
@@ -279,18 +280,20 @@ function updateRowMI(sheetName, key, updatedData) {
         // Format the cell as plain text
         sheet.getRange(i + 1, k + 1).setNumberFormat('yyyy-mm-dd hh:mm');
       }
+      status = "success";
     }
   }
   for (var i = 0; i < startData.length; i++) {
     if (startData[i][0] == key) {
-      // Update the row with the new data
-      for (var k = 0; k < updatedData.length; k++) {
-        startSheet.getRange(i + 1, k + 1).setValue(updatedData[k]);
-        startSheet.getRange(i + 1, k + 1).setNumberFormat('yyyy-mm-dd hh:mm');
+      if(status == "success"){
+        for (var k = 0; k < updatedData.length; k++) {
+          startSheet.getRange(i + 1, k + 1).setValue(updatedData[k]);
+          startSheet.getRange(i + 1, k + 1).setNumberFormat('yyyy-mm-dd hh:mm');
+        }
       }
-      return 'success';
     }
   }
+  return status;
 }
 
 
@@ -300,12 +303,13 @@ function deleteRowMI(sheetName, col1) {
   var startSheet = SpreadsheetApp.openById(spreadsheetId).getSheetByName('Start Date');
   var startData = startSheet.getDataRange().getValues();
   var data = sheet.getDataRange().getValues();
-
+  var status;
   // Find the row index based on the col1
   var rowIndex = -1;
   for (var i = 0; i < data.length; i++) {
     if (data[i][0] == col1) {
-      rowIndex = i + 1; // Adding 1 to convert from 0-based index to 1-based index
+      rowIndex = i + 1; 
+      status = 'success'; // Adding 1 to convert from 0-based index to 1-based index
       break;
     }
   }
@@ -313,15 +317,16 @@ function deleteRowMI(sheetName, col1) {
   for (var i = 0; i < startData.length; i++) {
     if (startData[i][0] == col1) {
       rowIndexStart = i + 1; // Adding 1 to convert from 0-based index to 1-based index
+      startSheet.deleteRow(rowIndexStart);
       break;
     }
   }
+  
 
   // If rowIndex is found, delete the row
   if (rowIndex !== -1) {
     sheet.deleteRow(rowIndex);
-    startSheet.deleteRow(rowIndexStart);
-    return 'success';
+    return status;
   }
 }
 

@@ -186,6 +186,7 @@
 
           // Close the modal
           $('#selectedRowContainerYellow').modal('hide');
+          
           google.script.run.withSuccessHandler(function (url) {
             window.open(url, '_top');
           }).getScriptUrl();

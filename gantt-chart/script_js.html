@@ -1,4 +1,31 @@
 <script type="text/javascript">
+    window.onload = (event) => {
+        //load every data to a array
+        showSpinner();
+        startAutoRefresh();
+        gantt.init("gantt_here");
+    }
+
+    function initializeGantt() {
+        console.log("refreshing gantt chart");
+        addCurrentDateMarker();
+        google.script.run.withSuccessHandler(addToChart).getCableNames();
+    }
+    function startAutoRefresh() {
+        // Initialize the map immediately upon loading
+        initializeGantt();
+        // Set an interval to call initializeMap every 5 minute
+        setInterval(initializeGantt, 1 * 60 * 1000);
+    }
+    function showSpinner() {
+        document.getElementById('spinnerModal').style.display = 'block';
+    }
+
+    // Function to hide the spinner
+    function hideSpinner() {
+        document.getElementById('spinnerModal').style.display = 'none';
+    }
+
     //disabling user interaction in ganttchart
     gantt.config.drag_resize = false;
     gantt.config.drag_progress = false;
@@ -47,9 +74,6 @@
         });
     }
 
-    // Call the function to add the current date marker
-    addCurrentDateMarker();
-
     gantt.templates.task_text = function (start, end, task) {
         return task.incidentType;
     };
@@ -79,6 +103,15 @@
 
     //fetching datas
     function addToChart(affectedCables) {
+        var data = {
+            tasks: [
+                { id: 1, text: "SJC", color: "#522258", incidentType: "SJC", unscheduled: true, open: true, type: "project" },
+                { id: 2, text: "SEAUS", color: "#1A4D2E", incidentType: "SEAUS", unscheduled: true, open: true, type: "project" },
+                { id: 3, text: "TGN", color: "#8B322C", incidentType: "TGN", unscheduled: true, open: true, type: "project" },
+                { id: 4, text: "C2C/EAC", color: "#A0153E", incidentType: "C2C/EAC", unscheduled: true, open: true, type: "project" }
+            ]
+
+        };
         var dataLength = Object.keys(data.tasks).length;
         affectedCables.combinedCableNames.forEach(cables => {
             dataLength++;
@@ -147,7 +180,7 @@
         });
 
         gantt.parse(data);
-
+        hideSpinner();
     }
 
     function formatDate(date) {
@@ -158,19 +191,5 @@
         return `${day}-${month}-${year}`;
     }
 
-
-    //date format DD-MM-YYYY
-    var data = {
-        tasks: [
-            { id: 1, text: "SJC", color: "#522258", incidentType: "SJC", unscheduled: true, open: true, type: "project" },
-            { id: 2, text: "SEAUS", color: "#1A4D2E", incidentType: "SEAUS", unscheduled: true, open: true, type: "project" },
-            { id: 3, text: "TGN", color: "#8B322C", incidentType: "TGN", unscheduled: true, open: true, type: "project" },
-            { id: 4, text: "C2C/EAC", color: "#A0153E", incidentType: "C2C/EAC", unscheduled: true, open: true, type: "project" }
-        ]
-
-    };
-
-    google.script.run.withSuccessHandler(addToChart).getCableNames();
-    gantt.init("gantt_here");
 
 </script>

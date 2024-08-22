@@ -513,6 +513,135 @@ function getCableNames() {
   console.log(combinedCableNames);
   return { combinedCableNames: combinedCableNames, combinedCableNamesStart: combinedCableNamesStart };
 }
+
+function getAllCableNames() {
+  var ss = SpreadsheetApp.openById('1vW8zgcrQC02iRLkWJSOIjfnqN5_lRNMgNjV6IBZF__c');
+  var combinedCableNames = [];
+  var sheetNames = ['End Date', 'Notifications']
+  for (let i = 0; i < sheetNames.length; i++) {
+    console.log(sheetNames[i]);
+    var sheet = ss.getSheetByName(sheetNames[i]);
+    var lastRow = sheet.getLastRow();
+    var cableNamesRange = sheet.getRange('A2:N' + lastRow);
+    var data = cableNamesRange.getValues(); //getting the notif rows of affected segment
+
+
+    // var sheetstart = ss.getSheetByName('Start Date');
+    // var lastRowstart = sheetstart.getLastRow();
+    // var cableNamesRangestart = sheetstart.getRange('B2:L' + lastRowstart);
+    // var datastart = cableNamesRangestart.getValues(); //getting the start rows of affected segment
+
+
+    //this array stores all the affected segments/cablelines on the notification sheet (yellow)
+
+    var fullPaths = getFullPaths();
+
+    //processing the notif values
+    data.forEach(function (row) {
+      const cableNameB = row[1].trim(); //this extracts the cable System
+      const cableNameJ = row[9].trim(); //this extracts the Affected Segment1
+      const cableNameK = row[10].trim(); //this extracts the Affected Segment2
+      const cableNameL = row[11].trim();  //this extracts the Affected Segment3
+
+      var incidentType = row[8].trim();
+      var ticketName = row[0];
+      var location = row[12];
+      var rootCauseHigh = row[13];
+
+      var notifiedDate = '';
+      var startDate = '';
+      var endDate = '';
+      if (row[2] != '') {
+        notifiedDate = formatDates(row[2]);
+      }
+
+      if (row[3] != '') {
+        startDate = formatDates(row[3]);
+      }
+
+      if (row[4] != '') {
+        endDate = formatDates(row[4]);
+      }
+
+
+      if (cableNameB != "" && cableNameJ != "") {
+        var index = fullPaths.findIndex(({ value }) => value === cableNameB + " " + cableNameJ);
+        if (index >= 0) {
+          var firstCable = fullPaths[index];
+        }
+      }
+      if (cableNameK != "") {
+        var index = fullPaths.findIndex(({ value }) => value === cableNameB + " " + cableNameK);
+        if (index >= 0) {
+          var secondCable = fullPaths[index];
+        }
+      }
+      if (cableNameL != "") {
+        var index = fullPaths.findIndex(({ value }) => value === cableNameB + " " + cableNameL);
+        if (index >= 0) {
+          var thirdCable = fullPaths[index];
+        }
+      }
+
+
+      let bool1 = processCableSegments(firstCable, startDate, endDate, notifiedDate, incidentType, ticketName, location, rootCauseHigh);
+      let bool2 = processCableSegments(secondCable, startDate, endDate, notifiedDate, incidentType, ticketName, location, rootCauseHigh);
+      let bool3 = processCableSegments(thirdCable, startDate, endDate, notifiedDate, incidentType, ticketName, location, rootCauseHigh);
+
+      if (!(bool1 || bool2 || bool3)) {
+        if (cableNameL !== "") addToCombinedCableNames(cableNameB, cableNameL, notifiedDate, startDate, endDate, incidentType, ticketName, location, rootCauseHigh);
+        if (cableNameK !== "") addToCombinedCableNames(cableNameB, cableNameK, notifiedDate, startDate, endDate, incidentType, ticketName, location, rootCauseHigh);
+        addToCombinedCableNames(cableNameB, cableNameJ, notifiedDate, startDate, endDate, incidentType, ticketName, location, rootCauseHigh);
+      }
+
+      function addToCombinedCableNames(cableSystem, cableColumn, notifiedDate, startDate, endDate, incidentType, ticketName, location, rootCauseHigh) {
+        const combinedName = `${cableSystem} ${cableColumn}`;
+        combinedCableNames.push({
+          combinedName: combinedName,
+          notifiedDate: notifiedDate,
+          startDate: startDate,
+          endDate: endDate,
+          incidentType: incidentType,
+          ticketName: ticketName,
+          location: location,
+          rootCauseHigh: rootCauseHigh
+        });
+      }
+
+
+      function processCableSegments(cableSegments, startDate, endDate, notifiedDate, incidentType, ticketName, location, rootCauseHigh) {
+        if (cableSegments != undefined || cableSegments != null) {
+          var objectLength = Object.keys(cableSegments).length;
+        }
+        if (objectLength > 0) {
+          for (var i = 1; i < objectLength; i++) {
+            var pathKey = `path${i}`;
+            if (cableSegments[pathKey] === "") {
+              break;
+            }
+            else {
+              combinedCableNames.push({
+                combinedName: cableSegments[pathKey],
+                notifiedDate: notifiedDate,
+                startDate: startDate,
+                endDate: endDate,
+                incidentType: incidentType,
+                ticketName: ticketName,
+                location: location,
+                rootCauseHigh: rootCauseHigh
+              });
+            }
+          }
+          return true;
+        }
+        return false;
+      }
+    });
+  }
+  console.log(combinedCableNames);
+  return { combinedCableNames: combinedCableNames };
+}
+
 function getCurrentDateTableFormat(now) {
 
 

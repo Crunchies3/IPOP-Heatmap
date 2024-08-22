@@ -51,10 +51,7 @@
     LOG</button>
 
   <?!= HtmlService.createHtmlOutputFromFile('activitylog.html').getContent(); ?>
-  <div id="buttonsForbottom">
-    <button class="btn btn-light" onclick="openBottomPanel()" data-tooltip="View details"><i
-        class="fa fa-angle-double-up"></i></button>
-  </div>
+
 
   <div id="bottom_date_picker">
     <?!= HtmlService.createHtmlOutputFromFile('date_slider.html').getContent(); ?>
@@ -131,11 +128,7 @@
   <?!= HtmlService.createHtmlOutputFromFile('NotificationGreenDelete/Updated.html').getContent(); ?>
   <?!= HtmlService.createHtmlOutputFromFile('UpdateModal.html').getContent(); ?>
 
-  <div id="bottom-panel">
 
-    <?!= HtmlService.createHtmlOutputFromFile('BottomPanel.html').getContent(); ?>
-
-  </div>
 
   <!-- Side panel -->
   <div id="side-panel">

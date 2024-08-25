@@ -101,11 +101,11 @@
             },
             yAxis: { type: 'value' },
             series: [
-                { name: 'SEA-US', type: 'line', data: [78, 162, 94, 140, 55, 187, 123, 82, 149, 71], emphasis: { focus: 'series' } },
-                { name: 'SJC', type: 'line', data: [134, 76, 189, 63, 95, 144, 182, 112, 153, 67, 125, 192], emphasis: { focus: 'series' } },
-                { name: 'C2C', type: 'line', data: [158, 72, 142, 99, 186, 54, 135, 178, 81, 147, 162, 105], emphasis: { focus: 'series' } },
-                { name: 'EAC', type: 'line', data: [90, 177, 68, 121, 159, 50, 130, 84, 196, 73, 141, 111], emphasis: { focus: 'series' } },
-                { name: 'TGN-IA/P', type: 'line', data: [118, 67, 159, 84, 142, 93, 177, 53, 135, 101, 168, 190], emphasis: { focus: 'series' } }
+                { name: 'SEA-US', type: 'line', data: getCableYearlyReportToGraph().SEAUS, emphasis: { focus: 'series' } },
+                { name: 'SJC', type: 'line', data: getCableYearlyReportToGraph().SJC, emphasis: { focus: 'series' } },
+                { name: 'C2C', type: 'line', data: getCableYearlyReportToGraph().C2C, emphasis: { focus: 'series' } },
+                { name: 'EAC', type: 'line', data: getCableYearlyReportToGraph().EAC, emphasis: { focus: 'series' } },
+                { name: 'TGN-IA/P', type: 'line', data: getCableYearlyReportToGraph().TGN, emphasis: { focus: 'series' } }
             ]
         });
 
@@ -314,6 +314,7 @@
 
         cleanReport = cleanReportHandler(dirtyReportHandler);
         getReport(cleanReport);
+        getCableYearlyReportToGraph();
         loadChart();
         hideSpinner();
         document.getElementById('reportType').innerText = 'Monthly'
@@ -570,6 +571,35 @@
         });
 
         return Object.values(totalRootCause[location_cause]);
+    }
+
+    function getCableYearlyReportToGraph() {
+        let yearlyReport = { 
+            SEAUS: Array(12).fill(0),
+            SJC: Array(12).fill(0),
+            C2C: Array(12).fill(0),
+            EAC: Array(12).fill(0),
+            TGN: Array(12).fill(0)
+        }
+
+        collections.forEach((collection) => {
+            collection.incidentType.forEach((incidentType) => {
+                incidentType.forEach((element) => {
+                    for (let key in element) {
+                        if (element[key].length != 0) {
+                            for (let i = 0; i < element[key].length; i++) {
+                                let dateHolder = new Date(element[key][i].startDate)
+                                if (dateHolder.getFullYear() == globalSelectedYear) {
+                                    yearlyReport[collection.cableName][dateHolder.getMonth()] += 1;
+                                }
+                            }
+                        }
+                    }
+                })
+            })
+        })
+        console.log(yearlyReport);
+        return yearlyReport;
     }
 
 </script>

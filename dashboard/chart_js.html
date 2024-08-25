@@ -151,8 +151,8 @@
             },
             actions: {
                 clickYear(event, self) {
-                    self.settings.selected.dates = [];
-                    self.update({ dates: true });
+                    // self.settings.selected.dates = [];
+                    // self.update({ dates: true });
                     clearCollections();
                     isYear = true;
                     setYear(self.selectedYear);
@@ -161,8 +161,8 @@
                     document.getElementById('reportType').innerText = 'Yearly'
                 },
                 clickMonth(event, self) {
-                    self.settings.selected.dates = [];
-                    self.update({ dates: true });
+                    // self.settings.selected.dates = [];
+                    // self.update({ dates: true });
                     clearCollections();
                     setMonthOrYear(self.selectedMonth, self.selectedYear);
                     isYear = false;
@@ -171,8 +171,8 @@
                     document.getElementById('reportType').innerText = 'Monthly'
                 },
                 clickArrow(event, self) {
-                    self.settings.selected.dates = [];
-                    self.update({ dates: true });
+                    // self.settings.selected.dates = [];
+                    // self.update({ dates: true });
                     clearCollections();
                     setMonthOrYear(self.selectedMonth, self.selectedYear);
                     isYear = false;
@@ -260,40 +260,43 @@
         [{ dry: [], wet: [], under: [], back: [] }]]
     }]; // Collections that will show in the graph
     //Initialized para dili labad mag debug
-
+    
 
     function getReport(cables) {
         var a = 0;
         var box_of_cables = []
-        if (globalSelectedDates.length > 1) {
-            for (let i = 0; i < cables.length; i++) {
-                if (new Date(cables[i].startDate).setHours(0, 0, 0, 0) >= new Date(globalSelectedDates[0]).setHours(0, 0, 0, 0) && new Date(cables[i].startDate).setHours(0, 0, 0, 0) <= new Date(globalSelectedDates[globalSelectedDates.length - 1]).setHours(0, 0, 0, 0)) {
-                    box_of_cables.push(cables[i]);
-                }
-            }
-            incidentTypeChecker(box_of_cables)
-            console.log(collections);
-        }
+        incidentTypeChecker(cables);
+        //console.log(cables);
+        // if (globalSelectedDates.length > 1) {
+        //     for (let i = 0; i < cables.length; i++) {
+        //         if (new Date(cables[i].startDate).setHours(0, 0, 0, 0) >= new Date(globalSelectedDates[0]).setHours(0, 0, 0, 0) && new Date(cables[i].startDate).setHours(0, 0, 0, 0) <= new Date(globalSelectedDates[globalSelectedDates.length - 1]).setHours(0, 0, 0, 0)) {
+        //             box_of_cables.push(cables[i]);
+        //         }
+        //     }
+        //     incidentTypeChecker(box_of_cables)
+        //     console.log(collections);
+        // }
 
-        else if (isYear == true) {
-            for (let i = 0; i < cables.length; i++) {
-                if (new Date(cables[i].startDate).getFullYear() == globalSelectedYear && new Date(cables[i].startDate).getFullYear() != isNaN()) {
-                    box_of_cables.push(cables[i]);
-                }
-            }
-            incidentTypeChecker(box_of_cables);
-            console.log(collections);
-        }
+        // else if (isYear == true) {
+        //     for (let i = 0; i < cables.length; i++) {
+        //         if (new Date(cables[i].startDate).getFullYear() == globalSelectedYear && new Date(cables[i].startDate).getFullYear() != isNaN()) {
+        //             box_of_cables.push(cables[i]);
+        //         }
+        //     }
+        //     incidentTypeChecker(box_of_cables);
+        //     console.log(collections);
+        // }
 
-        else {
-            cables.forEach(element => {
-                if (new Date(element.startDate).getMonth() == globalSelectedMonth && new Date(element.startDate).getFullYear() == globalSelectedYear) { // added one cuz 1st month starts at 0
-                    box_of_cables.push(element)
-                }
-            });
-            incidentTypeChecker(box_of_cables);
-            console.log(collections);
-        }
+        // else {
+        //     cables.forEach(element => {
+        //         if (new Date(element.startDate).getMonth() == globalSelectedMonth && new Date(element.startDate).getFullYear() == globalSelectedYear) { // added one cuz 1st month starts at 0
+        //             box_of_cables.push(element)
+        //         }
+        //     });
+        //     incidentTypeChecker(box_of_cables);
+        //     console.log(collections);
+        // }
+        getCableYearlyReportToGraph();
         return collections;
     }
 
@@ -314,7 +317,6 @@
 
         cleanReport = cleanReportHandler(dirtyReportHandler);
         getReport(cleanReport);
-        getCableYearlyReportToGraph();
         loadChart();
         hideSpinner();
         document.getElementById('reportType').innerText = 'Monthly'
@@ -338,9 +340,9 @@
 
 
     // Checker para dili sakit sa mata once mag debug
-    // FIX LATER
     function incidentTypeChecker(cable) {
         for (var i = 0; i < cable.length; i++) {
+            //console.log(cable[i]);
             if (cable[i].incidentType.toString() == "Outage") locationChecker(cable[i], 0);
             else if (cable[i].incidentType.toString() == 'Partial Outage') locationChecker(cable[i], 0)
             else locationChecker(cable[i], 1);
@@ -390,29 +392,51 @@
         globalSelectedDates = [];
     }
 
-    function collectAllTicketsForEachCable() {
-        const allTickets = {};
+   function collectAllTicketsForEachCable() {
+    const allTickets = {};
+    console.log(globalSelectedDates);
+    collections.forEach((collection) => {
+        const cableName = collection.cableName;
+        const tickets = [];
+        collection.incidentType.forEach((incidentArray, arrayIndex) => {
+            incidentArray.forEach((incidentType) => {
+                for(let key in incidentType) {
+                    if(incidentType[key].length != 0) {
+                        for(let i = 0; i < incidentType[key].length; i++) {
+                            if(isYear == true && new Date(incidentType[key][i].startDate).getFullYear() == globalSelectedYear) {
+                                tickets.push(incidentType[key][i])
+                            }
 
-        collections.forEach((collection) => {
-            const cableName = collection.cableName;
-            const tickets = [];
+                           else if(globalSelectedDates.length > 1 ){
+                                if(new Date(incidentType[key][i].startDate).setHours(0,0,0,0) >= new Date(globalSelectedDates[0]).setHours(0,0,0,0) && new Date(incidentType[key][i].startDate).setHours(0,0,0,0) <= new Date(globalSelectedDates[globalSelectedDates.length - 1]).setHours(0,0,0,0)) {
+                                console.log('passed');
 
-            // Loop through incident types (Outage, Other) and collect tickets
-            collection.incidentType.forEach((incidentArray) => {
-                incidentArray.forEach((incidentType) => {
-                    // Collect tickets from each category (dry, wet, under, back)
-                    tickets.push(...incidentType.dry);
-                    tickets.push(...incidentType.wet);
-                    tickets.push(...incidentType.under);
-                    tickets.push(...incidentType.back);
-                });
+                                tickets.push(incidentType[key][i])
+                                }
+                            }
+                            else if(new Date(incidentType[key][i].startDate).getMonth() == globalSelectedMonth && new Date(incidentType[key][i].startDate).getFullYear() == globalSelectedYear){
+                                console.log('popped');
+                                tickets.push(incidentType[key][i])
+                            }
+                        }
+                    }
+                }
             });
-
-            // Assign the collected tickets to the corresponding cableName
-            allTickets[cableName] = tickets;
         });
-        return allTickets;
-    }
+        // Assign the collected tickets to the corresponding cableName
+        allTickets[cableName] = tickets;
+    });
+
+    return allTickets;
+}
+
+    // function collectAllTicketsForEachCable() {
+    //     const allTickets = {}
+
+    //     for(let i = 0; i < collections.incident;i++){
+            
+    //     }
+    // }
 
     function generateTotalReportedSegments() { // hard
         const totalSegments = {};
@@ -440,7 +464,7 @@
         });
         return totalSegments;
     }
-
+// TODO
     function incidentType() {
         const totalIncident = {};
         collections.forEach((collection) => {
@@ -472,7 +496,9 @@
                 });
             });
         });
-        console.log(totalIncident);
+
+        //TEMPO
+      //  console.log(totalIncident);
         return totalIncident;
     }
     function generateTotalRootCause(location_cause) {
@@ -598,7 +624,8 @@
                 })
             })
         })
-        console.log(yearlyReport);
+        //TEMPO
+     //   console.log(yearlyReport);
         return yearlyReport;
     }
 

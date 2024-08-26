@@ -212,14 +212,44 @@
                 },
                 //for clicking the week number
                 clickWeekNumber(event, number, days, year, self) {
-                    clearCollections();
-                    self.settings.selected.dates = days.map(day => day.dataset.calendarDay)
-                    self.update({ dates: true })
-                    setArrayOfDates(self.selectedDates);
-                    isYear = false;
-                    getReport(cleanReport);
-                    loadChart();
-                    document.getElementById('reportType').innerText = 'Weekly'
+                    // UX IMPROVEMENT
+                    if(weekTriggered == true && globalWeekNumber == number){
+                        weekTriggered = false;
+                        self.settings.selected.dates = [];
+                        self.update({ dates: true })
+                        clearCollections();
+                        setMonthOrYear(self.selectedMonth, self.selectedYear);
+                        isYear = false;
+                        getReport(cleanReport);
+                        loadChart();
+                        setClickWeekNumber(number);
+                        document.getElementById('reportType').innerText = 'Monthly'
+                    }
+
+                    else if(globalWeekNumber == number) {
+                        weekTriggered = true;
+                        clearCollections();
+                        self.settings.selected.dates = days.map(day => day.dataset.calendarDay)
+                        self.update({ dates: true })
+                        setArrayOfDates(self.selectedDates);
+                        isYear = false;
+                        getReport(cleanReport);
+                        loadChart();
+                        setClickWeekNumber(number);
+                        document.getElementById('reportType').innerText = 'Weekly'
+                    }
+                    else {
+                        weekTriggered = true;
+                        clearCollections();
+                        self.settings.selected.dates = days.map(day => day.dataset.calendarDay)
+                        self.update({ dates: true })
+                        setArrayOfDates(self.selectedDates);
+                        isYear = false;
+                        getReport(cleanReport);
+                        loadChart();
+                        setClickWeekNumber(number);
+                        document.getElementById('reportType').innerText = 'Weekly'
+                    }
                 }
             },
         }
@@ -232,7 +262,9 @@
     var globalSelectedDates = [];
     var globalSelectedYear = new Date().getFullYear();
     var globalSelectedMonth = new Date().getMonth();
+    let globalWeekNumber;
     var isYear = false;
+    let weekTriggered = false;
     //TODO Make a Collection --- sa papel ani ang flow--- OBJECT - ARRAY - OBJECT - ARRAY
     var collections = [{
         cableName: 'SEAUS',
@@ -265,40 +297,35 @@
     function getReport(cables) {
         var a = 0;
         var box_of_cables = []
-        incidentTypeChecker(cables);
+        if (globalSelectedDates.length > 1) {
+            for (let i = 0; i < cables.length; i++) {
+                if (new Date(cables[i].startDate).setHours(0, 0, 0, 0) >= new Date(globalSelectedDates[0]).setHours(0, 0, 0, 0) && new Date(cables[i].startDate).setHours(0, 0, 0, 0) <= new Date(globalSelectedDates[globalSelectedDates.length - 1]).setHours(0, 0, 0, 0)) {
+                    box_of_cables.push(cables[i]);
+                }
+            }
+            incidentTypeChecker(box_of_cables)
+            // console.log(collections);
+        }
 
-        //THE CODE BELOW IS THE BIGGEST FLAW! COMMENTED IT AND SLEPT 3 HOURS TO REDO THE LOGIC OF ALL TO MAKE THEM INDEPENDENT TO EACH OTHER THAN BEING DEPENDENT TO COLLECTION
-        //console.log(cables);
-        // if (globalSelectedDates.length > 1) {
-        //     for (let i = 0; i < cables.length; i++) {
-        //         if (new Date(cables[i].startDate).setHours(0, 0, 0, 0) >= new Date(globalSelectedDates[0]).setHours(0, 0, 0, 0) && new Date(cables[i].startDate).setHours(0, 0, 0, 0) <= new Date(globalSelectedDates[globalSelectedDates.length - 1]).setHours(0, 0, 0, 0)) {
-        //             box_of_cables.push(cables[i]);
-        //         }
-        //     }
-        //     incidentTypeChecker(box_of_cables)
-        //     console.log(collections);
-        // }
+        else if (isYear == true) {
+            for (let i = 0; i < cables.length; i++) {
+                if (new Date(cables[i].startDate).getFullYear() == globalSelectedYear && new Date(cables[i].startDate).getFullYear() != isNaN()) {
+                    box_of_cables.push(cables[i]);
+                }
+            }
+            incidentTypeChecker(box_of_cables);
+            // console.log(collections);
+        }
 
-        // else if (isYear == true) {
-        //     for (let i = 0; i < cables.length; i++) {
-        //         if (new Date(cables[i].startDate).getFullYear() == globalSelectedYear && new Date(cables[i].startDate).getFullYear() != isNaN()) {
-        //             box_of_cables.push(cables[i]);
-        //         }
-        //     }
-        //     incidentTypeChecker(box_of_cables);
-        //     console.log(collections);
-        // }
-
-        // else {
-        //     cables.forEach(element => {
-        //         if (new Date(element.startDate).getMonth() == globalSelectedMonth && new Date(element.startDate).getFullYear() == globalSelectedYear) { // added one cuz 1st month starts at 0
-        //             box_of_cables.push(element)
-        //         }
-        //     });
-        //     incidentTypeChecker(box_of_cables);
-        //     console.log(collections);
-        // }
-        getCableYearlyReportToGraph();
+        else {
+            cables.forEach(element => {
+                if (new Date(element.startDate).getMonth() == globalSelectedMonth && new Date(element.startDate).getFullYear() == globalSelectedYear) { // added one cuz 1st month starts at 0
+                    box_of_cables.push(element)
+                }
+            });
+            incidentTypeChecker(box_of_cables);
+            // console.log(collections);
+        }
         return collections;
     }
 
@@ -319,6 +346,7 @@
 
         cleanReport = cleanReportHandler(dirtyReportHandler);
         getReport(cleanReport);
+        getCableYearlyReportToGraph();
         loadChart();
         hideSpinner();
         document.getElementById('reportType').innerText = 'Monthly'
@@ -342,9 +370,9 @@
 
 
     // Checker para dili sakit sa mata once mag debug
+    // FIX LATER
     function incidentTypeChecker(cable) {
         for (var i = 0; i < cable.length; i++) {
-            //console.log(cable[i]);
             if (cable[i].incidentType.toString() == "Outage") locationChecker(cable[i], 0);
             else if (cable[i].incidentType.toString() == 'Partial Outage') locationChecker(cable[i], 0)
             else locationChecker(cable[i], 1);
@@ -396,42 +424,34 @@
 
     function collectAllTicketsForEachCable() {
         const allTickets = {};
+
         collections.forEach((collection) => {
             const cableName = collection.cableName;
             const tickets = [];
-            collection.incidentType.forEach((incidentArray, arrayIndex) => {
-                incidentArray.forEach((incidentType) => {
-                    for (let key in incidentType) {
-                        if (incidentType[key].length != 0) {
-                            for (let i = 0; i < incidentType[key].length; i++) {
-                                if (isYear == true && new Date(incidentType[key][i].startDate).getFullYear() == globalSelectedYear) {
-                                    tickets.push(incidentType[key][i])
-                                }
 
-                                else if (globalSelectedDates.length > 1) {
-                                    if (new Date(incidentType[key][i].startDate).setHours(0, 0, 0, 0) >= new Date(globalSelectedDates[0]).setHours(0, 0, 0, 0) && new Date(incidentType[key][i].startDate).setHours(0, 0, 0, 0) <= new Date(globalSelectedDates[globalSelectedDates.length - 1]).setHours(0, 0, 0, 0)) {
-                                        tickets.push(incidentType[key][i])
-                                    }
-                                }
-                                else if (new Date(incidentType[key][i].startDate).getMonth() == globalSelectedMonth && new Date(incidentType[key][i].startDate).getFullYear() == globalSelectedYear) {
-                                    tickets.push(incidentType[key][i])
-                                }
-                            }
-                        }
-                    }
+            // Loop through incident types (Outage, Other) and collect tickets
+            collection.incidentType.forEach((incidentArray) => {
+                incidentArray.forEach((incidentType) => {
+                    // Collect tickets from each category (dry, wet, under, back)
+                    tickets.push(...incidentType.dry);
+                    tickets.push(...incidentType.wet);
+                    tickets.push(...incidentType.under);
+                    tickets.push(...incidentType.back);
                 });
             });
+
             // Assign the collected tickets to the corresponding cableName
             allTickets[cableName] = tickets;
         });
-
         return allTickets;
     }
-    
-    function generateTotalReportedSegments() {
+
+    function generateTotalReportedSegments() { // hard
         const totalSegments = {};
+
         collections.forEach((collection) => {
             const cableName = collection.cableName;
+
             // Initialize the count object for each cable system
             totalSegments[cableName] = {
                 dry: 0,
@@ -439,32 +459,20 @@
                 under: 0,
                 back: 0
             };
-            collection.incidentType.forEach((incidentArray, arrayIndex) => {
-                incidentArray.forEach((incidentType) => {
-                    for (let key in incidentType) {
-                        if (incidentType[key].length != 0) {
-                            for (let i = 0; i < incidentType[key].length; i++) {
-                                if (isYear == true && new Date(incidentType[key][i].startDate).getFullYear() == globalSelectedYear) {
-                                    totalSegments[cableName][key] += 1;
-                                }
 
-                                else if (globalSelectedDates.length > 1) {
-                                    if (new Date(incidentType[key][i].startDate).setHours(0, 0, 0, 0) >= new Date(globalSelectedDates[0]).setHours(0, 0, 0, 0) && new Date(incidentType[key][i].startDate).setHours(0, 0, 0, 0) <= new Date(globalSelectedDates[globalSelectedDates.length - 1]).setHours(0, 0, 0, 0)) {
-                                        totalSegments[cableName][key] += 1;
-                                    }
-                                }
-                                else if (new Date(incidentType[key][i].startDate).getMonth() == globalSelectedMonth && new Date(incidentType[key][i].startDate).getFullYear() == globalSelectedYear) {
-                                    totalSegments[cableName][key] += 1;
-                                }
-                            }
-                        }
-                    }
+            // Loop through incident types (Outage, Other) and aggregate counts
+            collection.incidentType.forEach((incidentArray, inex) => {
+                incidentArray.forEach((incidentType) => {
+                    totalSegments[cableName].dry += incidentType.dry.length;
+                    totalSegments[cableName].wet += incidentType.wet.length;
+                    totalSegments[cableName].under += incidentType.under.length;
+                    totalSegments[cableName].back += incidentType.back.length;
                 });
             });
-        })
+        });
         return totalSegments;
     }
-   
+
     function incidentType() {
         const totalIncident = {};
         collections.forEach((collection) => {
@@ -474,49 +482,34 @@
             totalIncident[cableName] = {
                 Outage: 0,
                 Planned: 0
-            }
-            // console.log(collection.incidentType[1][0].dry);
-            for (let i = 0; i < collection.incidentType.length; i++) {
-                for (let key in collection.incidentType[i][0]) {
-                    if (collection.incidentType[i][0][key].length != 0) {
-                        for (let element = 0; element < collection.incidentType[i][0][key].length; element++) {
-                            if (i == 0) {
-                                if (isYear == true && new Date(collection.incidentType[i][0][key][element].startDate).getFullYear()) {
-                                    totalIncident[cableName].Outage += 1;
-                                }
-                                else if (globalSelectedDates.length > 1) {
-                                    if (new Date(collection.incidentType[i][0][key][element].startDate).setHours(0, 0, 0, 0) >= new Date(globalSelectedDates[0]).setHours(0, 0, 0, 0) && new Date(collection.incidentType[i][0][key][element].startDate).setHours(0, 0, 0, 0) <= new Date(globalSelectedDates[globalSelectedDates.length - 1]).setHours(0, 0, 0, 0)) {
-                                        totalIncident[cableName].Outage += 1;
-                                    }
-                                }
-                                else if (new Date(collection.incidentType[i][0][key][element].startDate).getMonth() == globalSelectedMonth && new Date(collection.incidentType[i][0][key][element].startDate).getFullYear() == globalSelectedYear) {
-                                    totalIncident[cableName].Outage += 1;
-                                }
-                            }
-                            else {
-                                if (isYear == true && new Date(collection.incidentType[i][0][key][element].startDate).getFullYear() == globalSelectedYear) {
-                                    totalIncident[cableName].Planned += 1;
-                                }
-                                else if (globalSelectedDates.length > 1) {
-                                    if (new Date(collection.incidentType[i][0][key][element].startDate).setHours(0, 0, 0, 0) >= new Date(globalSelectedDates[0]).setHours(0, 0, 0, 0) && new Date(collection.incidentType[i][0][key][element].startDate).setHours(0, 0, 0, 0) <= new Date(globalSelectedDates[globalSelectedDates.length - 1]).setHours(0, 0, 0, 0)) {
-                                        totalIncident[cableName].Planned += 1;
-                                    }
-                                }
-                                else if (new Date(collection.incidentType[i][0][key][element].startDate).getMonth() == globalSelectedMonth && new Date(collection.incidentType[i][0][key][element].startDate).getFullYear() == globalSelectedYear) {
-                                    totalIncident[cableName].Planned += 1;
-                                }
-                            }
-                        }
-                    }
-                    else continue;
-                }
-            }
-        })
+            };
 
+            // Loop through incident types and count Outage and Planned incident
+            collection.incidentType.forEach((incidentArray, index) => {
+                incidentArray.forEach((incidentType) => {
+                    if (index === 0) {
+                        // Index 0 corresponds to 'Outage'
+                        totalIncident[cableName].Outage += incidentType.dry.length;
+                        totalIncident[cableName].Outage += incidentType.wet.length;
+                        totalIncident[cableName].Outage += incidentType.under.length;
+                        totalIncident[cableName].Outage += incidentType.back.length;
+
+                    } else if (index === 1) {
+                        // Index 1 corresponds to 'Planned'
+                        totalIncident[cableName].Planned += incidentType.dry.length;
+                        totalIncident[cableName].Planned += incidentType.wet.length;
+                        totalIncident[cableName].Planned += incidentType.under.length;
+                        totalIncident[cableName].Planned += incidentType.back.length;
+                    }
+                });
+            });
+        });
         return totalIncident;
     }
     function generateTotalRootCause(location_cause) {
         let totalRootCause = {};
+
+
 
         // Initialize root cause object for each cable system
         totalRootCause = {
@@ -528,6 +521,7 @@
                 fan_issue: 0,
                 force_majeure: 0,
                 government_private_project: 0,
+
                 human_error: 0,
                 pfe_issue: 0,
                 physical_connection: 0,
@@ -544,6 +538,7 @@
                 fan_issue: 0,
                 force_majeure: 0,
                 government_private_project: 0,
+
                 human_error: 0,
                 pfe_issue: 0,
                 physical_connection: 0,
@@ -560,6 +555,7 @@
                 fan_issue: 0,
                 force_majeure: 0,
                 government_private_project: 0,
+
                 human_error: 0,
                 pfe_issue: 0,
                 physical_connection: 0,
@@ -585,42 +581,31 @@
                 unknown: 0
             }
         };
-        collections.forEach((collection) => {   // better search solutions.. got no time refactoring since late na nakita ang flaw sa previous code
-            for (let i = 0; i < collection.incidentType.length; i++) {
-                for (let key in collection.incidentType[i][0]) {
-                    if (collection.incidentType[i][0][key].length != 0) {
-                        for (let element = 0; element < collection.incidentType[i][0][key].length; element++) {
-                            let rootCause = collection.incidentType[i][0][key][element].rootCauseHigh.toLowerCase().replace(/ /g, '_');
+        collections.forEach((collection) => {
+            // Loop through incident types and aggregate root causes
+            collection.incidentType.forEach((incidentArray) => {
+                incidentArray.forEach((incidentType) => {
+                    ['dry', 'wet', 'under', 'back'].forEach((segment) => {
+                        incidentType[segment].forEach((incident) => {
+                            let rootCause = incident.rootCauseHigh.toLowerCase().replace(/ /g, '_');
                             rootCause = rootCause.replace('/', '_');
-                            if (isYear == true && new Date(collection.incidentType[i][0][key][element].startDate).getFullYear() == globalSelectedYear) {
-                                if (rootCause !== undefined) {
-                                    totalRootCause[key][rootCause] += 1;
-                                }
+
+                            if (totalRootCause[segment][rootCause] !== undefined) {
+                                totalRootCause[segment][rootCause] += 1;
+                            } else {
+                                totalRootCause[segment].unknown += 1;
                             }
-                            else if (globalSelectedDates.length > 1) {
-                                if (new Date(collection.incidentType[i][0][key][element].startDate).setHours(0, 0, 0, 0) >= new Date(globalSelectedDates[0]).setHours(0, 0, 0, 0) && new Date(collection.incidentType[i][0][key][element].startDate).setHours(0, 0, 0, 0) <= new Date(globalSelectedDates[globalSelectedDates.length - 1]).setHours(0, 0, 0, 0)) {
-                                    if (rootCause !== undefined) {
-                                        totalRootCause[key][rootCause] += 1;
-                                    }
-                                }
-                            }
-                            else if (new Date(collection.incidentType[i][0][key][element].startDate).getMonth() == globalSelectedMonth && new Date(collection.incidentType[i][0][key][element].startDate).getFullYear() == globalSelectedYear) {
-                                if (rootCause !== undefined) {
-                                    totalRootCause[key][rootCause] += 1;
-                                }
-                            }
-                        }
-                    }
-                    else continue;
-                }
-            }
+                        });
+                    });
+                });
+            });
         });
 
         return Object.values(totalRootCause[location_cause]);
     }
 
     function getCableYearlyReportToGraph() {
-        let yearlyReport = {
+        let yearlyReport = { 
             SEAUS: Array(12).fill(0),
             SJC: Array(12).fill(0),
             C2C: Array(12).fill(0),
@@ -647,4 +632,7 @@
         return yearlyReport;
     }
 
+    function setClickWeekNumber(week){
+        globalWeekNumber = week
+    }
 </script>

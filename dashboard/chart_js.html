@@ -427,42 +427,7 @@
 
         return allTickets;
     }
-
-    // function collectAllTicketsForEachCable() {
-    //     const allTickets = {}
-
-    //     for(let i = 0; i < collections.incident;i++){
-
-    //     }
-    // }
-
-    // function generateTotalReportedSegments() { // hard
-    //     const totalSegments = {};
-
-    //     collections.forEach((collection) => {
-    //         const cableName = collection.cableName;
-
-    //         // Initialize the count object for each cable system
-    //         totalSegments[cableName] = {
-    //             dry: 0,
-    //             wet: 0,
-    //             under: 0,
-    //             back: 0
-    //         };
-
-    //         // Loop through incident types (Outage, Other) and aggregate counts
-    //         collection.incidentType.forEach((incidentArray, inex) => {
-    //             incidentArray.forEach((incidentType) => {
-    //                 totalSegments[cableName].dry += incidentType.dry.length;
-    //                 totalSegments[cableName].wet += incidentType.wet.length;
-    //                 totalSegments[cableName].under += incidentType.under.length;
-    //                 totalSegments[cableName].back += incidentType.back.length;
-    //             });
-    //         });
-    //     });
-    //     return totalSegments;
-    // }
-
+    
     function generateTotalReportedSegments() {
         const totalSegments = {};
         collections.forEach((collection) => {
@@ -499,45 +464,7 @@
         })
         return totalSegments;
     }
-    // TODO
-    // function incidentType() {
-    //     const totalIncident = {};
-    //     collections.forEach((collection) => {
-    //         const cableName = collection.cableName;
-
-    //         // Initialize the count object for each cable system
-    //         totalIncident[cableName] = {
-    //             Outage: 0,
-    //             Planned: 0
-    //         };
-
-    //         // Loop through incident types and count Outage and Planned incident
-    //         collection.incidentType.forEach((incidentArray, index) => {
-    //             incidentArray.forEach((incidentType,count) => {
-    //                 console.log(incidentType.dry[count]);
-    //                 if (index === 0) {
-    //                     // Index 0 corresponds to 'Outage'
-    //                     totalIncident[cableName].Outage += incidentType.dry.length;
-    //                     totalIncident[cableName].Outage += incidentType.wet.length;
-    //                     totalIncident[cableName].Outage += incidentType.under.length;
-    //                     totalIncident[cableName].Outage += incidentType.back.length;
-
-    //                 } else if (index === 1) {
-    //                     // Index 1 corresponds to 'Planned'
-    //                     totalIncident[cableName].Planned += incidentType.dry.length;
-    //                     totalIncident[cableName].Planned += incidentType.wet.length;
-    //                     totalIncident[cableName].Planned += incidentType.under.length;
-    //                     totalIncident[cableName].Planned += incidentType.back.length;
-    //                 }
-    //             });
-    //         });
-    //     });
-
-    //     //TEMPO
-    //   //  console.log(totalIncident);
-    //     return totalIncident;
-    // }
-
+   
     function incidentType() {
         const totalIncident = {};
         collections.forEach((collection) => {
@@ -584,17 +511,6 @@
                     else continue;
                 }
             }
-            // collection.incidentType.forEach((incidentArray) => {
-            //     incidentArray.forEach((element) => {
-            //         for(let key in element) {
-            //             if(element[key].length != 0) {
-            //                 for(let i = 0; i < element[key].length; i++){
-
-            //                 }
-            //             }
-            //         }
-            //     })
-            // })
         })
 
         return totalIncident;
@@ -728,8 +644,6 @@
                 })
             })
         })
-        //TEMPO
-        //   console.log(yearlyReport);
         return yearlyReport;
     }
 

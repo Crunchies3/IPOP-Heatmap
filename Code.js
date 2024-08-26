@@ -518,6 +518,7 @@ function getCableNames() {
 function print(){
   console.log(fetchPast3monthsAndCurrDate());
 }
+
 function fetchPast3monthsAndCurrDate() {
   var ss = SpreadsheetApp.openById('1vW8zgcrQC02iRLkWJSOIjfnqN5_lRNMgNjV6IBZF__c');
   var sheet1 = ss.getSheetByName('End Date');
@@ -527,7 +528,7 @@ function fetchPast3monthsAndCurrDate() {
   var data2 = getSheetData(sheet2);
 
   var threeMonthsAgo = new Date();
-  threeMonthsAgo.setMonth(threeMonthsAgo.getMonth() - 3);
+  threeMonthsAgo.setMonth(threeMonthsAgo.getMonth() - 12);
 
   var ganttChartDatas = [];
 
@@ -568,7 +569,8 @@ function processData(data, threeMonthsAgo) {
           endDate: endDate.toString(),
           incidentType: row[8],
           location: row[12],
-          rootCause: row[13]
+          rootCause: row[13],
+          impact : row[7]
         });
       }
     });

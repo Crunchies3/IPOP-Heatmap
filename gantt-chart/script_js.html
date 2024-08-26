@@ -1,11 +1,19 @@
 <script type="text/javascript">
-
     window.onload = (event) => {
         //load every data to a array
         showSpinner();
         startAutoRefresh();
         gantt.init("gantt_here");
     }
+
+    const monthsPriorSelect = document.getElementById('monthsPrior');
+    let selectedMonths = 0;
+
+    monthsPriorSelect.addEventListener('change', function () {
+        gantt.clearAll();
+        selectedMonths = parseInt(this.value);
+        initializeGantt(selectedMonths);
+    });
 
     //disabling user interaction in ganttchart
     gantt.config.drag_resize = false;
@@ -40,7 +48,8 @@
         { name: "location", hide: true },
         { name: "rootCause", hide: true },
         { name: "referenceNo", hide: true },
-        { name: "status", hide: true }
+        { name: "status", hide: true },
+        { name: "impact", hide: true }
     ];
     gantt.plugins({
         fullscreen: true,
@@ -48,7 +57,7 @@
         marker: true
     });
 
-    
+
 
     gantt.templates.task_text = function (start, end, task) {
         return task.incidentType;
@@ -68,24 +77,45 @@
     };
 
     gantt.templates.tooltip_text = function (start, end, task) {
-        return "<b>Reference No.:</b> " + task.referenceNo + "<br/><b>Location:</b> " +
-            task.location +
-            "<br/><b>Root Cause:</b> " + task.rootCause + "<br/><b>Status:</b> " +
-            task.status;
+        if (mouse_on_grid) {
+            return "<b>Reference #:</b> " + task.referenceNo +
+                "<br/><b>Impact:</b> " + task.impact +
+                "<br/><b>Location:</b> " + task.location +
+                "<br/><b>Root Cause:</b> " + task.rootCause +
+                "<br/><b>Status:</b> " + task.status;
+        }
+        return "";
+
     };
 
+    var mouse_on_grid = true;
+    gantt.attachEvent("onMouseMove", function (id, e) {
+        if (e.clientX <= gantt.config.grid_width) mouse_on_grid = false;
+        else mouse_on_grid = true;
+    });
 
 
-    function initializeGantt() {
+
+    function initializeGantt(monthsPrior) {
         console.log("refreshing gantt chart");
         addCurrentDateMarker();
-        google.script.run.withSuccessHandler(addToChart).getCableNames();
+        google.script.run
+            .withSuccessHandler(function (affectedCables) {
+                addToChart(affectedCables, monthsPrior);
+            })
+            .withFailureHandler(function (error) {
+                console.error("Error fetching data:", error);
+            })
+            .fetchPast3monthsAndCurrDate();
     }
     function startAutoRefresh() {
         // Initialize the map immediately upon loading
-        initializeGantt();
+        initializeGantt(selectedMonths);
         // Set an interval to call initializeMap every 5 minute
-        setInterval(initializeGantt, 1 * 60 * 1000);
+        setInterval(autoRefreshWrapper, 5 * 60 * 1000);
+    }
+    function autoRefreshWrapper() {
+        initializeGantt(selectedMonths);
     }
     function showSpinner() {
         document.getElementById('spinnerModal').style.display = 'block';
@@ -107,7 +137,12 @@
     }
 
     //fetching data
-    function addToChart(affectedCables) {
+    function addToChart(affectedCables, monthsPrior) {
+        console.log(affectedCables);
+        console.log(monthsPrior);
+        var monthsAgo = new Date();
+        monthsAgo.setMonth(monthsAgo.getMonth() - monthsPrior);
+        console.log(monthsAgo);
         var data = {
             tasks: [
                 { id: 1, text: "SJC", color: "#522258", incidentType: "SJC", unscheduled: true, open: true, type: "project" },
@@ -121,7 +156,7 @@
         affectedCables.forEach(cables => {
             dataLength++;
             var currentDate = new Date();
-            var startD;
+            var startD = cables.startDate;
             var endDate = cables.endDate;
             var parentId;
             var cableType = cables.cableSystem;
@@ -129,7 +164,16 @@
             var incidentType = cables.incidentType;
             var progressed;
             var status;
+            var progressColor;
+            var textColor;
 
+            startD = new Date(startD);
+            endDate = new Date(endDate);
+
+
+            if (endDate < monthsAgo) {
+                return;
+            }
 
 
             if (cableType === 'SJC') {
@@ -143,17 +187,20 @@
             }
 
             if (incidentType === "Planned Activity") {
-                colored = "#ef6c00";
+                colored = "#fff59d";
+                textColor = "#263238";
+                progressColor = "#ffeb3b";
             } else if (incidentType === "Partial Outage") {
-                colored = "#616161";
+                colored = "#757575";
+                textColor = "#fff"
+                progressColor = "#424242";
             }
             else {
-                colored = "#f44336";
+                colored = "#ef5350";
+                textColor = "#fff"
+                progressColor = "#f44336";
             }
 
-            //parsing dates for progress bar automation to work (yyyy-mm-dd)
-            startD = new Date(cables.startDate);
-            endDate = new Date(endDate);
 
             //automating the progress-bar (dark)
             if (currentDate < startD) {
@@ -190,17 +237,30 @@
                 location: cables.location,
                 rootCause: cables.rootCause,
                 status: status,
-                referenceNo: cables.referenceNo
+                referenceNo: cables.referenceNo,
+                textColor: textColor,
+                progressColor: progressColor,
+                impact: cables.impact
             });
 
         });
-
+        console.log(data);
         gantt.parse(data);
-        
+
         hideSpinner();
 
         gantt.showDate(new Date());
 
+    }
+    function areSameDay(date1, date2) {
+        const normalizedDate1 = normalizeDate(date1);
+        const normalizedDate2 = normalizeDate(date2);
+
+        // Compare the normalized dates
+        return normalizedDate1.getTime() === normalizedDate2.getTime();
+    }
+    function normalizeDate(date) {
+        return new Date(date.getFullYear(), date.getMonth(), date.getDate());
     }
 
     function formatDate(date) {

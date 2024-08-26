@@ -28,10 +28,18 @@
     <?!= HtmlService.createHtmlOutputFromFile('spinnerModal').getContent(); ?>
 
     <nav class="navbar my-nav">
-        <div class="container-fluid d-flex align-items-center justify-content-center">
-            <a class="navbar-brand" id="title">
+        <div class="container-fluid d-flex align-items-center">
+            <a class="navbar-brand mx-auto" id="title">
                 IPOP Heatmap GANTT CHART
             </a>
+            <select id="monthsPrior" class="form-select ms-2" style="width: auto;" aria-label="Default select example">
+                <option disabled selected>View Months Prior</option>
+                <option value="0">Current</option>
+                <option value="3">-3 month</option>
+                <option value="6">-6 month</option>
+                <option value="9">-9 month</option>
+                <option value="12">-1 year</option>
+            </select>
         </div>
     </nav>
 

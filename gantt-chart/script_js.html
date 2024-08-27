@@ -138,11 +138,8 @@
 
     //fetching data
     function addToChart(affectedCables, monthsPrior) {
-        console.log(affectedCables);
-        console.log(monthsPrior);
         var monthsAgo = new Date();
         monthsAgo.setMonth(monthsAgo.getMonth() - monthsPrior);
-        console.log(monthsAgo);
         var data = {
             tasks: [
                 { id: 1, text: "SJC", color: "#522258", incidentType: "SJC", unscheduled: true, open: true, type: "project" },
@@ -169,10 +166,16 @@
 
             startD = new Date(startD);
             endDate = new Date(endDate);
-
+            // console.log('=============');
+            // console.log(endDate);
+            // console.log('added end date')
+            // console.log(endDate.setDate(endDate.getDate() + 1));
 
             if (endDate < monthsAgo) {
                 return;
+            }
+            if (areSameDay(startD, endDate)) {
+                endDate.setDate(endDate.getDate() + 1);
             }
 
 
@@ -198,7 +201,7 @@
             else {
                 colored = "#ef5350";
                 textColor = "#fff"
-                progressColor = "#f44336";
+                progressColor = "#b71c1c";
             }
 
 

@@ -1,10 +1,11 @@
 <!-- for charts -->
 <script>
     window.onload = (event) => {
-        //load every data to a array
         showSpinner();
+        //Grabs all Data on the Notification and End Date tab on google Sheet
+        //the getAllCableNames is a modified version of getCableNames its difference is it can take empty start dates for compatibility sith the old and new data from excell sheet
+        //it the getAllCableNames can be located at Code.gs/Code.js
         google.script.run.withSuccessHandler(startUpLoadData).getAllCableNames();
-
     }
 
     // Function to show the spinner
@@ -17,7 +18,7 @@
         document.getElementById('spinnerModal').style.display = 'none';
     }
 
-    // Example of showing spinner while loading data
+    // this function are just javascript DOM the card box that contains the numbers of tickets created.
     function ticketsCreatedDisplay() {
         document.getElementById('sea-us').innerText = collectAllTicketsForEachCable()['SEAUS'].length;
         document.getElementById('sjc').innerText = collectAllTicketsForEachCable()['SJC'].length;
@@ -27,7 +28,7 @@
         document.getElementById('totalticketDOM').innerText = collectAllTicketsForEachCable()['SEAUS'].length + collectAllTicketsForEachCable()['SJC'].length +
             collectAllTicketsForEachCable()['C2C'].length + collectAllTicketsForEachCable()['EAC'].length + collectAllTicketsForEachCable()['TGN'].length
     }
-
+    // just a function to load all the charts. You can overcomplicate the process of loading charts and save a bit of memory by reloading the ones that are needed to change
     function loadChart() {
         ticketsCreatedDisplay();
         // Pie chart incident type
@@ -134,7 +135,9 @@
             ]
         });
     }
-
+    //CALENDAR JAVASCRIPT
+    //Vanilla calendar js. just read the documentation if you want to add something on the vanilla calendar
+    //https://vanilla-calendar.pro
     document.addEventListener('DOMContentLoaded', () => {
         const options = {
             settings: {
@@ -151,32 +154,20 @@
             },
             actions: {
                 clickYear(event, self) {
-                    // self.settings.selected.dates = [];
-                    // self.update({ dates: true });
-                    clearCollections();
                     isYear = true;
                     setYear(self.selectedYear);
-                    getReport(cleanReport);
                     loadChart();
                     document.getElementById('reportType').innerText = 'Yearly'
                 },
                 clickMonth(event, self) {
-                    // self.settings.selected.dates = [];
-                    // self.update({ dates: true });
-                    clearCollections();
                     setMonthOrYear(self.selectedMonth, self.selectedYear);
                     isYear = false;
-                    getReport(cleanReport);
                     loadChart();
                     document.getElementById('reportType').innerText = 'Monthly'
                 },
                 clickArrow(event, self) {
-                    // self.settings.selected.dates = [];
-                    // self.update({ dates: true });
-                    clearCollections();
                     setMonthOrYear(self.selectedMonth, self.selectedYear);
                     isYear = false;
-                    getReport(cleanReport);
                     loadChart();
                     document.getElementById('reportType').innerText = 'Monthly'
                 },
@@ -186,40 +177,33 @@
                 */
                 clickDay(event, self) {
                     if (self.selectedDates.length == 1) {
-                        clearCollections();
                         setMonthOrYear(self.selectedMonth, self.selectedYear);
                         isYear = false;
-                        getReport(cleanReport);
-                        loadChart();
                         document.getElementById('reportType').innerText = 'Monthly'
                     }
                     else if (self.selectedDates[0] === undefined && self.selectedDates[1] === undefined) {
-                        clearCollections();
                         setMonthOrYear(self.selectedMonth, self.selectedYear);
                         isYear = false;
-                        getReport(cleanReport);
                         loadChart();
                         document.getElementById('reportType').innerText = 'Monthly'
                     }
                     else {
-                        clearCollections();
                         setArrayOfDates(self.selectedDates);
                         isYear = false;
-                        getReport(cleanReport);
                         loadChart();
                         document.getElementById('reportType').innerText = 'Custom Range'
                     }
                 },
                 //for clicking the week number
                 clickWeekNumber(event, number, days, year, self) {
+                    //Here on week number the reason this was added is for improved UX so they can toggle click if they press the week number
+                    // on defualt vanilla calendar u don't have that functionality. you have to do it yourself
                     if (weekTriggered == true && globalWeekNumber == number) {
                         weekTriggered = false;
                         self.settings.selected.dates = [];
                         self.update({ dates: true })
-                        clearCollections();
                         setMonthOrYear(self.selectedMonth, self.selectedYear);
                         isYear = false;
-                        getReport(cleanReport);
                         loadChart();
                         setClickWeekNumber(number);
                         document.getElementById('reportType').innerText = 'Monthly'
@@ -227,24 +211,20 @@
 
                     else if (globalWeekNumber == number) {
                         weekTriggered = true;
-                        clearCollections();
                         self.settings.selected.dates = days.map(day => day.dataset.calendarDay)
                         self.update({ dates: true })
                         setArrayOfDates(self.selectedDates);
                         isYear = false;
-                        getReport(cleanReport);
                         loadChart();
                         setClickWeekNumber(number);
                         document.getElementById('reportType').innerText = 'Weekly'
                     }
                     else {
                         weekTriggered = true;
-                        clearCollections();
                         self.settings.selected.dates = days.map(day => day.dataset.calendarDay)
                         self.update({ dates: true })
                         setArrayOfDates(self.selectedDates);
                         isYear = false;
-                        getReport(cleanReport);
                         loadChart();
                         setClickWeekNumber(number);
                         document.getElementById('reportType').innerText = 'Weekly'
@@ -252,19 +232,23 @@
                 }
             },
         }
-
+        // innit of the calendar. For short it loads the data inside BEFORE building the calendar
         const calendar = new VanillaCalendar("#calendar", options)
         calendar.init()
     });
 
-    var cleanReport;
-    var globalSelectedDates = [];
-    var globalSelectedYear = new Date().getFullYear();
-    var globalSelectedMonth = new Date().getMonth();
-    let globalWeekNumber;
-    var isYear = false;
-    let weekTriggered = false;
+    var cleanReport;    //Holder of the clean data/ no duplicates.
+    var globalSelectedDates = [];   //holder of the seleceted dates on the calendar
+    var globalSelectedYear = new Date().getFullYear();  //it will point to the current year since its initialized
+    var globalSelectedMonth = new Date().getMonth();    //it will point to the current month since its initialized
+    let globalWeekNumber;   //just for the weekly toggle do not change if you need to.
+    var isYear = false;     // ust for the weekly toggle do not change if you need to.
+    let weekTriggered = false;  //for weekly toggle do not ch
+
+
     //TODO Make a Collection --- sa papel ani ang flow--- OBJECT - ARRAY - OBJECT - ARRAY
+    // You can do collections = [] and have a dynamic cable system and don't have to worry about adding new cables BUT you have to have a dynamic charts also which will overcomplicate the process
+    // if you want to add another cable system just copy the start of the cable name up to its incident type 
     var collections = [{
         cableName: 'SEAUS',
         incidentType: [[{ dry: [], wet: [], under: [], back: [] }],
@@ -292,47 +276,20 @@
     }]; // Collections that will show in the graph
     //Initialized para dili labad mag debug
 
-
+    // calling this on startup will populate the collection
+    // paramters: array of Objects
+    // returns: array of Objects
     function getReport(cables) {
         var a = 0;
         var box_of_cables = []
         incidentTypeChecker(cables);
-
-        //THE CODE BELOW IS THE BIGGEST FLAW! COMMENTED IT AND SLEPT 3 HOURS TO REDO THE LOGIC OF ALL TO MAKE THEM INDEPENDENT TO EACH OTHER THAN BEING DEPENDENT TO COLLECTION
-        //console.log(cables);
-        // if (globalSelectedDates.length > 1) {
-        //     for (let i = 0; i < cables.length; i++) {
-        //         if (new Date(cables[i].startDate).setHours(0, 0, 0, 0) >= new Date(globalSelectedDates[0]).setHours(0, 0, 0, 0) && new Date(cables[i].startDate).setHours(0, 0, 0, 0) <= new Date(globalSelectedDates[globalSelectedDates.length - 1]).setHours(0, 0, 0, 0)) {
-        //             box_of_cables.push(cables[i]);
-        //         }
-        //     }
-        //     incidentTypeChecker(box_of_cables)
-        //     console.log(collections);
-        // }
-
-        // else if (isYear == true) {
-        //     for (let i = 0; i < cables.length; i++) {
-        //         if (new Date(cables[i].startDate).getFullYear() == globalSelectedYear && new Date(cables[i].startDate).getFullYear() != isNaN()) {
-        //             box_of_cables.push(cables[i]);
-        //         }
-        //     }
-        //     incidentTypeChecker(box_of_cables);
-        //     console.log(collections);
-        // }
-
-        // else {
-        //     cables.forEach(element => {
-        //         if (new Date(element.startDate).getMonth() == globalSelectedMonth && new Date(element.startDate).getFullYear() == globalSelectedYear) { // added one cuz 1st month starts at 0
-        //             box_of_cables.push(element)
-        //         }
-        //     });
-        //     incidentTypeChecker(box_of_cables);
-        //     console.log(collections);
-        // }
-        getCableYearlyReportToGraph();
+        //getCableYearlyReportToGraph();
         return collections;
     }
 
+    // runs on startup. It cleans the Data with duplicate ticket names generated by getAllCableNames
+    // parameters: array of Objects (default to getAllCableNames in Code.gs)
+    //  returns clean cable tickets
     function startUpLoadData(cables) {
         var dirtyReportHandler = cables;
         const cleanReportHandler = (cables) => {
@@ -347,7 +304,7 @@
 
             return filteredCombinedCableNames;
         };
-
+        //Loads the chart on monthly by default
         cleanReport = cleanReportHandler(dirtyReportHandler);
         getReport(cleanReport);
         loadChart();
@@ -357,15 +314,22 @@
 
     }
 
+    //setter for month and year
+    // params: accepts DATE FORMAT month and year
+    // returns : void
     function setMonthOrYear(month, year) {
         globalSelectedMonth = month;
         globalSelectedYear = year;
     }
-
+    //setter for year
+    // params: accepts DATE FORMAT year
+    // returns : void
     function setYear(year) {
         globalSelectedYear = year
     }
-
+    //setter for the selected days on calendar
+    //  params: array of OBJECT
+    //  returns: void
     function setArrayOfDates(selectedDates) {
         globalSelectedDates = [] // ensure the global dates is empty
         globalSelectedDates = selectedDates;
@@ -373,16 +337,20 @@
 
 
     // Checker para dili sakit sa mata once mag debug
+    // checks the incomming cable one by one if they are outage and sort them out by outage or planned
+    //  params: arrays of OBJECT
+    //  returns: void
     function incidentTypeChecker(cable) {
         for (var i = 0; i < cable.length; i++) {
             if (cable[i].incidentType.toString() == "Outage") locationChecker(cable[i], 0);
             else if (cable[i].incidentType.toString() == 'Partial Outage') locationChecker(cable[i], 0)
             else locationChecker(cable[i], 1);
         }
-
     }
-    // pwede rani sila ma isa pero hahaha
 
+    //this function will put the data based on their respective event type and their segment type
+    //  params: OBJECT , number
+    //  returns: void
     function locationChecker(cable, index) {
         var cable_name = cable.combinedName.split(" ");
         let collectionIndex = 0;
@@ -410,20 +378,11 @@
             }
         }
     }
-    function clearCollections() {
-        collections.forEach((collection) => {
-            collection.incidentType.forEach((incidentArray) => {
-                incidentArray.forEach((incidentType) => {
-                    incidentType.dry = [];
-                    incidentType.wet = [];
-                    incidentType.under = [];
-                    incidentType.back = [];
-                });
-            });
-        });
-        globalSelectedDates = [];
-    }
 
+    //this function collects all necesarry data based on what mode the User on.
+    //it will find its segment type and based on the mode and will compare their dates 
+    //  params: void
+    //  returns: array of Object
     function collectAllTicketsForEachCable() {
         const allTickets = {};
         collections.forEach((collection) => {
@@ -458,6 +417,11 @@
         return allTickets;
     }
 
+    //this function collects all necesarry data based on what mode the User on.
+    //it will find its segment type and based on the mode and will compare their dates
+    //this is for the event per system cable (bar graph)
+    //  params: void
+    //  returns: array of Object
     function generateTotalReportedSegments() {
         const totalSegments = {};
         collections.forEach((collection) => {
@@ -495,6 +459,11 @@
         return totalSegments;
     }
 
+    //this function collects all necesarry data based on what mode the User on.
+    //it will find its segment type and based on the mode and will compare their dates 
+    //  collects all event types to all cable system (Outage, Planned)
+    //  params: void
+    //  returns: array of Object
     function incidentType() {
         const totalIncident = {};
         collections.forEach((collection) => {
@@ -544,6 +513,12 @@
 
         return totalIncident;
     }
+
+    //this function collects all necesarry data based on what mode the User on.
+    //it will find its segment type and based on the mode and will compare their dates 
+    // this will read the rootCause of each location
+    //  params: string
+    //  returns: array of numbers
     function generateTotalRootCause(location_cause) {
         let totalRootCause = {};
 
@@ -621,21 +596,43 @@
                         for (let element = 0; element < collection.incidentType[i][0][key].length; element++) {
                             let rootCause = collection.incidentType[i][0][key][element].rootCauseHigh.toLowerCase().replace(/ /g, '_');
                             rootCause = rootCause.replace('/', '_');
+                            console.log(rootCause);
                             if (isYear == true && new Date(collection.incidentType[i][0][key][element].startDate).getFullYear() == globalSelectedYear) {
-                                if (rootCause !== undefined) {
+                                if (rootCause == '') {
+                                    totalRootCause[key].unknown += 1;
+                                }
+                                else if (rootCause != undefined) {
                                     totalRootCause[key][rootCause] += 1;
+                                }
+
+                                else {
+                                    totalRootCause[key].unknown += 1;
                                 }
                             }
                             else if (globalSelectedDates.length > 1) {
                                 if (new Date(collection.incidentType[i][0][key][element].startDate).setHours(0, 0, 0, 0) >= new Date(globalSelectedDates[0]).setHours(0, 0, 0, 0) && new Date(collection.incidentType[i][0][key][element].startDate).setHours(0, 0, 0, 0) <= new Date(globalSelectedDates[globalSelectedDates.length - 1]).setHours(0, 0, 0, 0)) {
-                                    if (rootCause !== undefined) {
+                                    if (rootCause == '') {
+                                        totalRootCause[key].unknown += 1;
+                                    }
+                                    else if (rootCause != undefined) {
                                         totalRootCause[key][rootCause] += 1;
+                                    }
+
+                                    else {
+                                        totalRootCause[key].unknown += 1;
                                     }
                                 }
                             }
                             else if (new Date(collection.incidentType[i][0][key][element].startDate).getMonth() == globalSelectedMonth && new Date(collection.incidentType[i][0][key][element].startDate).getFullYear() == globalSelectedYear) {
-                                if (rootCause !== undefined) {
+                                if (rootCause == '') {
+                                    totalRootCause[key].unknown += 1;
+                                }
+                                else if (rootCause != undefined) {
                                     totalRootCause[key][rootCause] += 1;
+                                }
+
+                                else {
+                                    totalRootCause[key].unknown += 1;
                                 }
                             }
                         }
@@ -648,6 +645,9 @@
         return Object.values(totalRootCause[location_cause]);
     }
 
+    // Grabs every data based on the selected year by the USER.
+    // params: void
+    // returns: array of Objects
     function getCableYearlyReportToGraph() {
         let yearlyReport = {
             SEAUS: Array(12).fill(0),
@@ -675,6 +675,8 @@
         })
         return yearlyReport;
     }
+
+    //setter to see what week number has been clicked
     function setClickWeekNumber(week) {
         globalWeekNumber = week
     }

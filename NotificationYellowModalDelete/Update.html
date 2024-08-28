@@ -97,7 +97,11 @@
             <hr>
             <div class="col-md-4">
               <label for="yeditas1" class="form-label">Affected Segment 1</label>
-              <input class="form-select" id="yeditas1" name="yeditas1" value="" readonly>
+              <input hidden class="form-select" id="yeditas1" name="yeditas1" value="" readonly>
+              <select class="form-select" id="as1">
+                <option value="">Select a Segment</option>
+                <!-- Options will be populated dynamically -->
+              </select>
               <!-- <option value="Japan">All Japan Traffic</option>
               <option value="Philippines">All Philippine Traffic</option>
               <option value="Singapore">All Singapore Traffic</option>
@@ -118,7 +122,11 @@
             </div>
             <div class="col-md-4">
               <label for="yeditas2" class="form-label">Affected Segment 2</label>
-              <input class="form-select" id="yeditas2" name="yeditas2" value="" readonly>
+              <input hidden class="form-select" id="yeditas2" name="yeditas2" value="" readonly>
+              <select class="form-select" id="as2">
+                <option value="">Select a Segment</option>
+                <!-- Options will be populated dynamically -->
+              </select>
               <!-- <option value="Japan">All Japan Traffic</option>
               <option value="Philippines">All Philippine Traffic</option>
               <option value="Singapore">All Singapore Traffic</option>
@@ -139,7 +147,11 @@
             </div>
             <div class="col-md-4">
               <label for="yeditas3" class="form-label">Affected Segment 3</label>
-              <input class="form-select" id="yeditas3" name="yeditas3" value="" readonly>
+              <input hidden class="form-select" id="yeditas3" name="yeditas3" value="" readonly>
+              <select class="form-select" id="as3">
+                <option value="">Select a Segment</option>
+                <!-- Options will be populated dynamically -->
+              </select>
               <!-- <option value="Japan">All Japan Traffic</option>
               <option value="Philippines">All Philippine Traffic</option>
               <option value="Singapore">All Singapore Traffic</option>
@@ -239,4 +251,72 @@
     // Initial setup based on checkbox state
     toggleDateTimeInput(checkbox1, dateTimeInput1);
   });
+</script>
+<script>
+
+  function populateNames_(nameSelectId) {
+    var cableSystem = document.getElementById("yeditcablesystem").value;
+    var nameSelect = document.getElementById(nameSelectId);
+    if (nameSelect) {
+      nameSelect.innerHTML = '<option value="">Select Name</option>';
+      if (window.sampleData) {
+        window.sampleData.forEach(function (item) {
+          if (item.cableSystem === cableSystem) {
+            var option = document.createElement("option");
+            option.value = item.value;
+            option.textContent = item.name;
+            nameSelect.appendChild(option);
+          }
+        });
+      }
+    }
+  }
+
+
+  document.addEventListener('DOMContentLoaded', function () {
+    google.script.run.withSuccessHandler(function (data) {
+      window.sampleData = data;
+
+    }).getSampleData();
+  });
+
+
+  function callUpdateModal() {
+    var cableSystemSelect = document.getElementById("yeditcablesystem");
+
+    var select = document.getElementById("as1");
+    select.innerHTML = '';  // Clears all options
+    populateNames_("as1");
+
+    var select2 = document.getElementById("as2");
+    select2.innerHTML = '';  // Clears all options
+    populateNames_("as2");
+
+    var select3 = document.getElementById("as3");
+    select3.innerHTML = '';  // Clears all options
+    populateNames_("as3");
+
+    document.getElementById("as1").value = document.getElementById("yeditas1").value;
+    document.getElementById("as2").value = document.getElementById("yeditas2").value;;
+    document.getElementById("as3").value = document.getElementById("yeditas3").value;;
+  }
+
+
+  var segment1 = document.getElementById("as1");
+  segment1.addEventListener("change", function () {
+    document.getElementById("yeditas1").value = segment1.value;
+    document.getElementById('yeditas1').setAttribute('value', segment1.value);
+  });
+  var segment2 = document.getElementById("as2");
+  segment2.addEventListener("change", function () {
+    document.getElementById("yeditas2").value = segment2.value;
+    document.getElementById('yeditas2').setAttribute('value', segment2.value);
+  });
+  var segment3 = document.getElementById("as3");
+  segment3.addEventListener("change", function () {
+    document.getElementById("yeditas3").value = segment3.value;
+    document.getElementById('yeditas3').setAttribute('value', segment3.value);
+  });
+
+
 </script>

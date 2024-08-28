@@ -879,11 +879,11 @@ function transferNotifToStartandEndDate() {
 
     //Delete the rows from the notif and start sheet
     rowsToDelete.forEach(row => {
-      const rowIndex = data.indexOf(row) + 3; // Adding 2 to account for the header row and zero-based index
-      sheet.deleteRow(rowIndex);
-      startDateSheet.deleteRow(rowIndex);
+      const ticketId = data[row -1][0];
+      console.log(ticketId);
+      deleteRowMI('Notifications',ticketId);
+       addToActivityLog('SystemEnd',ticketId , "");
     });
-    addToActivityLog('SystemEnd', rowsToTransfer[0][0], "");
   }
 
 }

@@ -166,16 +166,10 @@
 
             startD = new Date(startD);
             endDate = new Date(endDate);
-            // console.log('=============');
-            // console.log(endDate);
-            // console.log('added end date')
-            // console.log(endDate.setDate(endDate.getDate() + 1));
+
 
             if (endDate < monthsAgo) {
                 return;
-            }
-            if (areSameDay(startD, endDate)) {
-                endDate.setDate(endDate.getDate() + 1);
             }
 
 
@@ -201,7 +195,7 @@
             else {
                 colored = "#ef5350";
                 textColor = "#fff"
-                progressColor = "#b71c1c";
+                progressColor = "#f44336";
             }
 
 

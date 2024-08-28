@@ -246,10 +246,10 @@ function getCableNames() {
   var ss = SpreadsheetApp.openById(spreadsheetIdinDataBase);
   var sheet = ss.getSheetByName('Notifications');
   var lastRow = sheet.getLastRow();
-  if(lastRow>1){
-  var cableNamesRange = sheet.getRange('A2:N' + lastRow);
-  var data = cableNamesRange.getValues();
-  }else{
+  if (lastRow > 1) {
+    var cableNamesRange = sheet.getRange('A2:N' + lastRow);
+    var data = cableNamesRange.getValues();
+  } else {
     var data = [];
   }
 
@@ -805,7 +805,7 @@ function getFullPaths() {
 function getSampleData() {
   var ss = SpreadsheetApp.openById(spreadsheetIdinDataBase);
   var sheet = ss.getSheetByName('Segment');
-  var dataRange = sheet.getRange('A2:C');
+  var dataRange = sheet.getRange('A2:C' + sheet.getLastRow());
 
   var data = dataRange.getValues();
 

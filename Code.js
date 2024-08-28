@@ -246,8 +246,12 @@ function getCableNames() {
   var ss = SpreadsheetApp.openById(spreadsheetIdinDataBase);
   var sheet = ss.getSheetByName('Notifications');
   var lastRow = sheet.getLastRow();
+  if(lastRow>1){
   var cableNamesRange = sheet.getRange('A2:N' + lastRow);
-  var data = cableNamesRange.getValues(); //getting the notif rows of affected segment
+  var data = cableNamesRange.getValues();
+  }else{
+    var data = [];
+  }
 
 
   // var sheetstart = ss.getSheetByName('Start Date');
@@ -273,10 +277,15 @@ function getCableNames() {
     var location = row[12];
     var rootCauseHigh = row[13];
 
+    var notifiedDate = row[2];
+    var startDate = row[3];
+    var endDate = row[4];
 
-    const notifiedDate = formatDates(row[2]);
-    const startDate = formatDates(row[3]);
-    const endDate = formatDates(row[4]);
+    if (notifiedDate != "" && startDate != "" && endDate != "") {
+      notifiedDate = formatDates(notifiedDate);
+      startDate = formatDates(startDate);
+      endDate = formatDates(endDate);
+    }
 
     if (cableNameB != "" && cableNameJ != "") {
       var index = fullPaths.findIndex(({ value }) => value === cableNameB + " " + cableNameJ);
@@ -420,7 +429,7 @@ function getSheetData(sheet) {
 function processData(data, threeMonthsAgo) {
   var ganttChartDatas = [];
 
-  data.forEach(function(row) {
+  data.forEach(function (row) {
     var endDate = new Date(row[4]);
     if (endDate == "Invalid Date" || endDate < threeMonthsAgo) {
       return;
@@ -432,7 +441,7 @@ function processData(data, threeMonthsAgo) {
       row[11] ? row[1] + " " + row[11] : undefined
     ];
 
-    segments.forEach(function(affectedSegment) {
+    segments.forEach(function (affectedSegment) {
       if (affectedSegment) {
         ganttChartDatas.push({
           referenceNo: row[0],
@@ -443,7 +452,7 @@ function processData(data, threeMonthsAgo) {
           incidentType: row[8],
           location: row[12],
           rootCause: row[13],
-          impact : row[7]
+          impact: row[7]
         });
       }
     });
@@ -751,10 +760,10 @@ function transferNotifToStartandEndDate() {
 
     //Delete the rows from the notif and start sheet
     rowsToDelete.forEach(row => {
-      const ticketId = data[row -1][0];
+      const ticketId = data[row - 1][0];
       console.log(ticketId);
-      deleteRowMI('Notifications',ticketId);
-       addToActivityLog('SystemEnd',ticketId , "");
+      deleteRowMI('Notifications', ticketId);
+      addToActivityLog('SystemEnd', ticketId, "");
     });
   }
 
@@ -795,7 +804,7 @@ function getFullPaths() {
 
 function getSampleData() {
   var ss = SpreadsheetApp.openById(spreadsheetIdinDataBase);
-  var sheet = ss.getSheetByName('Segment'); 
+  var sheet = ss.getSheetByName('Segment');
   var dataRange = sheet.getRange('A2:C');
 
   var data = dataRange.getValues();
@@ -809,11 +818,11 @@ function getSampleData() {
 
 function checkTroubleTicketExistence(troubleTicket) {
   var ss = SpreadsheetApp.openById(spreadsheetIdinDataBase);
-  var sheet = ss.getSheetByName('End Date'); 
+  var sheet = ss.getSheetByName('End Date');
   var data = sheet.getDataRange().getValues();
 
   var ticketExists = data.some(function (row) {
-    return row[0] === troubleTicket; 
+    return row[0] === troubleTicket;
   });
 
   return ticketExists;

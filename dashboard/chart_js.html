@@ -179,6 +179,7 @@
                     if (self.selectedDates.length == 1) {
                         setMonthOrYear(self.selectedMonth, self.selectedYear);
                         isYear = false;
+                        loadChart();
                         document.getElementById('reportType').innerText = 'Monthly'
                     }
                     else if (self.selectedDates[0] === undefined && self.selectedDates[1] === undefined) {

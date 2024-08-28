@@ -1,3 +1,11 @@
+//notes-
+//debugging tips in code.js: 
+//if gusto na magdebug or trace sa functionality sa functions kay doon magdebug sa apps script mismo na ide
+//sa apps script na ide is ang contents sa code.gs lang ang madedebug, pag sa client side na (pag file name kay .html) no choice kundi console.log ang pagdedebug.
+
+var spreadsheetIdinDataBase = '1vW8zgcrQC02iRLkWJSOIjfnqN5_lRNMgNjV6IBZF__c';
+
+
 function doGet(e) {
   if (!e.parameter.page) {
     var htmloutput = HtmlService.createTemplateFromFile('CableMap').evaluate().setTitle('Map View');
@@ -32,19 +40,6 @@ function updateMap() {
   var html = HtmlService.createHtmlOutputFromFile('CableMap')
     .setTitle('Map View');
   SpreadsheetApp.getUi().showModalDialog(html, 'Map View');
-}
-
-function getAddress(address) {
-  var response = Maps.newGeocoder().geocode(address);
-  var returnArray = [];
-  for (var i = 0; i < response.results.length; i++) {
-    var result = response.results[i];
-    Logger.log('%s: %s, %s', result.formatted_address, result.geometry.location.lat,
-      result.geometry.location.lng);
-
-    returnArray.push([result.geometry.location.lat, result.geometry.location.lng]);
-  }
-  return returnArray;
 }
 
 function addDataToSheet(cableSystemName, pointName, longitude, latitude) {
@@ -127,59 +122,9 @@ function getSJCData() {
   return cables;
 }
 
-function getSJCLocationsByCableSystem(cableSystem) {
-  var spreadsheetId = '1HfAXyfUdzDBBIj09Av5jhtJsazf3fI2WhXs8BbOZ4Zs';
-  var sheet = SpreadsheetApp.openById(spreadsheetId).getSheetByName('location');
-  var data = sheet.getRange(2, 1, sheet.getLastRow() - 1, 4).getValues(); // Assuming data starts from row 2 and columns A to D
-
-  // Filter the data based on the cable system
-  var filteredLocations = data.filter(function (row) {
-    return row[0] === cableSystem;
-  });
-
-  // Convert the filtered data into an array of objects
-  var locations = filteredLocations.map(function (row) {
-    return {
-      cableSystem: row[0],
-      pointName: row[1],
-      longitude: parseFloat(row[2]),
-      latitude: parseFloat(row[3]),
-    };
-  });
-
-  return locations;
-}
-
-function getSJCDataByCableSystem(cableSystem) {
-  var spreadsheetId = '1HfAXyfUdzDBBIj09Av5jhtJsazf3fI2WhXs8BbOZ4Zs';
-  var cablesSheet = SpreadsheetApp.openById(spreadsheetId).getSheetByName('cables');
-  var data = cablesSheet.getRange(2, 1, cablesSheet.getLastRow() - 1, 9).getValues(); // Starting from row 2, columns A to I
-
-  // Filter the data based on the cable system
-  var filteredCables = data.filter(function (row) {
-    return row[0] === cableSystem;
-  });
-
-  // Convert filtered data into an array of objects
-  var cables = filteredCables.map(function (row) {
-    return {
-      cableSystem: row[0],
-      cableName: row[1],
-      pointFrom: row[2],
-      latitudeFrom: row[3],
-      longitudeFrom: row[4],
-      pointTo: row[5],
-      latitudeTo: row[6],
-      longitudeTo: row[7],
-      disableenable: row[8],
-    };
-  });
-
-  return cables;
-}
 
 function getMIForDataTable(sheetName) {
-  var spreadsheetId = '1vW8zgcrQC02iRLkWJSOIjfnqN5_lRNMgNjV6IBZF__c';
+  var spreadsheetId = spreadsheetIdinDataBase;
   var sheet = SpreadsheetApp.openById(spreadsheetId).getSheetByName(sheetName);
   var dataRange = sheet.getDataRange();
   var values = dataRange.getDisplayValues();
@@ -187,84 +132,12 @@ function getMIForDataTable(sheetName) {
   return values;
 }
 
-function getDataForGraphCS() {
-  var spreadsheetId = '1vW8zgcrQC02iRLkWJSOIjfnqN5_lRNMgNjV6IBZF__c';
-  var sheet = SpreadsheetApp.openById(spreadsheetId).getSheetByName('Dashboard');
 
-  // Define the range B2:E6
-  var startRow = 2;
-  var startColumn = 2;
-  var numRows = 5; // 5 rows
-  var numColumns = 4; // 4 columns
 
-  // Get the range
-  var dataRange = sheet.getRange(startRow, startColumn, numRows, numColumns);
-
-  // Get the values from the range
-  var values = dataRange.getValues();
-
-  // Flatten the values array to match the sequence you described
-  var flattenedValues = [];
-  for (var row = 0; row < numRows; row++) {
-    for (var col = 0; col < numColumns; col++) {
-      flattenedValues.push(values[row][col]);
-    }
-  }
-
-  return flattenedValues;
-}
-
-function getDataForGraphRC() {
-  var spreadsheetId = '1vW8zgcrQC02iRLkWJSOIjfnqN5_lRNMgNjV6IBZF__c';
-  var sheet = SpreadsheetApp.openById(spreadsheetId).getSheetByName('Dashboard');
-
-  // Define the new range B10:E18
-  var startRow = 10;
-  var startColumn = 2;
-  var numRows = 9; // 9 rows (from row 10 to row 18)
-  var numColumns = 4; // 4 columns
-
-  // Get the range
-  var dataRange = sheet.getRange(startRow, startColumn, numRows, numColumns);
-
-  // Get the values from the range
-  var values = dataRange.getValues();
-
-  // Flatten the values array to match the sequence you described
-  var flattenedValues = [];
-  for (var row = 0; row < numRows; row++) {
-    for (var col = 0; col < numColumns; col++) {
-      flattenedValues.push(values[row][col]);
-    }
-  }
-
-  return flattenedValues;
-}
-
-function getDataForPieChart() {
-  // Spreadsheet ID
-  var spreadsheetId = '1vW8zgcrQC02iRLkWJSOIjfnqN5_lRNMgNjV6IBZF__c';
-
-  // Get data range from Sheet1
-  var sheet1 = SpreadsheetApp.openById(spreadsheetId).getSheetByName('Notifications');
-  var numRows1 = sheet1.getLastRow() - 1; // Exclude header row
-
-  // Get data range from Sheet2
-  var sheet2 = SpreadsheetApp.openById(spreadsheetId).getSheetByName('Start Date');
-  var numRows2 = sheet2.getLastRow() - 1; // Exclude header row
-
-  // Get data range from Sheet3
-  var sheet3 = SpreadsheetApp.openById(spreadsheetId).getSheetByName('End Date');
-  var numRows3 = sheet3.getLastRow() - 1; // Exclude header row
-
-  // Combine counts from all sheets
-  var totalValues = [numRows1, numRows2, numRows3];
-
-  return totalValues;
-}
-
+//this function is used to update data either in notification sheet and in start date sheet
+//if data is updated in the notification sheet the update cascade into the start date sheet
 function updateRowMI(sheetName, key, updatedData) {
-  var spreadsheetId = '1vW8zgcrQC02iRLkWJSOIjfnqN5_lRNMgNjV6IBZF__c';
+  var spreadsheetId = spreadsheetIdinDataBase;
   var sheet = SpreadsheetApp.openById(spreadsheetId).getSheetByName(sheetName);
   var startSheet = SpreadsheetApp.openById(spreadsheetId).getSheetByName('Start Date');
   var startData = startSheet.getDataRange().getValues();
@@ -296,9 +169,10 @@ function updateRowMI(sheetName, key, updatedData) {
   return status;
 }
 
-
+//this one is used to delete any ticket or data either in start date sheet or notifications sheet
+//parameters accepted are sheetname and ticketnumber (col1)
 function deleteRowMI(sheetName, col1) {
-  var spreadsheetId = '1vW8zgcrQC02iRLkWJSOIjfnqN5_lRNMgNjV6IBZF__c';
+  var spreadsheetId = spreadsheetIdinDataBase;
   var sheet = SpreadsheetApp.openById(spreadsheetId).getSheetByName(sheetName);
   var startSheet = SpreadsheetApp.openById(spreadsheetId).getSheetByName('Start Date');
   var startData = startSheet.getDataRange().getValues();
@@ -331,7 +205,7 @@ function deleteRowMI(sheetName, col1) {
 }
 
 function addDataToSheetMI(sheetName, majorIncidents) {
-  var spreadsheetId = '1vW8zgcrQC02iRLkWJSOIjfnqN5_lRNMgNjV6IBZF__c';
+  var spreadsheetId = spreadsheetIdinDataBase;
   var sheet = SpreadsheetApp.openById(spreadsheetId).getSheetByName(sheetName);
 
   // Convert all values to strings
@@ -348,7 +222,7 @@ function addDataToSheetMI(sheetName, majorIncidents) {
 }
 
 function addDataToSheetNotif(sheetName, majorIncidents) {
-  var spreadsheetId = '1vW8zgcrQC02iRLkWJSOIjfnqN5_lRNMgNjV6IBZF__c';
+  var spreadsheetId = spreadsheetIdinDataBase;
   var sheet = SpreadsheetApp.openById(spreadsheetId).getSheetByName(sheetName);
 
   // Convert all values to strings
@@ -366,8 +240,10 @@ function addDataToSheetNotif(sheetName, majorIncidents) {
   return 'success';
 }
 
+//the one responsible for fetching all the affected cable names and utilizing it on the polylines in the front-end
+//commented the start date sheet for future niche purposes
 function getCableNames() {
-  var ss = SpreadsheetApp.openById('1vW8zgcrQC02iRLkWJSOIjfnqN5_lRNMgNjV6IBZF__c');
+  var ss = SpreadsheetApp.openById(spreadsheetIdinDataBase);
   var sheet = ss.getSheetByName('Notifications');
   var lastRow = sheet.getLastRow();
   var cableNamesRange = sheet.getRange('A2:N' + lastRow);
@@ -512,15 +388,12 @@ function getCableNames() {
   //   combinedCableNamesStart.push(combinedNameStart);
   // });
   // Return combined cable names to the client-side JavaScript
-  console.log(combinedCableNames);
   return { combinedCableNames: combinedCableNames, combinedCableNamesStart: combinedCableNamesStart };
 }
-function print(){
-  console.log(fetchPast3monthsAndCurrDate());
-}
 
+//this function is the one responsible for populating the gantt chart
 function fetchPast3monthsAndCurrDate() {
-  var ss = SpreadsheetApp.openById('1vW8zgcrQC02iRLkWJSOIjfnqN5_lRNMgNjV6IBZF__c');
+  var ss = SpreadsheetApp.openById(spreadsheetIdinDataBase);
   var sheet1 = ss.getSheetByName('End Date');
   var sheet2 = ss.getSheetByName('Notifications');
 
@@ -578,9 +451,9 @@ function processData(data, threeMonthsAgo) {
 
   return ganttChartDatas;
 }
-
+//this function is the one responsible for populating necessary datas in the dashboard
 function getAllCableNames() {
-  var ss = SpreadsheetApp.openById('1vW8zgcrQC02iRLkWJSOIjfnqN5_lRNMgNjV6IBZF__c');
+  var ss = SpreadsheetApp.openById(spreadsheetIdinDataBase);
   var combinedCableNames = [];
   var sheetNames = ['End Date', 'Notifications']
   for (let i = 0; i < sheetNames.length; i++) {
@@ -709,8 +582,6 @@ function getAllCableNames() {
 
 function getCurrentDateTableFormat(now) {
 
-
-  // Get the components of the date
   const year = now.getFullYear();
   const month = String(now.getMonth() + 1).padStart(2, '0'); // Months are 0-based
   const day = String(now.getDate()).padStart(2, '0');
@@ -723,9 +594,9 @@ function getCurrentDateTableFormat(now) {
   return formattedDate;
 }
 
-
+//this function is used for when the user bruteforces to push the send to start date button or send to end date button in the modals
 function copyToStartTableWithTheCurrentDate(sheetType, ticketNumber) {
-  var ss = SpreadsheetApp.openById('1vW8zgcrQC02iRLkWJSOIjfnqN5_lRNMgNjV6IBZF__c');
+  var ss = SpreadsheetApp.openById(spreadsheetIdinDataBase);
   var sheet = ss.getSheetByName('Notifications');
   var lastRow = sheet.getLastRow();
   var dataRange = sheet.getRange('A1:R' + lastRow);
@@ -803,15 +674,16 @@ function copyToStartTableWithTheCurrentDate(sheetType, ticketNumber) {
   }
 }
 
-
+//the only function that works in automation of copying the ticket to start date sheet if the current date matches the start date
+//this function also sends the ticket to end date sheet automatically if the end date is lesser than the current date
+//when the ticket is send to the end date, it deletes the ticket data on the notifications sheet and start date sheet.
 function transferNotifToStartandEndDate() {
-  var ss = SpreadsheetApp.openById('1vW8zgcrQC02iRLkWJSOIjfnqN5_lRNMgNjV6IBZF__c');
+  var ss = SpreadsheetApp.openById(spreadsheetIdinDataBase);
   var sheet = ss.getSheetByName('Notifications');
   var lastRow = sheet.getLastRow();
   var dataRange = sheet.getRange('A1:R' + lastRow);
   var data = dataRange.getValues();
 
-  //getting start date sheet 
   var startDateSheet = ss.getSheetByName('Start Date');
   var endDateSheet = ss.getSheetByName('End Date');
 
@@ -888,9 +760,9 @@ function transferNotifToStartandEndDate() {
 
 }
 
-
+//used in extracting the cable segments in those chosen cable routes that contains multiple subcables
 function getFullPaths() {
-  const ss = SpreadsheetApp.openById('1vW8zgcrQC02iRLkWJSOIjfnqN5_lRNMgNjV6IBZF__c');
+  const ss = SpreadsheetApp.openById(spreadsheetIdinDataBase);
   var segmentRows = ss.getSheetByName('Segment');
   var lastRow = segmentRows.getLastRow();
   var dataRange = segmentRows.getRange('C2:I' + lastRow);
@@ -922,36 +794,34 @@ function getFullPaths() {
 }
 
 function getSampleData() {
-  var ss = SpreadsheetApp.openById('1vW8zgcrQC02iRLkWJSOIjfnqN5_lRNMgNjV6IBZF__c');
-  var sheet = ss.getSheetByName('Segment'); // Assuming your sheet name is "Segment"
-  var dataRange = sheet.getRange('A2:C'); // Assuming your data starts from row 2 and columns A to C
+  var ss = SpreadsheetApp.openById(spreadsheetIdinDataBase);
+  var sheet = ss.getSheetByName('Segment'); 
+  var dataRange = sheet.getRange('A2:C');
 
-  var data = dataRange.getValues(); // Fetch data from the range
+  var data = dataRange.getValues();
 
   var dropdownData = data.map(function (row) {
     return { cableSystem: row[0], name: row[1], value: row[2] };
   });
 
-  // Return the data to the client-side JavaScript
   return dropdownData;
 }
 
 function checkTroubleTicketExistence(troubleTicket) {
-  var ss = SpreadsheetApp.openById('1vW8zgcrQC02iRLkWJSOIjfnqN5_lRNMgNjV6IBZF__c');
-  var sheet = ss.getSheetByName('End Date'); // Change sheet name if necessary
+  var ss = SpreadsheetApp.openById(spreadsheetIdinDataBase);
+  var sheet = ss.getSheetByName('End Date'); 
   var data = sheet.getDataRange().getValues();
 
-  // Check if trouble ticket exists in the sheet
   var ticketExists = data.some(function (row) {
-    return row[0] === troubleTicket; // Assuming trouble ticket is in the first column
+    return row[0] === troubleTicket; 
   });
 
   return ticketExists;
 }
 
-
+//mostly used in the addpolyline client side
 function extractDates(cablesystem) {
-  const ss = SpreadsheetApp.openById('1vW8zgcrQC02iRLkWJSOIjfnqN5_lRNMgNjV6IBZF__c');
+  const ss = SpreadsheetApp.openById(spreadsheetIdinDataBase);
   var notifRows = ss.getSheetByName('Notifications').getDataRange().getValues().slice(1);
 
   if (cablesystem !== 'All') {
@@ -994,12 +864,14 @@ function formatDates(dateString) {
   return formattedDate;
 }
 
+//used in self auto refresh functionality in the client side
 function getScriptUrl() {
   return ScriptApp.getService().getUrl();
 }
 
+//used in adding activity log in every activity the user does
 function addToActivityLog(activityType, troubleTicket, incidentTypeAdd) {
-  const ss = SpreadsheetApp.openById('1vW8zgcrQC02iRLkWJSOIjfnqN5_lRNMgNjV6IBZF__c');
+  const ss = SpreadsheetApp.openById(spreadsheetIdinDataBase);
   var activitySheet = ss.getSheetByName('Activity History');
 
   var currentDate = getCurrentDateTableFormat(new Date());
@@ -1048,8 +920,10 @@ function addToActivityLog(activityType, troubleTicket, incidentTypeAdd) {
   activitySheet.getRange(1, 1, lastRow, 1).setNumberFormat('yyyy-mm-dd hh:mm');
 }
 
+
+//used in displaying activity logs on the client side
 function fetchActivityLogs() {
-  const ss = SpreadsheetApp.openById('1vW8zgcrQC02iRLkWJSOIjfnqN5_lRNMgNjV6IBZF__c');
+  const ss = SpreadsheetApp.openById(spreadsheetIdinDataBase);
   var activitySheet = ss.getSheetByName('Activity History');
   var data = activitySheet.getDataRange().getValues().slice(1);
 

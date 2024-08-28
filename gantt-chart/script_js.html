@@ -1,11 +1,15 @@
 <script type="text/javascript">
+
+    //used gantt chart is dhtmlx gantt chart (https://docs.dhtmlx.com/gantt/desktop__guides.html)
+    //documentation is good and the discussion of each functionalities can be beneficial
+
     window.onload = (event) => {
         //load every data to a array
         showSpinner();
         startAutoRefresh();
         gantt.init("gantt_here");
     }
-
+    //para sa months prior na feature
     const monthsPriorSelect = document.getElementById('monthsPrior');
     let selectedMonths = 0;
 
@@ -25,6 +29,7 @@
     gantt.config.scale_height = 75;
     gantt.config.min_column_width = 40;
 
+    //design/format na madisplay sa gantt
     gantt.config.start_on_monday = false;
     gantt.config.scales = [
         { unit: "week", step: 1, format: "%j %F %Y" },
@@ -39,6 +44,8 @@
         }
     ];
 
+    //mga data na needed na ginautilize sa gantt chart
+    //there's still many utilization na built-in na, explore lang sa documentation
     gantt.config.columns = [
         { name: "text", label: "CABLE SYSTEMS", width: "140", tree: true },
         { name: "start_date", label: "START", width: "100" },
@@ -58,16 +65,17 @@
     });
 
 
-
+    //this is for the name in the bar (outage,planned,partial)
     gantt.templates.task_text = function (start, end, task) {
         return task.incidentType;
     };
-
+    //for design purposes (style.css)
     gantt.templates.scale_row_class = function (scale) {
         if (scale.unit === "week") {
             return "week_scale";
         }
     }
+    //for design purposes (style.css)
     gantt.templates.task_row_class = function (start, end, task) {
         if (gantt.getGlobalTaskIndex(task.id) % 2 === 0) {
             return "gantt_even_row";
@@ -75,7 +83,7 @@
             return "gantt_odd_row";
         }
     };
-
+    //for the hovering mouse feature on the bar
     gantt.templates.tooltip_text = function (start, end, task) {
         if (mouse_on_grid) {
             return "<b>Reference #:</b> " + task.referenceNo +
@@ -87,7 +95,6 @@
         return "";
 
     };
-
     var mouse_on_grid = true;
     gantt.attachEvent("onMouseMove", function (id, e) {
         if (e.clientX <= gantt.config.grid_width) mouse_on_grid = false;
@@ -95,7 +102,7 @@
     });
 
 
-
+    //used in onload and autorefresh functionality
     function initializeGantt(monthsPrior) {
         console.log("refreshing gantt chart");
         addCurrentDateMarker();
@@ -136,7 +143,7 @@
         });
     }
 
-    //fetching data
+    //fetches data and parses it on the gantt chart
     function addToChart(affectedCables, monthsPrior) {
         var monthsAgo = new Date();
         monthsAgo.setMonth(monthsAgo.getMonth() - monthsPrior);
@@ -171,6 +178,9 @@
             if (endDate < monthsAgo) {
                 return;
             }
+            if (areSameDay(startD, endDate)) {
+                endDate.setDate(endDate.getDate() + 1);
+            }
 
 
             if (cableType === 'SJC') {
@@ -195,7 +205,7 @@
             else {
                 colored = "#ef5350";
                 textColor = "#fff"
-                progressColor = "#f44336";
+                progressColor = "#b71c1c";
             }
 
 
@@ -249,6 +259,7 @@
         gantt.showDate(new Date());
 
     }
+    //used to check if the days are the same and if the days are the same, there must still be a 1 bar to display
     function areSameDay(date1, date2) {
         const normalizedDate1 = normalizeDate(date1);
         const normalizedDate2 = normalizeDate(date2);

@@ -2,12 +2,26 @@
 <script>
     window.onload = (event) => {
         showSpinner();
+        hideSpinner();
         //Grabs all Data on the Notification and End Date tab on google Sheet
         //the getAllCableNames is a modified version of getCableNames its difference is it can take empty start dates for compatibility sith the old and new data from excell sheet
         //it the getAllCableNames can be located at Code.gs/Code.js
         google.script.run.withSuccessHandler(startUpLoadData).getAllCableNames();
+
     }
 
+    function initChart() {
+        google.script.run.withSuccessHandler(startUpLoadData).getAllCableNames();
+    }
+
+    function startAutoRefresh() {
+        initChart();
+        setInterval(wrapper, 1 * 60 * 1000)
+    }
+
+    function wrapper() {
+        initChart();
+    }
     // Function to show the spinner
     function showSpinner() {
         document.getElementById('spinnerModal').style.display = 'block';
@@ -154,18 +168,21 @@
             },
             actions: {
                 clickYear(event, self) {
+                    clearGlobalSelectedDates();
                     isYear = true;
                     setYear(self.selectedYear);
                     loadChart();
                     document.getElementById('reportType').innerText = 'Yearly'
                 },
                 clickMonth(event, self) {
+                    clearGlobalSelectedDates();
                     setMonthOrYear(self.selectedMonth, self.selectedYear);
                     isYear = false;
                     loadChart();
                     document.getElementById('reportType').innerText = 'Monthly'
                 },
                 clickArrow(event, self) {
+                    clearGlobalSelectedDates();
                     setMonthOrYear(self.selectedMonth, self.selectedYear);
                     isYear = false;
                     loadChart();
@@ -176,6 +193,7 @@
                 vvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvv
                 */
                 clickDay(event, self) {
+                    clearGlobalSelectedDates();
                     if (self.selectedDates.length == 1) {
                         setMonthOrYear(self.selectedMonth, self.selectedYear);
                         isYear = false;
@@ -183,12 +201,14 @@
                         document.getElementById('reportType').innerText = 'Monthly'
                     }
                     else if (self.selectedDates[0] === undefined && self.selectedDates[1] === undefined) {
+                        clearGlobalSelectedDates();
                         setMonthOrYear(self.selectedMonth, self.selectedYear);
                         isYear = false;
                         loadChart();
                         document.getElementById('reportType').innerText = 'Monthly'
                     }
                     else {
+                        clearGlobalSelectedDates();
                         setArrayOfDates(self.selectedDates);
                         isYear = false;
                         loadChart();
@@ -201,6 +221,7 @@
                     // on defualt vanilla calendar u don't have that functionality. you have to do it yourself
                     if (weekTriggered == true && globalWeekNumber == number) {
                         weekTriggered = false;
+                        clearGlobalSelectedDates();
                         self.settings.selected.dates = [];
                         self.update({ dates: true })
                         setMonthOrYear(self.selectedMonth, self.selectedYear);
@@ -211,6 +232,7 @@
                     }
 
                     else if (globalWeekNumber == number) {
+                        clearGlobalSelectedDates();
                         weekTriggered = true;
                         self.settings.selected.dates = days.map(day => day.dataset.calendarDay)
                         self.update({ dates: true })
@@ -221,6 +243,7 @@
                         document.getElementById('reportType').innerText = 'Weekly'
                     }
                     else {
+                        clearGlobalSelectedDates();
                         weekTriggered = true;
                         self.settings.selected.dates = days.map(day => day.dataset.calendarDay)
                         self.update({ dates: true })
@@ -309,12 +332,13 @@
         cleanReport = cleanReportHandler(dirtyReportHandler);
         getReport(cleanReport);
         loadChart();
-        hideSpinner();
-        document.getElementById('reportType').innerText = 'Monthly'
         // Actual data loading and rendering logic here
 
     }
 
+    function clearGlobalSelectedDates() {
+        globalSelectedDates = [];
+    }
     //setter for month and year
     // params: accepts DATE FORMAT month and year
     // returns : void
@@ -389,6 +413,7 @@
         collections.forEach((collection) => {
             const cableName = collection.cableName;
             const tickets = [];
+            console.log(globalSelectedDates);
             collection.incidentType.forEach((incidentArray, arrayIndex) => {
                 incidentArray.forEach((incidentType) => {
                     for (let key in incidentType) {
@@ -410,7 +435,7 @@
                         }
                     }
                 });
-            });
+            })
             // Assign the collected tickets to the corresponding cableName
             allTickets[cableName] = tickets;
         });
@@ -480,7 +505,7 @@
                     if (collection.incidentType[i][0][key].length != 0) {
                         for (let element = 0; element < collection.incidentType[i][0][key].length; element++) {
                             if (i == 0) {
-                                if (isYear == true && new Date(collection.incidentType[i][0][key][element].startDate).getFullYear()) {
+                                if (isYear == true && new Date(collection.incidentType[i][0][key][element].startDate).getFullYear() == globalSelectedYear) {
                                     totalIncident[cableName].Outage += 1;
                                 }
                                 else if (globalSelectedDates.length > 1) {
@@ -511,7 +536,6 @@
                 }
             }
         })
-
         return totalIncident;
     }
 
@@ -597,7 +621,6 @@
                         for (let element = 0; element < collection.incidentType[i][0][key].length; element++) {
                             let rootCause = collection.incidentType[i][0][key][element].rootCauseHigh.toLowerCase().replace(/ /g, '_');
                             rootCause = rootCause.replace('/', '_');
-                            console.log(rootCause);
                             if (isYear == true && new Date(collection.incidentType[i][0][key][element].startDate).getFullYear() == globalSelectedYear) {
                                 if (rootCause == '') {
                                     totalRootCause[key].unknown += 1;

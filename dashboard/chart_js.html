@@ -1,16 +1,20 @@
 <!-- for charts -->
 <script>
+    let monthName = document.getElementById('reportType').innerHTML
     window.onload = (event) => {
         showSpinner();
         hideSpinner();
         //Grabs all Data on the Notification and End Date tab on google Sheet
         //the getAllCableNames is a modified version of getCableNames its difference is it can take empty start dates for compatibility sith the old and new data from excell sheet
         //it the getAllCableNames can be located at Code.gs/Code.js
-        google.script.run.withSuccessHandler(startUpLoadData).getAllCableNames();
+        startAutoRefresh();
 
     }
 
     function initChart() {
+        console.log('refreshing chart');
+        monthName = document.getElementById('reportType').innerHTML
+        clearCollections();
         google.script.run.withSuccessHandler(startUpLoadData).getAllCableNames();
     }
 
@@ -339,6 +343,19 @@
     function clearGlobalSelectedDates() {
         globalSelectedDates = [];
     }
+
+    function clearCollections() {
+        collections.forEach((collection) => {
+            collection.incidentType.forEach((incidentArray) => {
+                incidentArray.forEach((incidentType) => {
+                    incidentType.dry = [];
+                    incidentType.wet = [];
+                    incidentType.under = [];
+                    incidentType.back = [];
+                });
+            });
+        });
+    }
     //setter for month and year
     // params: accepts DATE FORMAT month and year
     // returns : void
@@ -413,7 +430,6 @@
         collections.forEach((collection) => {
             const cableName = collection.cableName;
             const tickets = [];
-            console.log(globalSelectedDates);
             collection.incidentType.forEach((incidentArray, arrayIndex) => {
                 incidentArray.forEach((incidentType) => {
                     for (let key in incidentType) {

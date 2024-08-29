@@ -91,9 +91,9 @@
                 "<br/><b>Location:</b> " + task.location +
                 "<br/><b>Root Cause:</b> " + task.rootCause +
                 "<br/><b>Status:</b> " + task.status;
+        } else {
+            return "<b>Cable Name: </b> " + task.text;
         }
-        return "";
-
     };
     var mouse_on_grid = true;
     gantt.attachEvent("onMouseMove", function (id, e) {
@@ -151,7 +151,7 @@
             tasks: [
                 { id: 1, text: "SJC", color: "#522258", incidentType: "SJC", unscheduled: true, open: true, type: "project" },
                 { id: 2, text: "SEAUS", color: "#1A4D2E", incidentType: "SEAUS", unscheduled: true, open: true, type: "project" },
-                { id: 3, text: "TGN", color: "#8B322C", incidentType: "TGN", unscheduled: true, open: true, type: "project" },
+                { id: 3, text: "TGN-IA/TGN-P", color: "#8B322C", incidentType: "TGN", unscheduled: true, open: true, type: "project" },
                 { id: 4, text: "C2C/EAC", color: "#A0153E", incidentType: "C2C/EAC", unscheduled: true, open: true, type: "project" }
             ]
 

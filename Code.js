@@ -69,10 +69,10 @@ function addCableConnectionToSheet(pointFrom, pointTo, cableName, cableSystem) {
   });
 
   if (pointFromData && pointToData) {
-    var latitudeFrom = pointFromData[3]; // Assuming Latitude is in column D
-    var longitudeFrom = pointFromData[2]; // Assuming Longitude is in column C
-    var latitudeTo = pointToData[3]; // Assuming Latitude is in column D
-    var longitudeTo = pointToData[2]; // Assuming Longitude is in column C
+    var latitudeFrom = pointFromData[2]; // Assuming Latitude is in column D
+    var longitudeFrom = pointFromData[3]; // Assuming Longitude is in column C
+    var latitudeTo = pointToData[2]; // Assuming Latitude is in column D
+    var longitudeTo = pointToData[3]; // Assuming Longitude is in column C
 
     // Add data to the cables sheet
     cablesSheet.appendRow([cableSystem, cableName, pointFrom, latitudeFrom, longitudeFrom, pointTo, latitudeTo, longitudeTo]);
